@@ -20,13 +20,14 @@
       "purpose": "maskable"
     },
     {
-      "src": "maskable_icon_x512.png",
+      "src": "calendar.png",
       "sizes": "853x853",
       "type": "image/png",
       "purpose": "maskable"
     }
   ]
 }
+
 
 
 
