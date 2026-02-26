@@ -12,10 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#00A97A">
-    <title>BBraun Scales 2026</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <title>BBraun Scales 2026 Professional</title>
     
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
@@ -23,19 +20,14 @@
         
         :root {
             --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
-            --accent: #A800C4; --amarelo: #FFD54F; --verde: #40C7A1; --border: #E0E0E0;
-            --danger: #ff5252; --manha: #FFB74D; --tarde: #4FC3F7; --noite: #7986CB;
-            --semana-w: #85EBC9;
+            --accent: #A800C4; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
+            --danger: #ff5252; --semana-w: #85EBC9;
+            --manha: #E6A645; --tarde: #45B0DE; --noite: #6A75B5;
         }
 
-        /* MODO ESCURO REFINADO */
         body.dark-mode { 
-            --bg: #121212; 
-            --card: #1E1E1E; 
-            --text: #E0E0E0; 
-            --border: #333333; 
-            --primary: #00C48D;
-            --semana-w: #1B4D3E;
+            --bg: #121212; --card: #1E1E1E; --text: #E0E0E0; --border: #333333; 
+            --primary: #00C48D; --semana-w: #1B4D3E;
         }
 
         body { 
@@ -48,98 +40,93 @@
         header { 
             background: var(--primary); padding: 20px 18px; color: white; display: flex; 
             justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .brand-container { display: flex; flex-direction: column; }
-        .logo-wrap { display: flex; align-items: center; font-size: 1.5em; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
-        .logo-divider { width: 1.5px; height: 18px; background: currentColor; margin: 0 4px; opacity: 0.8; }
-        .slogan-text { font-size: 0.52em; font-weight: 400; text-transform: uppercase; letter-spacing: 2.5px; opacity: 0.95; margin-left: 24px; margin-top: 2px; white-space: nowrap; }
+        .logo-wrap { display: flex; align-items: center; font-size: 1.5em; font-weight: 800; letter-spacing: -1.5px; }
+        .logo-divider { width: 1.5px; height: 18px; background: currentColor; margin: 0 4px; }
+        .slogan-text { font-size: 0.52em; font-weight: 400; text-transform: uppercase; letter-spacing: 2.5px; margin-left: 24px; }
 
         .status-panel { 
             background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 20px 15px; 
-            border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); letter-spacing: -1px; line-height: 1; font-weight: 700; }
-        .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; letter-spacing: 1.5px; }
+        .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
+        .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
 
-        .mes-container { perspective: 1000px; margin: 0 15px 15px 15px; height: 310px; }
-        .mes-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; cursor: pointer; }
+        .mes-container { perspective: 1000px; margin: 0 15px 15px 15px; height: 320px; }
+        .mes-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
         .mes-inner.flipped { transform: rotateY(180deg); }
-        .mes-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; padding: 12px; border: 1px solid var(--border); box-sizing: border-box; }
+        .mes-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; padding: 15px; border: 1px solid var(--border); box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .mes-front { background: var(--card); }
-        .mes-back { transform: rotateY(180deg); background: var(--primary); color: white; overflow-y: auto; padding: 15px; }
+        .mes-back { transform: rotateY(180deg); background: var(--primary); color: white; overflow-y: auto; }
         
-        .event-item { font-size: 0.85em; margin-bottom: 8px; line-height: 1.3; }
-
-        .grid { display: grid; grid-template-columns: 25px repeat(7, 1fr); gap: 3px; text-align: center; }
-        .dia-label { font-size: 0.55em; font-weight: 800; opacity: 0.4; color: var(--primary); }
-        .dia-label-w { font-size: 0.5em; font-weight: 900; background: var(--semana-w); color: var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; }
-        .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-weight: 800; font-size: 0.8em; cursor: pointer; border: 2.2px solid transparent; transition: 0.3s; }
+        .grid { display: grid; grid-template-columns: 25px repeat(7, 1fr); gap: 4px; text-align: center; }
+        .dia-label { font-size: 0.6em; font-weight: 800; opacity: 0.5; color: var(--text); padding-bottom: 5px; }
+        .dia-label-w { font-size: 0.55em; font-weight: 900; background: var(--semana-w); color: var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 80%; margin-top: 10%; }
+        .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 0.85em; border: 2px solid transparent; transition: 0.2s; position: relative; }
         
         .hoje { 
-            background: var(--accent) !important; color: white !important; 
-            box-shadow: 0 0 15px rgba(168, 0, 196, 0.5); z-index: 10;
-            animation: super-pulse 1.5s infinite ease-in-out;
+            background: var(--accent) !important; 
+            color: white !important; 
+            z-index: 1;
+            box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7);
+            animation: hoje-pulsar 2s infinite;
+            border: 2px solid white !important;
+        }
+        @keyframes hoje-pulsar {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(168, 0, 196, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0); }
         }
 
-        @keyframes super-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        /* Cores de Escala */
+        .AMARELO { background: var(--amarelo) !important; color: #1a1a1a !important; }
+        .VERDE { background: var(--verde) !important; color: #fff !important; }
+        .MANHA { background: var(--manha) !important; color: #fff !important; }
+        .TARDE { background: var(--tarde) !important; color: #fff !important; }
+        .NOITE { background: var(--noite) !important; color: #fff !important; }
+        .TRABALHO { border-color: rgba(168, 0, 196, 0.4) !important; }
+        .HAS_NOTE::after { content: ''; position: absolute; bottom: 3px; right: 3px; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
 
-        .TRABALHO { border-color: var(--accent) !important; }
-        .HAS_NOTE { background: rgba(168, 0, 196, 0.15); border: 2px dashed var(--accent) !important; }
-
-        .tab-bar { 
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); 
-            display: flex; align-items: center; justify-content: space-around; height: 75px; z-index: 1000;
-        }
-        .tab { display: flex; flex-direction: column; align-items: center; cursor: pointer; color: rgba(255,255,255,0.6); }
+        /* Estilo dos Modais */
+        .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); display: flex; height: 75px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .tab { flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.7em; font-weight: 700; }
         .tab.active { color: #FFFFFF; }
-        .tab .label { font-size: 11px; font-weight: 700; margin-top: 2px; text-transform: uppercase; }
+        .tab span { font-size: 24px; margin-bottom: 2px; }
 
-        #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1500; backdrop-filter: blur(4px); }
-        .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 25px 25px 0 0; padding: 25px; z-index: 2000; transition: 0.4s; max-height: 85vh; overflow-y: auto; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }
+        #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; backdrop-filter: blur(5px); }
+        .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 30px 30px 0 0; padding: 25px; z-index: 2000; transition: 0.5s cubic-bezier(0, 1, 0.5, 1); max-height: 85vh; overflow-y: auto; }
         .bottom-modal.show { bottom: 0; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; margin-bottom: 20px; }
-        .stat-card { background: var(--bg); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
-        .stat-value { display: block; font-size: 1.6em; font-weight: 800; color: var(--primary); }
-        .stat-label { font-size: 0.65em; font-weight: 700; text-transform: uppercase; opacity: 0.7; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .stat-card { background: var(--bg); padding: 18px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
+        .stat-value { display: block; font-size: 1.8em; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .stat-label { font-size: 0.65em; font-weight: 800; text-transform: uppercase; opacity: 0.6; letter-spacing: 0.5px; }
+        .stat-card.alert { border: 1.5px solid var(--danger); }
+        .stat-card.alert .stat-value { color: var(--danger); }
 
-        .feriado-detalhe-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 0.9em; 
-        }
-        .feriado-status-tag { 
-            font-weight: 800; font-size: 0.7em; padding: 4px 8px; border-radius: 6px; text-transform: uppercase; 
-        }
+        .feriado-detalhe-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 5px; border-bottom: 1px solid var(--border); }
+        .feriado-status-tag { font-weight: 800; font-size: 0.65em; padding: 5px 10px; border-radius: 8px; text-transform: uppercase; }
         .tag-trab { background: var(--accent); color: white; }
         .tag-folga { background: var(--primary); color: white; }
 
-        .help-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; }
-        .help-icon { color: var(--primary); font-size: 24px; }
-
-        .AMARELO { background: #EBC13D !important; color: #000 !important; }
-        .VERDE { background: var(--verde) !important; color: #fff !important; }
-        .MANHA { background: #E6A645 !important; color: #fff !important; }
-        .TARDE { background: #45B0DE !important; color: #fff !important; }
-        .NOITE { background: #6A75B5 !important; color: #fff !important; }
-
-        select, textarea { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+        select { appearance: none; background: var(--card); color: var(--text); border: 2px solid var(--border); padding: 12px; border-radius: 15px; font-weight: 800; font-size: 0.9em; outline: none; transition: 0.2s; }
+        select:focus { border-color: var(--primary); }
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
 <header>
     <div class="brand-container">
         <div class="logo-wrap">B<div class="logo-divider"></div>BRAUN</div>
         <div class="slogan-text">Sharing Expertise</div>
     </div>
-    <div class="header-actions" style="display:flex; gap:18px; align-items: center;">
-        <span class="material-symbols-outlined" onclick="openInstructions()" style="cursor:pointer; font-size: 28px; opacity: 0.9;">help_outline</span>
-        <span class="material-symbols-outlined" onclick="openStats()" style="cursor:pointer; font-size: 28px; opacity: 0.9;">analytics</span>
-        <span class="material-symbols-outlined" onclick="document.body.classList.toggle('dark-mode')" style="cursor:pointer; font-size: 28px; opacity: 0.9;">brightness_4</span>
+    <div style="display:flex; gap:18px;">
+        <span class="material-symbols-outlined" onclick="openInstructions()">help_outline</span>
+        <span class="material-symbols-outlined" onclick="openStats()">analytics</span>
+        <span class="material-symbols-outlined" onclick="document.body.classList.toggle('dark-mode')">brightness_4</span>
     </div>
 </header>
 
@@ -148,47 +135,42 @@
     <div id="status-msg" class="status-msg">---</div>
 </div>
 
-<div style="display: flex; gap: 8px; padding: 0 15px 10px 15px;">
-    <select id="anoSelect" onchange="setRegion(currentRegion)" style="padding:8px; border-radius:10px; font-weight:700;">
+<div style="display: flex; gap: 10px; padding: 0 15px 15px 15px;">
+    <select id="anoSelect" onchange="setRegion(currentRegion)">
         <option value="2026" selected>2026</option>
         <option value="2027">2027</option>
     </select>
-    <select id="turmaSelect" onchange="gerarCalendario(); tick();" style="flex-grow:1; padding:8px; border-radius:10px; font-weight:700;"></select>
+    <select id="turmaSelect" onchange="gerarCalendario(); tick();" style="flex-grow:1;"></select>
 </div>
 
 <div id="calendario-box"></div>
 
 <div class="tab-bar">
-    <div class="tab" onclick="setRegion('BR')" id="tab-BR">
-        <span class="material-symbols-outlined">location_on</span>
-        <span class="label">Brasil</span>
-    </div>
-    <div class="tab" onclick="setRegion('DE')" id="tab-DE">
-        <span class="material-symbols-outlined">language</span>
-        <span class="label">Alemanha</span>
-    </div>
+    <div class="tab" onclick="setRegion('BR')" id="tab-BR"><span class="material-symbols-outlined">location_on</span>BRASIL</div>
+    <div class="tab" onclick="setRegion('DE')" id="tab-DE"><span class="material-symbols-outlined">language</span>GERMANY</div>
 </div>
 
 <div id="overlay" onclick="closeAllModals()"></div>
 
 <div id="statsCard" class="bottom-modal">
-    <h2 id="stats-title" style="color:var(--primary); margin:0 0 15px 0; font-weight: 800;">---</h2>
+    <h2 id="stats-title" style="color:var(--primary); margin:0; font-weight: 800; font-size: 1.4em;"></h2>
     <div id="stats-content" class="stats-grid"></div>
-    <h3 id="escala-title" style="margin-top: 25px; font-size: 1.1em; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 5px;">---</h3>
+    <h3 id="escala-title" style="margin-top: 30px; font-size: 1.1em; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;"></h3>
     <div id="feriados-lista-detalhe"></div>
-    <p id="hint-stats" style="text-align:center; font-weight:bold; color:var(--accent); margin-top:20px; font-size: 0.9em;"></p>
-    <button id="btn-close-stats" onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; width:100%; cursor:pointer; margin-top:10px; letter-spacing: 1px;">FECHAR</button>
+    <button id="btn-close-stats" onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:25px; box-shadow: 0 4px 10px rgba(0,169,122,0.3);">FECHAR</button>
 </div>
 
 <div id="helpCard" class="bottom-modal">
-    <div id="help-content"></div>
-    <button id="btn-close-help" onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; width:100%; cursor:pointer; margin-top:10px;"></button>
+    <h2 id="help-title" style="color:var(--primary); font-weight: 800; margin-bottom: 15px;"></h2>
+    <div id="help-content" style="line-height: 1.6; font-size: 0.95em;"></div>
+    <div id="tip-box" style="margin-top: 20px; padding: 15px; background: var(--bg); border-radius: 12px; border-left: 5px solid var(--accent); font-style: italic; font-size: 0.85em;"></div>
+    <button id="btn-close-help" onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:20px;">FECHAR</button>
 </div>
 
 <div id="infoCard" class="bottom-modal">
-    <div id="card-data" style="font-weight: 800; color: var(--primary); margin-bottom: 8px;">-</div>
-    <textarea id="noteInput" rows="3" style="width:100%; border-radius:12px; padding:12px; font-family:inherit; box-sizing:border-box; margin-bottom:10px;"></textarea>
-    <button id="btn-save-note" onclick="saveNota()" style="background:var(--primary); color:white; border:none; padding:15px; border-radius:12px; font-weight:800; width:100%; cursor:pointer;"></button>
+    <div id="card-data" style="font-weight: 800; color: var(--primary); font-size: 1.2em; margin-bottom: 15px;"></div>
+    <textarea id="noteInput" rows="4" style="width:100%; border-radius:15px; padding:15px; box-sizing:border-box; border: 2px solid var(--border); font-family: inherit; font-size: 1em; outline: none;"></textarea>
+    <button id="btn-save-note" onclick="saveNota()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:15px;">SALVAR</button>
 </div>
 
 <script>
@@ -197,84 +179,59 @@
 
     const translations = {
         BR: { 
-            statusTrab: "TRABALHO", statusFolga: "FOLGA", saveNote: "SALVAR NOTA", 
-            helpTitle: "Como usar o App", close: "FECHAR", 
-            statsTitle: "Estatísticas do Ano", escalaTitle: "Escala em Feriados",
-            h1: "<b>Notas:</b> Toque em qualquer dia para salvar um lembrete.",
-            h2: "<b>Girar:</b> Toque no mês para ver feriados e notas no verso.",
-            h3: "<b>Status:</b> O painel indica seu turno em tempo real.",
-            h4: "<b>Estatísticas:</b> O ícone de gráfico no topo resume seu ano.",
-            h5: "<b>Visual:</b> O ícone de brilho alterna para o Modo Escuro.",
-            days: ['S','T','Q','Q','S','S','D'], noEvents: "Sem eventos",
-            statsLabel: ["Trabalho", "Folgas", "FDS Livres", "Feriados Escala"],
-            hint: "Dica: Clique duplo na tela fecha qualquer aviso!"
+            statusTrab: "EM TRABALHO", statusFolga: "DE FOLGA", statsTitle: "Estatísticas 2026", escalaTitle: "Escala em Feriados",
+            days: ['S','T','Q','Q','S','S','D'], statsLabel: ["Dias Trabalho", "Total Folgas", "FDS Livres", "Feriados Escala"],
+            helpTitle: "Guia de Uso", helpText: "• <b>Toque no dia</b> para abrir o diário e salvar notas importantes.<br>• <b>Toque no nome do mês</b> para girar o card e ver os eventos e feriados.<br>• <b>Animação Roxa</b> indica o dia de hoje.<br>• Use o ícone de <b>Estatísticas</b> para planejar suas viagens.",
+            tip: "Dica: Finais de semana livres são ótimos para descanso prolongado!",
+            btnSave: "SALVAR NOTA", btnClose: "ENTENDI", noEvents: "Sem eventos cadastrados", locale: 'pt-BR'
         },
         DE: { 
-            statusTrab: "ARBEIT", statusFolga: "FREI", saveNote: "SPEICHERN", 
-            helpTitle: "Anleitung", close: "SCHLIESSEN", 
-            statsTitle: "Jahresstatistik", escalaTitle: "Feiertagsplanung",
-            h1: "<b>Notizen:</b> Tippen Sie auf einen Tag für Notizen.",
-            h2: "<b>Drehen:</b> Tippen Sie auf den Monat für Feiertage.",
-            h3: "<b>Status:</b> Das Panel zeigt den aktuellen Schichtstatus.",
-            h4: "<b>Statistik:</b> Das Diagramm-Symbol zeigt die Jahresübersicht.",
-            h5: "<b>Design:</b> Das Helligkeitssymbol aktiviert den Dunkelmodus.",
-            days: ['M','D','M','D','F','S','S'], noEvents: "Keine Termine",
-            statsLabel: ["Arbeitstage", "Frei", "Freie WEs", "Feiertage Lab"],
-            hint: "Tipp: Doppelklick auf den Bildschirm schließt jeden Hinweis!"
+            statusTrab: "DIENST", statusFolga: "FREI", statsTitle: "Jahresübersicht", escalaTitle: "Feiertagsdienst",
+            days: ['M','D','M','D','F','S','S'], statsLabel: ["Arbeitstage", "Freizeit", "Freie WE", "Feiertagsarbeit"],
+            helpTitle: "Bedienungsanleitung", helpText: "• <b>Tag anklicken</b> für persönliche Notizen.<br>• <b>Monatsnamen anklicken</b> um die Karte zu drehen.<br>• <b>Lila Puls</b> markiert das heutige Datum.<br>• Nutzen Sie das <b>Statistik-Icon</b> für Ihre Urlaubsplanung.",
+            tip: "Tipp: Freie Wochenenden (WE) sind ideal für Kurzstrips!",
+            btnSave: "SPEICHERN", btnClose: "SCHLIESSEN", noEvents: "Keine Termine", locale: 'de-DE'
         }
     };
 
     function setRegion(r) {
         currentRegion = r;
+        const lang = translations[r];
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-${r}`).classList.add('active');
-        const lang = translations[r];
         
-        document.getElementById('btn-save-note').innerText = lang.saveNote;
-        document.getElementById('btn-close-help').innerText = lang.close;
-        document.getElementById('btn-close-stats').innerText = lang.close;
-        document.getElementById('stats-title').innerText = lang.statsTitle;
-        document.getElementById('escala-title').innerText = lang.escalaTitle;
-        document.getElementById('hint-stats').innerText = lang.hint;
-
         const s = document.getElementById('turmaSelect');
         s.innerHTML = r === 'BR' 
             ? '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' 
-            : '<option value="S1">GRUPPE 1 (2-2-2)</option><option value="S2">GRUPPE 2</option>';
-        gerarCalendario(); tick(); scrollParaMesAtual();
+            : '<option value="S1">GRUPPE 1 (FRÜH/SPÄT/NACHT)</option><option value="S2">GRUPPE 2 (ROLLIEREND)</option>';
+        
+        document.getElementById('btn-save-note').innerText = lang.btnSave;
+        document.getElementById('btn-close-stats').innerText = lang.btnClose;
+        document.getElementById('btn-close-help').innerText = lang.btnClose;
+
+        gerarCalendario(); tick(); scrollToToday();
     }
 
-    function openInstructions() {
-        const lang = translations[currentRegion];
-        const content = `
-            <h2 style="color:var(--primary); margin-top:0;">${lang.helpTitle}</h2>
-            <div class="help-item"><span class="material-symbols-outlined help-icon">touch_app</span><p style="margin:0">${lang.h1}</p></div>
-            <div class="help-item"><span class="material-symbols-outlined help-icon">sync</span><p style="margin:0">${lang.h2}</p></div>
-            <div class="help-item"><span class="material-symbols-outlined help-icon">schedule</span><p style="margin:0">${lang.h3}</p></div>
-            <div class="help-item"><span class="material-symbols-outlined help-icon">analytics</span><p style="margin:0">${lang.h4}</p></div>
-            <div class="help-item"><span class="material-symbols-outlined help-icon">brightness_4</span><p style="margin:0">${lang.h5}</p></div>
-        `;
-        document.getElementById('help-content').innerHTML = content;
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('helpCard').classList.add('show');
+    function scrollToToday() {
+        setTimeout(() => {
+            const hojeEl = document.querySelector('.hoje');
+            if (hojeEl) {
+                const container = hojeEl.closest('.mes-container');
+                const y = container.getBoundingClientRect().top + window.pageYOffset - 120;
+                window.scrollTo({top: y, behavior: 'smooth'});
+            }
+        }, 500);
     }
 
     function tick() {
         const now = new Date();
+        const lang = translations[currentRegion];
         document.getElementById('big-clock').innerText = now.toLocaleTimeString('pt-BR', {hour12: false});
         const t = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
-        const lang = translations[currentRegion];
-        
-        if (currentRegion === 'BR') {
-            const r = checkBR(now, t);
-            msg.innerText = r.trab ? lang.statusTrab : lang.statusFolga;
-            msg.style.color = r.trab ? "var(--accent)" : "var(--primary)";
-        } else {
-            const sh = getShiftDE(now, t);
-            msg.innerText = sh.c === 'FOLGA' ? lang.statusFolga : lang.statusTrab;
-            msg.style.color = sh.c === 'FOLGA' ? "var(--primary)" : "var(--accent)";
-        }
+        const res = (currentRegion === 'BR') ? checkBR(now, t).trab : getShiftDE(now, t).c !== 'FOLGA';
+        msg.innerText = res ? lang.statusTrab : lang.statusFolga;
+        msg.style.color = res ? "var(--accent)" : "var(--primary)";
     }
 
     function getFeriados(ano, reg) {
@@ -282,7 +239,7 @@
         const fmt = (dt, days) => { let r=new Date(dt); r.setDate(r.getDate()+days); return `${String(r.getMonth()+1).padStart(2,'0')}-${String(r.getDate()).padStart(2,'0')}`; };
         const mvs = { car:fmt(pascoa,-47), sex:fmt(pascoa,-2), cor:fmt(pascoa,60) };
         const list = {
-            BR: { "01-01":"Ano Novo", "01-10":"S. Gonçalo Amarante", [mvs.car]:"Carnaval", [mvs.sex]:"Sexta Santa", "04-21":"Tiradentes", "04-23":"São Jorge", "05-01":"Trabalho", [mvs.cor]:"Corpus Christi", "09-07":"Independência", "10-12":"Aparecida", "11-02":"Finados", "11-15":"República", "11-20":"Consciência", "12-25":"Natal" },
+            BR: { "01-01":"Ano Novo", "01-10":"S. Gonçalo Amarante", [mvs.car]:"Carnaval", [mvs.sex]:"Sexta Santa", "04-21":"Tiradentes", "04-23":"São Jorge", "05-01":"Dia do Trabalho", [mvs.cor]:"Corpus Christi", "09-07":"Independência", "10-12":"Nsa Aparecida", "11-02":"Finados", "11-15":"Procl. República", "11-20":"Consciência Negra", "12-25":"Natal" },
             DE: { "01-01":"Neujahr", [mvs.sex]:"Karfreitag", "05-01":"Maifeiertag", "10-03":"Tag d. Einheit", "12-25":"Weihnacht" }
         };
         return list[reg];
@@ -298,7 +255,8 @@
         let diff=Math.floor((dt-new Date(2026,0,5))/86400000); 
         if(g==='S2') diff-=2; 
         const c=((diff%8)+8)%8; 
-        return [{l:'FRÜH',c:'MANHA'},{l:'FRÜH',c:'MANHA'},{l:'SPÄT',c:'TARDE'},{l:'SPÄT',c:'TARDE'},{l:'NACHT',c:'NOITE'},{l:'NACHT',c:'NOITE'},{l:'FREI',c:'FOLGA'},{l:'FREI',c:'FOLGA'}][c]; 
+        const shifts = [{c:'MANHA'},{c:'MANHA'},{c:'TARDE'},{c:'TARDE'},{c:'NOITE'},{c:'NOITE'},{c:'FOLGA'},{c:'FOLGA'}];
+        return shifts[c];
     }
 
     function openStats() {
@@ -306,48 +264,59 @@
         const turma = document.getElementById('turmaSelect').value;
         const feriados = getFeriados(ano, currentRegion);
         const lang = translations[currentRegion];
-        let s = { trab:0, folga:0, fds:0, fer:0 };
-        let feriadosHTML = "";
+        let s = { trab:0, folga:0, ferTrab:0, fdsLivre:0 };
 
         for(let m=0; m<12; m++) {
-            let dias = new Date(ano, m+1, 0).getDate();
-            for(let d=1; d<=dias; d++) {
+            let diasMes = new Date(ano, m+1, 0).getDate();
+            for(let d=1; d<=diasMes; d++) {
                 const dt = new Date(ano, m, d);
-                const iso = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const isoS = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 let isT = (currentRegion==='BR') ? checkBR(dt, turma).trab : getShiftDE(dt, turma).c!=='FOLGA';
                 
-                if(isT) { s.trab++; if(feriados[iso]) s.fer++; }
-                else { 
+                if(isT) { 
+                    s.trab++; 
+                    if(feriados[isoS]) s.ferTrab++; 
+                } else { 
                     s.folga++; 
-                    if(dt.getDay()===0) { 
-                        let sab = new Date(dt); sab.setDate(dt.getDate()-1);
-                        let sabT = (currentRegion==='BR') ? checkBR(sab, turma).trab : getShiftDE(sab, turma).c!=='FOLGA';
-                        if(!sabT) s.fds++;
-                    }
+                }
+
+                // Cálculo de FDS Livre (Sáb e Dom de folga)
+                if(dt.getDay() === 6) { // Sábado
+                    let dom = new Date(ano, m, d+1);
+                    let isT_sab = isT;
+                    let isT_dom = (currentRegion==='BR') ? checkBR(dom, turma).trab : getShiftDE(dom, turma).c!=='FOLGA';
+                    if(!isT_sab && !isT_dom) s.fdsLivre++;
                 }
             }
         }
 
-        Object.keys(feriados).sort().forEach(key => {
-            const [mes, dia] = key.split('-');
-            const dataF = new Date(ano, parseInt(mes)-1, parseInt(dia));
-            const isT = (currentRegion==='BR') ? checkBR(dataF, turma).trab : getShiftDE(dataF, turma).c!=='FOLGA';
-            feriadosHTML += `
-                <div class="feriado-detalhe-item">
-                    <div><b>${dia}/${mes}</b><br><small>${feriados[key]}</small></div>
-                    <div class="feriado-status-tag ${isT?'tag-trab':'tag-folga'}">${isT?lang.statusTrab:lang.statusFolga}</div>
-                </div>`;
-        });
-
+        document.getElementById('stats-title').innerText = lang.statsTitle;
+        document.getElementById('escala-title').innerText = lang.escalaTitle;
         document.getElementById('stats-content').innerHTML = `
             <div class="stat-card"><span class="stat-value">${s.trab}</span><span class="stat-label">${lang.statsLabel[0]}</span></div>
             <div class="stat-card"><span class="stat-value">${s.folga}</span><span class="stat-label">${lang.statsLabel[1]}</span></div>
-            <div class="stat-card"><span class="stat-value">${s.fds}</span><span class="stat-label">${lang.statsLabel[2]}</span></div>
-            <div class="stat-card" style="border-color:var(--danger)"><span class="stat-value" style="color:var(--danger)">${s.fer}</span><span class="stat-label">${lang.statsLabel[3]}</span></div>
+            <div class="stat-card" style="border-color:var(--verde)"><span class="stat-value" style="color:var(--verde)">${s.fdsLivre}</span><span class="stat-label">${lang.statsLabel[2]}</span></div>
+            <div class="stat-card alert"><span class="stat-value">${s.ferTrab}</span><span class="stat-label">${lang.statsLabel[3]}</span></div>
         `;
-        document.getElementById('feriados-lista-detalhe').innerHTML = feriadosHTML;
+        renderFeriadosFiltrados('all');
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('statsCard').classList.add('show');
+    }
+
+    function renderFeriadosFiltrados(filtro) {
+        const ano = parseInt(document.getElementById('anoSelect').value);
+        const turma = document.getElementById('turmaSelect').value;
+        const feriados = getFeriados(ano, currentRegion);
+        const lang = translations[currentRegion];
+        let html = "";
+
+        Object.keys(feriados).sort().forEach(key => {
+            const [m, d] = key.split('-');
+            const dt = new Date(ano, m-1, d);
+            const isT = (currentRegion==='BR') ? checkBR(dt, turma).trab : getShiftDE(dt, turma).c!=='FOLGA';
+            html += `<div class="feriado-detalhe-item"><div><b>${d}/${m}</b><br><small>${feriados[key]}</small></div><div class="feriado-status-tag ${isT?'tag-trab':'tag-folga'}">${isT?lang.statusTrab:lang.statusFolga}</div></div>`;
+        });
+        document.getElementById('feriados-lista-detalhe').innerHTML = html;
     }
 
     function gerarCalendario() {
@@ -355,13 +324,13 @@
         const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), ano=parseInt(document.getElementById('anoSelect').value), t=document.getElementById('turmaSelect').value, fer=getFeriados(ano,currentRegion), lang=translations[currentRegion];
 
         for(let m=0; m<12; m++) {
-            const dtM=new Date(ano,m,1), nomeM=new Intl.DateTimeFormat(currentRegion==='BR'?'pt-BR':'de-DE',{month:'long'}).format(dtM);
+            const dtM=new Date(ano,m,1);
+            const nomeM=new Intl.DateTimeFormat(lang.locale,{month:'long'}).format(dtM);
             const container=document.createElement('div'); container.className='mes-container';
-            
-            let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin-bottom:10px; display:flex; justify-content:space-between;">${nomeM} <span>${ano}</span></div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
-            let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px; margin-bottom:10px; text-transform:uppercase;">${nomeM}</div>`;
-            
+            let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">${nomeM} <span style="font-size:0.7em; opacity:0.5">${ano}</span></div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
+            let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:1.5px solid rgba(255,255,255,0.3); padding-bottom:8px; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">${nomeM}</div>`;
             let hasEv=false, esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
+            
             for(let d=1; d<=new Date(ano,m+1,0).getDate(); d++) {
                 const at=new Date(ano,m,d), isoS=`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, isoF=`${ano}-${isoS}`, f=fer[isoS], nt=logs[isoF];
                 if(d===1||at.getDay()===1) { hF+=`<div class="dia-label-w">${Math.ceil((((at-new Date(ano,0,1))/86400000)+new Date(ano,0,1).getDay()+1)/7)}</div>`; if(d===1) for(let i=0; i<esp; i++) hF+=`<div></div>`; }
@@ -372,7 +341,7 @@
                 
                 if(new Date().toDateString()===at.toDateString()) cls+="hoje ";
                 if(nt) cls+="HAS_NOTE ";
-                if(f||nt) { hasEv=true; hB+=`<div class="event-item"><b>${d}:</b> ${f||''} ${nt||''}</div>`; }
+                if(f||nt) { hasEv=true; hB+=`<div style="font-size:0.8em; margin-bottom:8px; display:flex; gap:8px;"><b>${d}:</b> <span>${f||''} ${nt||''}</span></div>`; }
                 hF+=`<div class="${cls}" onclick="event.stopPropagation(); openCard('${isoF}')">${d}</div>`;
             }
             container.innerHTML=`<div class="mes-inner">${hF}</div></div>${hB}${!hasEv?lang.noEvents:''}</div></div></div>`;
@@ -382,10 +351,12 @@
 
     function openCard(iso) { 
         dataAtiva = iso; const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
-        document.getElementById('card-data').innerText = iso.split('-').reverse().join('/');
+        const d = iso.split('-');
+        document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`;
         document.getElementById('noteInput').value = logs[iso] || "";
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('infoCard').classList.add('show');
+        setTimeout(() => document.getElementById('noteInput').focus(), 300);
     }
 
     function saveNota() {
@@ -400,27 +371,15 @@
         document.querySelectorAll('.bottom-modal').forEach(m => m.classList.remove('show')); 
         document.getElementById('overlay').style.display = 'none'; 
     }
-    
-    function scrollParaMesAtual() {
-        setTimeout(() => {
-            const mesAtualIdx = new Date().getMonth();
-            const cards = document.querySelectorAll('.mes-container');
-            if(cards[mesAtualIdx]) {
-                const y = cards[mesAtualIdx].getBoundingClientRect().top + window.pageYOffset - 100;
-                window.scrollTo({top: y, behavior: 'smooth'});
-            }
-        }, 300);
-    }
 
-    let lastTap = 0;
-    document.addEventListener('touchend', function(e) {
-        let currentTime = new Date().getTime();
-        let tapLength = currentTime - lastTap;
-        if (tapLength < 300 && tapLength > 0) {
-            if(document.querySelector('.bottom-modal.show')) { closeAllModals(); e.preventDefault(); }
-        }
-        lastTap = currentTime;
-    });
+    function openInstructions() {
+        const lang = translations[currentRegion];
+        document.getElementById('help-title').innerText = lang.helpTitle;
+        document.getElementById('help-content').innerHTML = lang.helpText;
+        document.getElementById('tip-box').innerText = lang.tip;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('helpCard').classList.add('show');
+    }
 
     setInterval(tick, 1000);
     window.onload = () => setRegion('BR');
