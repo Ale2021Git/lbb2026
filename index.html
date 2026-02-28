@@ -10,10 +10,26 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#00A97A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>BBraun Scales 2026 Professional</title>
     
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="maskable_icon_x192.png">
+    <link rel="apple-touch-icon" href="maskable_icon_x192.png">
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('PWA Pronto!'))
+            .catch(err => console.log('Erro SW:', err));
+        });
+      }
+    </script>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap');
@@ -38,7 +54,7 @@
         }
 
         header { 
-            background: var(--primary); padding: 20px 18px; color: white; display: flex; 
+            background: var(--primary); padding: 30px 18px 20px 18px; color: white; display: flex; 
             justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
@@ -68,20 +84,15 @@
         .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 0.85em; border: 2px solid transparent; transition: 0.2s; position: relative; }
         
         .hoje { 
-            background: var(--accent) !important; 
-            color: white !important; 
-            z-index: 1;
-            box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7);
-            animation: hoje-pulsar 2s infinite;
-            border: 2px solid white !important;
+            background: var(--accent) !important; color: white !important; z-index: 1;
+            animation: hoje-pulsar 2s infinite; border: 2px solid white !important;
         }
         @keyframes hoje-pulsar {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(168, 0, 196, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0); }
+            0% { transform: scale(0.95); }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(0.95); }
         }
 
-        /* Cores de Escala */
         .AMARELO { background: var(--amarelo) !important; color: #1a1a1a !important; }
         .VERDE { background: var(--verde) !important; color: #fff !important; }
         .MANHA { background: var(--manha) !important; color: #fff !important; }
@@ -90,30 +101,26 @@
         .TRABALHO { border-color: rgba(168, 0, 196, 0.4) !important; }
         .HAS_NOTE::after { content: ''; position: absolute; bottom: 3px; right: 3px; width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
 
-        /* Estilo dos Modais */
-        .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); display: flex; height: 75px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); display: flex; height: 75px; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); padding-bottom: env(safe-area-inset-bottom); }
         .tab { flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.7em; font-weight: 700; }
         .tab.active { color: #FFFFFF; }
         .tab span { font-size: 24px; margin-bottom: 2px; }
 
         #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; backdrop-filter: blur(5px); }
-        .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 30px 30px 0 0; padding: 25px; z-index: 2000; transition: 0.5s cubic-bezier(0, 1, 0.5, 1); max-height: 85vh; overflow-y: auto; }
+        .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 30px 30px 0 0; padding: 25px; z-index: 2000; transition: 0.5s; max-height: 85vh; overflow-y: auto; }
         .bottom-modal.show { bottom: 0; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .stat-card { background: var(--bg); padding: 18px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
         .stat-value { display: block; font-size: 1.8em; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
-        .stat-label { font-size: 0.65em; font-weight: 800; text-transform: uppercase; opacity: 0.6; letter-spacing: 0.5px; }
-        .stat-card.alert { border: 1.5px solid var(--danger); }
-        .stat-card.alert .stat-value { color: var(--danger); }
+        .stat-label { font-size: 0.65em; font-weight: 800; text-transform: uppercase; opacity: 0.6; }
 
         .feriado-detalhe-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 5px; border-bottom: 1px solid var(--border); }
         .feriado-status-tag { font-weight: 800; font-size: 0.65em; padding: 5px 10px; border-radius: 8px; text-transform: uppercase; }
         .tag-trab { background: var(--accent); color: white; }
         .tag-folga { background: var(--primary); color: white; }
 
-        select { appearance: none; background: var(--card); color: var(--text); border: 2px solid var(--border); padding: 12px; border-radius: 15px; font-weight: 800; font-size: 0.9em; outline: none; transition: 0.2s; }
-        select:focus { border-color: var(--primary); }
+        select { appearance: none; background: var(--card); color: var(--text); border: 2px solid var(--border); padding: 12px; border-radius: 15px; font-weight: 800; outline: none; }
     </style>
 </head>
 <body>
@@ -153,24 +160,23 @@
 <div id="overlay" onclick="closeAllModals()"></div>
 
 <div id="statsCard" class="bottom-modal">
-    <h2 id="stats-title" style="color:var(--primary); margin:0; font-weight: 800; font-size: 1.4em;"></h2>
+    <h2 id="stats-title" style="color:var(--primary); margin:0; font-weight: 800;"></h2>
     <div id="stats-content" class="stats-grid"></div>
-    <h3 id="escala-title" style="margin-top: 30px; font-size: 1.1em; color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;"></h3>
+    <h3 id="escala-title" style="margin-top: 30px; font-size: 1.1em; color: var(--primary);"></h3>
     <div id="feriados-lista-detalhe"></div>
-    <button id="btn-close-stats" onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:25px; box-shadow: 0 4px 10px rgba(0,169,122,0.3);">FECHAR</button>
+    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:25px;">FECHAR</button>
 </div>
 
 <div id="helpCard" class="bottom-modal">
-    <h2 id="help-title" style="color:var(--primary); font-weight: 800; margin-bottom: 15px;"></h2>
-    <div id="help-content" style="line-height: 1.6; font-size: 0.95em;"></div>
-    <div id="tip-box" style="margin-top: 20px; padding: 15px; background: var(--bg); border-radius: 12px; border-left: 5px solid var(--accent); font-style: italic; font-size: 0.85em;"></div>
-    <button id="btn-close-help" onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:20px;">FECHAR</button>
+    <h2 id="help-title" style="color:var(--primary); font-weight: 800;"></h2>
+    <div id="help-content"></div>
+    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:20px;">ENTENDI</button>
 </div>
 
 <div id="infoCard" class="bottom-modal">
     <div id="card-data" style="font-weight: 800; color: var(--primary); font-size: 1.2em; margin-bottom: 15px;"></div>
-    <textarea id="noteInput" rows="4" style="width:100%; border-radius:15px; padding:15px; box-sizing:border-box; border: 2px solid var(--border); font-family: inherit; font-size: 1em; outline: none;"></textarea>
-    <button id="btn-save-note" onclick="saveNota()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:15px;">SALVAR</button>
+    <textarea id="noteInput" rows="4" style="width:100%; border-radius:15px; padding:15px; box-sizing:border-box; border: 2px solid var(--border); font-family: inherit; outline: none;"></textarea>
+    <button onclick="saveNota()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:15px; font-weight:800; width:100%; margin-top:15px;">SALVAR</button>
 </div>
 
 <script>
@@ -181,68 +187,32 @@
         BR: { 
             statusTrab: "EM TRABALHO", statusFolga: "DE FOLGA", statsTitle: "Estatísticas 2026", escalaTitle: "Escala em Feriados",
             days: ['S','T','Q','Q','S','S','D'], statsLabel: ["Dias Trabalho", "Total Folgas", "FDS Livres", "Feriados Escala"],
-            helpTitle: "Guia de Uso", helpText: "• <b>Toque no dia</b> para abrir o diário e salvar notas importantes.<br>• <b>Toque no nome do mês</b> para girar o card e ver os eventos e feriados.<br>• <b>Animação Roxa</b> indica o dia de hoje.<br>• Use o ícone de <b>Estatísticas</b> para planejar suas viagens.",
-            tip: "Dica: Finais de semana livres são ótimos para descanso prolongado!",
-            btnSave: "SALVAR NOTA", btnClose: "ENTENDI", noEvents: "Sem eventos cadastrados", locale: 'pt-BR'
+            helpTitle: "Guia", helpText: "Toque no dia para notas. Toque no mês para girar.", locale: 'pt-BR'
         },
         DE: { 
             statusTrab: "DIENST", statusFolga: "FREI", statsTitle: "Jahresübersicht", escalaTitle: "Feiertagsdienst",
-            days: ['M','D','M','D','F','S','S'], statsLabel: ["Arbeitstage", "Freizeit", "Freie WE", "Feiertagsarbeit"],
-            helpTitle: "Bedienungsanleitung", helpText: "• <b>Tag anklicken</b> für persönliche Notizen.<br>• <b>Monatsnamen anklicken</b> um die Karte zu drehen.<br>• <b>Lila Puls</b> markiert das heutige Datum.<br>• Nutzen Sie das <b>Statistik-Icon</b> für Ihre Urlaubsplanung.",
-            tip: "Tipp: Freie Wochenenden (WE) sind ideal für Kurzstrips!",
-            btnSave: "SPEICHERN", btnClose: "SCHLIESSEN", noEvents: "Keine Termine", locale: 'de-DE'
+            days: ['M','D','M','D','F','S','S'], statsLabel: ["Arbeit", "Freizeit", "Freie WE", "Feiertage"],
+            helpTitle: "Hilfe", helpText: "Klicken Sie auf den Tag für Notizen.", locale: 'de-DE'
         }
     };
 
     function setRegion(r) {
         currentRegion = r;
-        const lang = translations[r];
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-${r}`).classList.add('active');
-        
         const s = document.getElementById('turmaSelect');
-        s.innerHTML = r === 'BR' 
-            ? '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' 
-            : '<option value="S1">GRUPPE 1 (FRÜH/SPÄT/NACHT)</option><option value="S2">GRUPPE 2 (ROLLIEREND)</option>';
-        
-        document.getElementById('btn-save-note').innerText = lang.btnSave;
-        document.getElementById('btn-close-stats').innerText = lang.btnClose;
-        document.getElementById('btn-close-help').innerText = lang.btnClose;
-
-        gerarCalendario(); tick(); scrollToToday();
-    }
-
-    function scrollToToday() {
-        setTimeout(() => {
-            const hojeEl = document.querySelector('.hoje');
-            if (hojeEl) {
-                const container = hojeEl.closest('.mes-container');
-                const y = container.getBoundingClientRect().top + window.pageYOffset - 120;
-                window.scrollTo({top: y, behavior: 'smooth'});
-            }
-        }, 500);
+        s.innerHTML = r === 'BR' ? '<option value="AC">TURMA A/C</option><option value="BD">TURMA B/D</option>' : '<option value="S1">GRUPPE 1</option><option value="S2">GRUPPE 2</option>';
+        gerarCalendario(); tick();
     }
 
     function tick() {
         const now = new Date();
-        const lang = translations[currentRegion];
         document.getElementById('big-clock').innerText = now.toLocaleTimeString('pt-BR', {hour12: false});
         const t = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
         const res = (currentRegion === 'BR') ? checkBR(now, t).trab : getShiftDE(now, t).c !== 'FOLGA';
-        msg.innerText = res ? lang.statusTrab : lang.statusFolga;
+        msg.innerText = res ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
         msg.style.color = res ? "var(--accent)" : "var(--primary)";
-    }
-
-    function getFeriados(ano, reg) {
-        const a=ano%19, b=Math.floor(ano/100), c=ano%100, d=Math.floor(b/4), e=b%4, f=Math.floor((b+8)/25), g=Math.floor((b-f+1)/3), h=(19*a+b-d-g+15)%30, i=Math.floor(c/4), k=c%4, l=(32+2*e+2*i-h-k)%7, m=Math.floor((a+11*h+22*l)/451), mesP=Math.floor((h+l-7*m+114)/31), diaP=((h+l-7*m+114)%31)+1, pascoa=new Date(ano,mesP-1,diaP);
-        const fmt = (dt, days) => { let r=new Date(dt); r.setDate(r.getDate()+days); return `${String(r.getMonth()+1).padStart(2,'0')}-${String(r.getDate()).padStart(2,'0')}`; };
-        const mvs = { car:fmt(pascoa,-47), sex:fmt(pascoa,-2), cor:fmt(pascoa,60) };
-        const list = {
-            BR: { "01-01":"Ano Novo", "01-10":"S. Gonçalo Amarante", [mvs.car]:"Carnaval", [mvs.sex]:"Sexta Santa", "04-21":"Tiradentes", "04-23":"São Jorge", "05-01":"Dia do Trabalho", [mvs.cor]:"Corpus Christi", "09-07":"Independência", "10-12":"Nsa Aparecida", "11-02":"Finados", "11-15":"Procl. República", "11-20":"Consciência Negra", "12-25":"Natal" },
-            DE: { "01-01":"Neujahr", [mvs.sex]:"Karfreitag", "05-01":"Maifeiertag", "10-03":"Tag d. Einheit", "12-25":"Weihnacht" }
-        };
-        return list[reg];
     }
 
     function checkBR(dt, t) { 
@@ -259,125 +229,60 @@
         return shifts[c];
     }
 
-    function openStats() {
-        const ano = parseInt(document.getElementById('anoSelect').value);
-        const turma = document.getElementById('turmaSelect').value;
-        const feriados = getFeriados(ano, currentRegion);
-        const lang = translations[currentRegion];
-        let s = { trab:0, folga:0, ferTrab:0, fdsLivre:0 };
-
-        for(let m=0; m<12; m++) {
-            let diasMes = new Date(ano, m+1, 0).getDate();
-            for(let d=1; d<=diasMes; d++) {
-                const dt = new Date(ano, m, d);
-                const isoS = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                let isT = (currentRegion==='BR') ? checkBR(dt, turma).trab : getShiftDE(dt, turma).c!=='FOLGA';
-                
-                if(isT) { 
-                    s.trab++; 
-                    if(feriados[isoS]) s.ferTrab++; 
-                } else { 
-                    s.folga++; 
-                }
-
-                // Cálculo de FDS Livre (Sáb e Dom de folga)
-                if(dt.getDay() === 6) { // Sábado
-                    let dom = new Date(ano, m, d+1);
-                    let isT_sab = isT;
-                    let isT_dom = (currentRegion==='BR') ? checkBR(dom, turma).trab : getShiftDE(dom, turma).c!=='FOLGA';
-                    if(!isT_sab && !isT_dom) s.fdsLivre++;
-                }
-            }
-        }
-
-        document.getElementById('stats-title').innerText = lang.statsTitle;
-        document.getElementById('escala-title').innerText = lang.escalaTitle;
-        document.getElementById('stats-content').innerHTML = `
-            <div class="stat-card"><span class="stat-value">${s.trab}</span><span class="stat-label">${lang.statsLabel[0]}</span></div>
-            <div class="stat-card"><span class="stat-value">${s.folga}</span><span class="stat-label">${lang.statsLabel[1]}</span></div>
-            <div class="stat-card" style="border-color:var(--verde)"><span class="stat-value" style="color:var(--verde)">${s.fdsLivre}</span><span class="stat-label">${lang.statsLabel[2]}</span></div>
-            <div class="stat-card alert"><span class="stat-value">${s.ferTrab}</span><span class="stat-label">${lang.statsLabel[3]}</span></div>
-        `;
-        renderFeriadosFiltrados('all');
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('statsCard').classList.add('show');
-    }
-
-    function renderFeriadosFiltrados(filtro) {
-        const ano = parseInt(document.getElementById('anoSelect').value);
-        const turma = document.getElementById('turmaSelect').value;
-        const feriados = getFeriados(ano, currentRegion);
-        const lang = translations[currentRegion];
-        let html = "";
-
-        Object.keys(feriados).sort().forEach(key => {
-            const [m, d] = key.split('-');
-            const dt = new Date(ano, m-1, d);
-            const isT = (currentRegion==='BR') ? checkBR(dt, turma).trab : getShiftDE(dt, turma).c!=='FOLGA';
-            html += `<div class="feriado-detalhe-item"><div><b>${d}/${m}</b><br><small>${feriados[key]}</small></div><div class="feriado-status-tag ${isT?'tag-trab':'tag-folga'}">${isT?lang.statusTrab:lang.statusFolga}</div></div>`;
-        });
-        document.getElementById('feriados-lista-detalhe').innerHTML = html;
-    }
-
     function gerarCalendario() {
         const box=document.getElementById('calendario-box'); box.innerHTML="";
-        const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), ano=parseInt(document.getElementById('anoSelect').value), t=document.getElementById('turmaSelect').value, fer=getFeriados(ano,currentRegion), lang=translations[currentRegion];
-
+        const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), ano=parseInt(document.getElementById('anoSelect').value), t=document.getElementById('turmaSelect').value, lang=translations[currentRegion];
         for(let m=0; m<12; m++) {
             const dtM=new Date(ano,m,1);
             const nomeM=new Intl.DateTimeFormat(lang.locale,{month:'long'}).format(dtM);
             const container=document.createElement('div'); container.className='mes-container';
-            let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">${nomeM} <span style="font-size:0.7em; opacity:0.5">${ano}</span></div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
-            let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:1.5px solid rgba(255,255,255,0.3); padding-bottom:8px; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">${nomeM}</div>`;
-            let hasEv=false, esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
-            
+            let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin-bottom:12px;">${nomeM} ${ano}</div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
+            let esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
             for(let d=1; d<=new Date(ano,m+1,0).getDate(); d++) {
-                const at=new Date(ano,m,d), isoS=`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, isoF=`${ano}-${isoS}`, f=fer[isoS], nt=logs[isoF];
+                const at=new Date(ano,m,d), isoF=`${ano}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, nt=logs[isoF];
                 if(d===1||at.getDay()===1) { hF+=`<div class="dia-label-w">${Math.ceil((((at-new Date(ano,0,1))/86400000)+new Date(ano,0,1).getDay()+1)/7)}</div>`; if(d===1) for(let i=0; i<esp; i++) hF+=`<div></div>`; }
-                
                 let cls="dia ";
                 if(currentRegion==='BR') { const r=checkBR(at,t); cls+=(r.isA?"AMARELO ":"VERDE "); cls+=(r.trab ? "TRABALHO " : "FOLGA "); }
                 else { const sh=getShiftDE(at,t); cls+=sh.c+" "; cls+=(sh.c!=='FOLGA' ? "TRABALHO " : "FOLGA "); }
-                
                 if(new Date().toDateString()===at.toDateString()) cls+="hoje ";
                 if(nt) cls+="HAS_NOTE ";
-                if(f||nt) { hasEv=true; hB+=`<div style="font-size:0.8em; margin-bottom:8px; display:flex; gap:8px;"><b>${d}:</b> <span>${f||''} ${nt||''}</span></div>`; }
                 hF+=`<div class="${cls}" onclick="event.stopPropagation(); openCard('${isoF}')">${d}</div>`;
             }
-            container.innerHTML=`<div class="mes-inner">${hF}</div></div>${hB}${!hasEv?lang.noEvents:''}</div></div></div>`;
+            container.innerHTML=`<div class="mes-inner">${hF}</div><div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')">Toque nos dias para adicionar notas.</div></div>`;
             box.appendChild(container);
         }
     }
 
     function openCard(iso) { 
-        dataAtiva = iso; const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
-        const d = iso.split('-');
-        document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`;
-        document.getElementById('noteInput').value = logs[iso] || "";
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('infoCard').classList.add('show');
-        setTimeout(() => document.getElementById('noteInput').focus(), 300);
+        dataAtiva=iso; const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}');
+        document.getElementById('card-data').innerText=iso; 
+        document.getElementById('noteInput').value=logs[iso]||""; 
+        document.getElementById('overlay').style.display='block'; 
+        document.getElementById('infoCard').classList.add('show'); 
     }
 
-    function saveNota() {
-        const msg = document.getElementById('noteInput').value.trim();
-        const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
-        if (msg) logs[dataAtiva] = msg; else delete logs[dataAtiva];
-        localStorage.setItem('logs_v26', JSON.stringify(logs));
-        closeAllModals(); gerarCalendario();
+    function saveNota() { 
+        const msg=document.getElementById('noteInput').value; const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}');
+        if(msg) logs[dataAtiva]=msg; else delete logs[dataAtiva];
+        localStorage.setItem('logs_v26', JSON.stringify(logs)); 
+        closeAllModals(); gerarCalendario(); 
     }
 
     function closeAllModals() { 
-        document.querySelectorAll('.bottom-modal').forEach(m => m.classList.remove('show')); 
-        document.getElementById('overlay').style.display = 'none'; 
+        document.querySelectorAll('.bottom-modal').forEach(m=>m.classList.remove('show')); 
+        document.getElementById('overlay').style.display='none'; 
+    }
+
+    function openStats() { 
+        document.getElementById('stats-title').innerText = translations[currentRegion].statsTitle;
+        document.getElementById('overlay').style.display='block'; 
+        document.getElementById('statsCard').classList.add('show'); 
     }
 
     function openInstructions() {
-        const lang = translations[currentRegion];
-        document.getElementById('help-title').innerText = lang.helpTitle;
-        document.getElementById('help-content').innerHTML = lang.helpText;
-        document.getElementById('tip-box').innerText = lang.tip;
-        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('help-title').innerText = translations[currentRegion].helpTitle;
+        document.getElementById('help-content').innerText = translations[currentRegion].helpText;
+        document.getElementById('overlay').style.display='block';
         document.getElementById('helpCard').classList.add('show');
     }
 
