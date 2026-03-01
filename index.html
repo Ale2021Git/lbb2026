@@ -61,35 +61,10 @@
         .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
         .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
 
-        /* CORREÇÃO PARA VAZAMENTO NO IPHONE */
-        .mes-container { 
-            perspective: 1000px; 
-            margin: 0 15px 15px 15px; 
-            min-height: 350px; /* Flexibilidade para telas maiores */
-            display: flex;
-            flex-direction: column;
-        }
-        .mes-inner { 
-            position: relative; 
-            width: 100%; 
-            flex-grow: 1; /* Ocupa o espaço total do container */
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-            transform-style: preserve-3d; 
-            cursor: pointer; 
-        }
+        .mes-container { perspective: 1000px; margin: 0 15px 15px 15px; min-height: 350px; display: flex; flex-direction: column; }
+        .mes-inner { position: relative; width: 100%; flex-grow: 1; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; cursor: pointer; }
         .mes-inner.flipped { transform: rotateY(180deg); }
-        .mes-face { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            backface-visibility: hidden; 
-            border-radius: 20px; 
-            padding: 15px; 
-            border: 1px solid var(--border); 
-            box-sizing: border-box; /* Padding não altera a altura final */
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); 
-            overflow: hidden;
-        }
+        .mes-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; padding: 15px; border: 1px solid var(--border); box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.02); overflow: hidden; }
         .mes-front { background: var(--card); }
         .mes-back { transform: rotateY(180deg); background: var(--primary); color: white; overflow-y: auto; }
         
@@ -98,10 +73,7 @@
         .dia-label-w { font-size: 0.55em; font-weight: 900; background: var(--semana-w); color: var(--primary); border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 80%; margin-top: 10%; }
         .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 0.85em; border: 2px solid transparent; transition: 0.2s; position: relative; }
         
-        .hoje { 
-            background: var(--accent) !important; color: white !important; z-index: 1;
-            box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7); animation: hoje-pulsar 2s infinite; border: 2px solid white !important;
-        }
+        .hoje { background: var(--accent) !important; color: white !important; z-index: 1; box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7); animation: hoje-pulsar 2s infinite; border: 2px solid white !important; }
         @keyframes hoje-pulsar {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7); }
             70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(168, 0, 196, 0); }
@@ -151,7 +123,7 @@
     <div style="display:flex; gap:18px;">
         <span class="material-symbols-outlined" onclick="openInstructions()">help_outline</span>
         <span class="material-symbols-outlined" onclick="openStats()">analytics</span>
-        <span class="material-symbols-outlined" onclick="document.body.classList.toggle('dark-mode')">brightness_4</span>
+        <span class="material-symbols-outlined" onclick="toggleDarkMode()">brightness_4</span>
     </div>
 </header>
 
@@ -161,11 +133,11 @@
 </div>
 
 <div style="display: flex; gap: 10px; padding: 0 15px 15px 15px;">
-    <select id="anoSelect" onchange="setRegion(currentRegion)">
-        <option value="2026" selected>2026</option>
+    <select id="anoSelect" onchange="salvarAno()">
+        <option value="2026">2026</option>
         <option value="2027">2027</option>
     </select>
-    <select id="turmaSelect" onchange="gerarCalendario(); tick();" style="flex-grow:1;"></select>
+    <select id="turmaSelect" onchange="salvarTurma()" style="flex-grow:1;"></select>
 </div>
 
 <div id="calendario-box"></div>
@@ -209,21 +181,64 @@
     let dataAtiva = "";
 
     const translations = {
-        BR: { statusTrab: "EM TRABALHO", statusFolga: "DE FOLGA", statsTitle: "Estatísticas 2026", escalaTitle: "Escala em Feriados", days: ['S','T','Q','Q','S','S','D'], statsLabel: ["Dias Trabalho", "Total Folgas", "FDS Livres", "Feriados Escala"], helpTitle: "Guia de Uso", helpText: "• <b>Toque no dia</b> para abrir o diário.<br>• <b>Toque no mês</b> para ver os feriados.<br>• <b>Animação Roxa</b> indica hoje.", tip: "Dica: Finais de semana livres são ótimos para descanso!", btnSave: "SALVAR NOTA", btnClose: "ENTENDI", noEvents: "Sem eventos", locale: 'pt-BR' },
+        BR: { statusTrab: "EM TRABALHO", statusFolga: "DE FOLGA", statsTitle: "Estatísticas", escalaTitle: "Escala em Feriados", days: ['S','T','Q','Q','S','S','D'], statsLabel: ["Dias Trabalho", "Total Folgas", "FDS Livres", "Feriados Escala"], helpTitle: "Guia de Uso", helpText: "• <b>Toque no dia</b> para abrir o diário.<br>• <b>Toque no mês</b> para ver os feriados.<br>• <b>Animação Roxa</b> indica hoje.", tip: "Dica: Finais de semana livres são ótimos para descanso!", btnSave: "SALVAR NOTA", btnClose: "ENTENDI", noEvents: "Sem eventos", locale: 'pt-BR' },
         DE: { statusTrab: "DIENST", statusFolga: "FREI", statsTitle: "Jahresübersicht", escalaTitle: "Feiertagsdienst", days: ['M','D','M','D','F','S','S'], statsLabel: ["Arbeitstage", "Freizeit", "Freie WE", "Feiertagsarbeit"], helpTitle: "Anleitung", helpText: "• <b>Tag anklicken</b> para Notizen.<br>• <b>Monat anklicken</b> para Feiertage.", tip: "Tipp: Freie Wochenenden sind ideal!", btnSave: "SPEICHERN", btnClose: "SCHLIESSEN", noEvents: "Keine Termine", locale: 'de-DE' }
     };
+
+    // --- FUNÇÕES DE MEMÓRIA (LOCAL STORAGE) ---
+    function salvarTurma() {
+        const t = document.getElementById('turmaSelect').value;
+        localStorage.setItem(`braun_turma_${currentRegion}`, t);
+        gerarCalendario(); tick();
+    }
+
+    function salvarAno() {
+        const ano = document.getElementById('anoSelect').value;
+        localStorage.setItem('braun_ano', ano);
+        setRegion(currentRegion); // Recarrega com o novo ano
+    }
+
+    function toggleDarkMode() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('braun_dark', isDark);
+    }
+
+    function carregarPreferencias() {
+        // Carregar Dark Mode
+        if (localStorage.getItem('braun_dark') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+        // Carregar Ano
+        const savedAno = localStorage.getItem('braun_ano');
+        if (savedAno) {
+            document.getElementById('anoSelect').value = savedAno;
+        }
+    }
 
     function setRegion(r) {
         currentRegion = r;
         const lang = translations[r];
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-${r}`).classList.add('active');
+        
         const s = document.getElementById('turmaSelect');
-        s.innerHTML = r === 'BR' ? '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' : '<option value="S1">GRUPPE 1 (FRÜH/SPÄT/NACHT)</option><option value="S2">GRUPPE 2 (ROLLIEREND)</option>';
+        s.innerHTML = r === 'BR' ? 
+            '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' : 
+            '<option value="S1">GRUPPE 1 (FRÜH/SPÄT/NACHT)</option><option value="S2">GRUPPE 2 (ROLLIEREND)</option>';
+
+        // Carregar turma salva para esta região
+        const savedTurma = localStorage.getItem(`braun_turma_${r}`);
+        if (savedTurma) {
+            s.value = savedTurma;
+        }
+
         document.getElementById('btn-save-note').innerText = lang.btnSave;
         document.getElementById('btn-close-stats').innerText = lang.btnClose;
         document.getElementById('btn-close-help').innerText = lang.btnClose;
-        gerarCalendario(); tick(); scrollToToday();
+        
+        gerarCalendario(); 
+        tick(); 
+        scrollToToday();
     }
 
     function scrollToToday() {
@@ -260,15 +275,16 @@
     }
 
     function checkBR(dt, t) { 
-        const diff=Math.floor((dt-new Date(2026,0,18))/86400000); 
-        const isA=(((diff%4)+4)%4)<2; 
-        return {isA, trab:(t==="AC"&&isA)||(t==="BD"&&!isA)}; 
+        const baseDate = new Date(2026, 0, 18);
+        const diff = Math.floor((dt.setHours(0,0,0,0) - baseDate.setHours(0,0,0,0)) / 86400000);
+        const isA = (((diff % 4) + 4) % 4) < 2; 
+        return { isA, trab: (t === "AC" && isA) || (t === "BD" && !isA) }; 
     }
 
     function getShiftDE(dt, g) { 
-        let diff=Math.floor((dt-new Date(2026,0,5))/86400000); 
-        if(g==='S2') diff-=2; 
-        const c=((diff%8)+8)%8; 
+        let diff = Math.floor((dt.setHours(0,0,0,0) - new Date(2026, 0, 5).setHours(0,0,0,0)) / 86400000); 
+        if(g === 'S2') diff -= 2; 
+        const c = ((diff % 8) + 8) % 8; 
         const shifts = [{c:'MANHA'},{c:'MANHA'},{c:'TARDE'},{c:'TARDE'},{c:'NOITE'},{c:'NOITE'},{c:'FOLGA'},{c:'FOLGA'}];
         return shifts[c];
     }
@@ -293,15 +309,15 @@
                 }
             }
         }
-        document.getElementById('stats-title').innerText = lang.statsTitle;
+        document.getElementById('stats-title').innerText = `${lang.statsTitle} ${ano}`;
         document.getElementById('escala-title').innerText = lang.escalaTitle;
         document.getElementById('stats-content').innerHTML = `<div class="stat-card"><span class="stat-value">${s.trab}</span><span class="stat-label">${lang.statsLabel[0]}</span></div><div class="stat-card"><span class="stat-value">${s.folga}</span><span class="stat-label">${lang.statsLabel[1]}</span></div><div class="stat-card" style="border-color:var(--verde)"><span class="stat-value" style="color:var(--verde)">${s.fdsLivre}</span><span class="stat-label">${lang.statsLabel[2]}</span></div><div class="stat-card alert"><span class="stat-value">${s.ferTrab}</span><span class="stat-label">${lang.statsLabel[3]}</span></div>`;
-        renderFeriadosFiltrados('all');
+        renderFeriadosFiltrados();
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('statsCard').classList.add('show');
     }
 
-    function renderFeriadosFiltrados(filtro) {
+    function renderFeriadosFiltrados() {
         const ano = parseInt(document.getElementById('anoSelect').value);
         const turma = document.getElementById('turmaSelect').value;
         const feriados = getFeriados(ano, currentRegion);
@@ -318,7 +334,12 @@
 
     function gerarCalendario() {
         const box=document.getElementById('calendario-box'); box.innerHTML="";
-        const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), ano=parseInt(document.getElementById('anoSelect').value), t=document.getElementById('turmaSelect').value, fer=getFeriados(ano,currentRegion), lang=translations[currentRegion];
+        const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), 
+              ano=parseInt(document.getElementById('anoSelect').value), 
+              t=document.getElementById('turmaSelect').value, 
+              fer=getFeriados(ano,currentRegion), 
+              lang=translations[currentRegion];
+
         for(let m=0; m<12; m++) {
             const dtM=new Date(ano,m,1);
             const nomeM=new Intl.DateTimeFormat(lang.locale,{month:'long'}).format(dtM);
@@ -326,6 +347,7 @@
             let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">${nomeM} <span style="font-size:0.7em; opacity:0.5">${ano}</span></div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
             let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:1.5px solid rgba(255,255,255,0.3); padding-bottom:8px; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">${nomeM}</div>`;
             let hasEv=false, esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
+            
             for(let d=1; d<=new Date(ano,m+1,0).getDate(); d++) {
                 const at=new Date(ano,m,d), isoS=`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, isoF=`${ano}-${isoS}`, f=fer[isoS], nt=logs[isoF];
                 if(d===1||at.getDay()===1) { hF+=`<div class="dia-label-w">${Math.ceil((((at-new Date(ano,0,1))/86400000)+new Date(ano,0,1).getDay()+1)/7)}</div>`; if(d===1) for(let i=0; i<esp; i++) hF+=`<div></div>`; }
@@ -375,7 +397,10 @@
     }
 
     setInterval(tick, 1000);
-    window.onload = () => setRegion('BR');
+    window.onload = () => {
+        carregarPreferencias();
+        setRegion('BR');
+    };
 </script>
 </body>
 </html>
