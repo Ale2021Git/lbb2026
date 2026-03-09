@@ -53,7 +53,6 @@
         .logo-divider { width: 1.5px; height: 18px; background: currentColor; margin: 0 4px; }
         .slogan-text { font-size: 0.52em; font-weight: 400; text-transform: uppercase; letter-spacing: 2.5px; margin-left: 24px; }
 
-        /* Estilo do Botão de Instalação */
         #install-button {
             display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
             background: var(--accent); color: white; padding: 10px 22px; border-radius: 30px;
@@ -176,12 +175,9 @@
     let deferredPrompt;
     const installBtn = document.getElementById('install-button');
 
-    // Registro do Service Worker e Lógica de Instalação
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('PWA Ativo'))
-        .catch(err => console.log('Erro PWA:', err));
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('Erro PWA:', err));
       });
     }
 
@@ -194,14 +190,12 @@
     async function installPWA() {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
         deferredPrompt = null;
         installBtn.style.display = 'none';
       }
     }
 
-    // Lógica do App
-    let currentRegion = 'BR';
+    let currentRegion = localStorage.getItem('braun_last_region') || 'BR';
     let dataAtiva = "";
 
     const translations = {
@@ -211,19 +205,38 @@
 
     function setRegion(r) {
         currentRegion = r;
+        localStorage.setItem('braun_last_region', r);
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-${r}`).classList.add('active');
+        
         const s = document.getElementById('turmaSelect');
         s.innerHTML = r === 'BR' ? 
             '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' : 
             '<option value="EG">TURMA E/G (AZUL)</option><option value="FH">TURMA F/H (VERDE)</option>';
+        
         const savedTurma = localStorage.getItem(`braun_turma_${r}`);
         if (savedTurma) s.value = savedTurma;
+        
         gerarCalendario(); tick(); scrollToToday();
     }
 
     function getFeriados(ano) {
-        return {"01-01":"Ano Novo", "01-10":"S. Gonçalo", "02-17":"Carnaval", "04-03":"Sexta Santa", "04-21":"Tiradentes", "05-01":"Trabalho", "09-07":"Independência", "10-12":"Aparecida", "11-02":"Finados", "11-15":"República", "11-20":"Consciência Negra", "12-25":"Natal"};
+        return {
+            "01-01":"Ano Novo", 
+            "01-10":"S. Gonçalo (Padroeiro)", 
+            "02-17":"Carnaval", 
+            "04-03":"Sexta Santa", 
+            "04-21":"Tiradentes", 
+            "04-23":"São Jorge",
+            "05-01":"Dia do Trabalho", 
+            "09-07":"Independência", 
+            "09-22":"Aniversário de S. Gonçalo",
+            "10-12":"Nsa. Sra. Aparecida", 
+            "11-02":"Finados", 
+            "11-15":"Proclamação da República", 
+            "11-20":"Consciência Negra", 
+            "12-25":"Natal"
+        };
     }
 
     function checkBR(dt, t) { 
@@ -292,8 +305,9 @@
         const ano = parseInt(document.getElementById('anoSelect').value);
         const feriados = getFeriados(ano);
         let trabFeriado = 0, folgaFeriado = 0, listaFeriadosHtml = "";
-
-        for (let dataIso in feriados) {
+        
+        const sortedDates = Object.keys(feriados).sort();
+        for (let dataIso of sortedDates) {
             const [mes, dia] = dataIso.split('-').map(Number);
             const dataObj = new Date(ano, mes - 1, dia);
             const trabalha = (currentRegion === 'BR') ? checkBR(dataObj, t).trab : checkMnt(dataObj, t).trab;
@@ -307,13 +321,31 @@
     }
 
     function salvarTurma() { localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); gerarCalendario(); tick(); }
-    function salvarAno() { localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); setRegion(currentRegion); }
+    function salvarAno() { localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); gerarCalendario(); }
     function toggleDarkMode() { const isDark = document.body.classList.toggle('dark-mode'); localStorage.setItem('braun_dark', isDark); }
-    function carregarPreferencias() { if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode'); const savedAno = localStorage.getItem('braun_ano'); if (savedAno) document.getElementById('anoSelect').value = savedAno; }
-    function scrollToToday() { setTimeout(() => { const hojeEl = document.querySelector('.hoje'); if (hojeEl) { const container = hojeEl.closest('.mes-container'); const y = container.getBoundingClientRect().top + window.pageYOffset - 120; window.scrollTo({top: y, behavior: 'smooth'}); } }, 500); }
+    
+    function carregarPreferencias() { 
+        if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode'); 
+        const savedAno = localStorage.getItem('braun_ano'); 
+        if (savedAno) document.getElementById('anoSelect').value = savedAno; 
+    }
+    
+    function scrollToToday() { 
+        setTimeout(() => { 
+            const hojeEl = document.querySelector('.hoje'); 
+            if (hojeEl) { 
+                const container = hojeEl.closest('.mes-container'); 
+                const y = container.getBoundingClientRect().top + window.pageYOffset - 120; 
+                window.scrollTo({top: y, behavior: 'smooth'}); 
+            } 
+        }, 500); 
+    }
 
     setInterval(tick, 1000);
-    window.onload = () => { carregarPreferencias(); setRegion('BR'); };
+    window.onload = () => { 
+        carregarPreferencias(); 
+        setRegion(currentRegion); 
+    };
 </script>
 </body>
 </html>
