@@ -1,12 +1,10 @@
-const CACHE_NAME = 'braun-v26-final';
+const CACHE_NAME = 'braun-online-v2'; // Nome único para este app
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './maskable_icon_x192.png',
-  './maskable_icon_x512.png',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@700&display=swap',
-  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200'
+  './style.css', // Verifique se o nome é exatamente este
+  './script.js'  // Verifique se o nome é exatamente este
 ];
 
 // Instalação e Cache
@@ -19,22 +17,23 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Limpeza de cache antigo - ESSENCIAL PARA AS NOVIDADES APARECEREM
+// Ativação e Limpeza de caches antigos deste app
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+        keys.filter((key) => key !== CACHE_NAME && key.startsWith('braun-')).map((key) => caches.delete(key))
       );
     })
   );
+  self.clients.claim();
 });
 
-// Resposta do cache ou rede
+// Estratégia Offline (Tenta rede, se falhar, usa cache)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
