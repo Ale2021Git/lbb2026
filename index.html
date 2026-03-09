@@ -53,13 +53,14 @@
         .logo-divider { width: 1.5px; height: 18px; background: currentColor; margin: 0 4px; }
         .slogan-text { font-size: 0.52em; font-weight: 400; text-transform: uppercase; letter-spacing: 2.5px; margin-left: 24px; }
 
-        /* Botão de Instalação */
+        /* Estilo do Botão de Instalação */
         #install-button {
             display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: white; padding: 10px 20px; border-radius: 30px;
-            font-weight: 800; font-size: 0.8em; z-index: 2000; border: 2px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); align-items: center; gap: 8px;
+            background: var(--accent); color: white; padding: 10px 22px; border-radius: 30px;
+            font-weight: 800; font-size: 0.85em; z-index: 2000; border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); align-items: center; gap: 8px; animation: slideDown 0.5s ease;
         }
+        @keyframes slideDown { from { top: -60px; } to { top: 15px; } }
 
         .status-panel { 
             background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 20px 15px; 
@@ -82,11 +83,7 @@
         .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 1.1em; border: 2.8px solid transparent; transition: 0.2s; position: relative; }
         
         .hoje { background: var(--accent) !important; color: white !important; z-index: 1; animation: hoje-pulsar 2s infinite; border: 2.5px solid white !important; }
-        @keyframes hoje-pulsar {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(168, 0, 196, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(168, 0, 196, 0); }
-        }
+        @keyframes hoje-pulsar { 0% { transform: scale(0.95); } 70% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
 
         .AMARELO { background: var(--amarelo) !important; color: #1a1a1a !important; }
         .VERDE { background: var(--verde) !important; color: #fff !important; }
@@ -108,16 +105,12 @@
         .stat-label { font-size: 0.7em; font-weight: 800; text-transform: uppercase; opacity: 0.6; }
 
         select { appearance: none; background: var(--card); color: var(--text); border: 2.5px solid var(--border); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 0.95em; outline: none; }
-        
-        .guide-section { margin-bottom: 20px; }
-        .guide-section h4 { color: var(--primary); margin: 15px 0 8px 0; border-left: 4px solid var(--accent); padding-left: 10px; }
-        .guide-section p { font-size: 0.9em; margin: 5px 0; opacity: 0.85; }
     </style>
 </head>
 <body>
 
 <button id="install-button" onclick="installPWA()">
-    <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+    <span class="material-symbols-outlined" style="font-size: 20px;">download_for_offline</span>
     INSTALAR APP
 </button>
 
@@ -164,9 +157,12 @@
 </div>
 
 <div id="helpCard" class="bottom-modal">
-    <h2 id="help-title" style="color:var(--primary); font-weight: 800; margin-bottom: 20px;"></h2>
-    <div id="help-content"></div>
-    <div id="tip-box" style="margin-top: 20px; padding: 18px; background: var(--bg); border-radius: 15px; border-left: 6px solid var(--accent); font-style: italic;"></div>
+    <h2 id="help-title" style="color:var(--primary); font-weight: 800; margin-bottom: 20px;">Guia</h2>
+    <div id="help-content">
+        <p>• <b>Toque no Mês:</b> Vira o cartão para ver feriados e notas.</p>
+        <p>• <b>Toque no Dia:</b> Adiciona uma anotação pessoal.</p>
+        <p>• <b>Escala:</b> Ciclo automático de 2 dias de trabalho por 2 de folga.</p>
+    </div>
     <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:20px; border-radius:18px; font-weight:800; width:100%; margin-top:25px;">ENTENDI</button>
 </div>
 
@@ -184,8 +180,8 @@
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Offline: OK'))
-        .catch(err => console.log('Erro SW:', err));
+        .then(reg => console.log('PWA Ativo'))
+        .catch(err => console.log('Erro PWA:', err));
       });
     }
 
@@ -204,27 +200,13 @@
       }
     }
 
-    window.addEventListener('appinstalled', () => {
-      installBtn.style.display = 'none';
-    });
-
-    // Lógica do Calendário (Mantenha o resto das suas funções aqui)
+    // Lógica do App
     let currentRegion = 'BR';
     let dataAtiva = "";
 
     const translations = {
-        BR: { 
-            statusTrab: "EM TRABALHO", statusFolga: "DE FOLGA", statsTitle: "Estatísticas ECOFLAC", 
-            days: ['S','T','Q','Q','S','S','D'], helpTitle: "Guia ECOFLAC 2026", 
-            helpText: `<div class="guide-section"><h4>Escala ECOFLAC</h4><p>Ciclo de 2x2.</p></div>`, 
-            tip: "Bom trabalho!", locale: 'pt-BR' 
-        },
-        MNT: { 
-            statusTrab: "TRABALHO (MNT)", statusFolga: "FOLGA (MNT)", statsTitle: "Estatísticas Mnt", 
-            days: ['S','T','Q','Q','S','S','D'], helpTitle: "Guia Manutenção", 
-            helpText: `<div class="guide-section"><h4>Manutenção</h4><p>Ciclo de 2x2.</p></div>`, 
-            tip: "Segurança primeiro!", locale: 'pt-BR' 
-        }
+        BR: { statusTrab: "EM TRABALHO", statusFolga: "DE FOLGA", statsTitle: "Estatísticas ECOFLAC", days: ['S','T','Q','Q','S','S','D'], locale: 'pt-BR' },
+        MNT: { statusTrab: "TRABALHO (MNT)", statusFolga: "FOLGA (MNT)", statsTitle: "Estatísticas Mnt", days: ['S','T','Q','Q','S','S','D'], locale: 'pt-BR' }
     };
 
     function setRegion(r) {
@@ -241,19 +223,19 @@
     }
 
     function getFeriados(ano) {
-        return {"01-01":"Ano Novo", "05-01":"Dia do Trabalho", "12-25":"Natal"}; // Reduzido para exemplo
+        return {"01-01":"Ano Novo", "01-10":"S. Gonçalo", "02-17":"Carnaval", "04-03":"Sexta Santa", "04-21":"Tiradentes", "05-01":"Trabalho", "09-07":"Independência", "10-12":"Aparecida", "11-02":"Finados", "11-15":"República", "11-20":"Consciência Negra", "12-25":"Natal"};
     }
 
     function checkBR(dt, t) { 
         const baseDate = new Date(2026, 0, 18);
-        const diff = Math.floor((dt.setHours(0,0,0,0) - baseDate.setHours(0,0,0,0)) / 86400000);
+        const diff = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
         const isA = (((diff % 4) + 4) % 4) < 2; 
         return { isA, trab: (t === "AC" && isA) || (t === "BD" && !isA) }; 
     }
 
     function checkMnt(dt, t) {
         const baseDate = new Date(2026, 2, 6);
-        const diff = Math.floor((dt.setHours(0,0,0,0) - baseDate.setHours(0,0,0,0)) / 86400000);
+        const diff = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
         const ciclo = ((diff % 4) + 4) % 4;
         const isEGworking = (ciclo < 2);
         return { isEG: isEGworking, trab: (t === "EG" ? isEGworking : !isEGworking) };
@@ -303,7 +285,27 @@
     function openCard(iso) { dataAtiva = iso; const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'), d = iso.split('-'); document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`; document.getElementById('noteInput').value = logs[iso] || ""; document.getElementById('overlay').style.display = 'block'; document.getElementById('infoCard').classList.add('show'); }
     function saveNota() { const msg = document.getElementById('noteInput').value.trim(), logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'); if (msg) logs[dataAtiva] = msg; else delete logs[dataAtiva]; localStorage.setItem('logs_v26', JSON.stringify(logs)); closeAllModals(); gerarCalendario(); }
     function closeAllModals() { document.querySelectorAll('.bottom-modal').forEach(m => m.classList.remove('show')); document.getElementById('overlay').style.display = 'none'; }
-    function openInstructions() { openStats(); /* Simplificado */ }
+    function openInstructions() { document.getElementById('overlay').style.display = 'block'; document.getElementById('helpCard').classList.add('show'); }
+    function openStats() {
+        const lang = translations[currentRegion];
+        const t = document.getElementById('turmaSelect').value;
+        const ano = parseInt(document.getElementById('anoSelect').value);
+        const feriados = getFeriados(ano);
+        let trabFeriado = 0, folgaFeriado = 0, listaFeriadosHtml = "";
+
+        for (let dataIso in feriados) {
+            const [mes, dia] = dataIso.split('-').map(Number);
+            const dataObj = new Date(ano, mes - 1, dia);
+            const trabalha = (currentRegion === 'BR') ? checkBR(dataObj, t).trab : checkMnt(dataObj, t).trab;
+            if (trabalha) { trabFeriado++; listaFeriadosHtml += `<div style="font-size:0.95em; margin-bottom:8px; color:var(--accent);"><b>${dia}/${mes}:</b> ${feriados[dataIso]}</div>`; } 
+            else { folgaFeriado++; listaFeriadosHtml += `<div style="font-size:0.95em; margin-bottom:8px; color:var(--primary);"><b>${dia}/${mes}:</b> ${feriados[dataIso]}</div>`; }
+        }
+        document.getElementById('stats-title').innerText = lang.statsTitle;
+        document.getElementById('stats-content').innerHTML = `<div class="stat-card"><span class="stat-value">${trabFeriado}</span><span class="stat-label">Trabalhados</span></div><div class="stat-card"><span class="stat-value">${folgaFeriado}</span><span class="stat-label">Folga</span></div>`;
+        document.getElementById('feriados-lista-detalhe').innerHTML = listaFeriadosHtml;
+        document.getElementById('overlay').style.display = 'block'; document.getElementById('statsCard').classList.add('show');
+    }
+
     function salvarTurma() { localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); gerarCalendario(); tick(); }
     function salvarAno() { localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); setRegion(currentRegion); }
     function toggleDarkMode() { const isDark = document.body.classList.toggle('dark-mode'); localStorage.setItem('braun_dark', isDark); }
