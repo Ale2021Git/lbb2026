@@ -1,13 +1,13 @@
-const CACHE_NAME = 'braun-online-v2'; // Nome único para este app
+const CACHE_NAME = 'braun-online-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './style.css', // Verifique se o nome é exatamente este
-  './script.js'  // Verifique se o nome é exatamente este
+  './maskable_icon_x192.png',
+  './maskable_icon_x512.png'
 ];
 
-// Instalação e Cache
+// Instalação e Cache dos ativos locais
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Ativação e Limpeza de caches antigos deste app
+// Ativação e Limpeza de caches antigos
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -29,7 +29,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Estratégia Offline (Tenta rede, se falhar, usa cache)
+// Estratégia: Tenta carregar da rede, se falhar (offline), usa o Cache
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request).catch(() => {
