@@ -1,4 +1,4 @@
-const CACHE_NAME = 'braun-online-v2';
+const CACHE_NAME = 'braun-online-v3'; // Versão atualizada
 const ASSETS = [
   './',
   './index.html',
@@ -7,7 +7,7 @@ const ASSETS = [
   './maskable_icon_x512.png'
 ];
 
-// Instalação e Cache dos ativos locais
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -17,19 +17,17 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Ativação e Limpeza de caches antigos
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME && key.startsWith('braun-')).map((key) => caches.delete(key))
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
     })
   );
   self.clients.claim();
 });
 
-// Estratégia: Tenta carregar da rede, se falhar (offline), usa o Cache
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request).catch(() => {
