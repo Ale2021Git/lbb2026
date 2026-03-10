@@ -42,6 +42,19 @@
             -webkit-tap-highlight-color: transparent; user-select: none; scroll-behavior: smooth;
         }
 
+        /* TELA DE BOAS-VINDAS CENTRALIZADA */
+        .welcome-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); color: white; z-index: 3000;
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            text-align: center; padding: 0 30px; 
+            box-sizing: border-box;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
+        .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+
         header { 
             background: var(--primary); padding: 45px 18px 20px 18px; color: white; display: flex; 
             justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
@@ -55,8 +68,8 @@
 
         #install-button {
             display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            background: var(--accent); color: white; padding: 10px 22px; border-radius: 30px;
-            font-weight: 800; font-size: 0.85em; z-index: 2000; border: 2px solid white;
+            background: var(--primary); color: white; padding: 10px 22px; border-radius: 30px;
+            font-weight: 800; font-size: 0.85em; z-index: 2000; border: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); align-items: center; gap: 8px; animation: slideDown 0.5s ease;
         }
         @keyframes slideDown { from { top: -60px; } to { top: 15px; } }
@@ -80,7 +93,6 @@
         .dia-label-w { font-size: 0.65em; font-weight: 900; background: var(--semana-w); color: var(--primary); border-radius: 8px; height: 28px; display: flex; align-items: center; justify-content: center; }
         
         .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 1.1em; border: 2.8px solid transparent; transition: 0.2s; position: relative; }
-        
         .hoje { background: var(--accent) !important; color: white !important; z-index: 1; animation: hoje-pulsar 2s infinite; border: 2.5px solid white !important; }
         @keyframes hoje-pulsar { 0% { transform: scale(0.95); } 70% { transform: scale(1.05); } 100% { transform: scale(0.95); } }
 
@@ -107,6 +119,17 @@
     </style>
 </head>
 <body>
+
+<div id="welcomeScreen" class="welcome-screen">
+    <img src="maskable_icon_x512.png" class="welcome-logo">
+    <h1 style="font-weight: 800; margin-bottom: 10px; width: 100%;">Bem-vindo ao<br>Braun On Line</h1>
+    <p style="opacity: 0.9; font-weight: 400; line-height: 1.6; max-width: 280px; margin: 0 auto;">
+        Sua escala de trabalho e anotações sempre à mão de forma rápida e segura.
+    </p>
+    <button onclick="closeWelcome()" style="background:white; color:var(--primary); border:none; padding:18px 0; border-radius:20px; font-weight:800; margin-top:35px; width: 100%; max-width: 250px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); letter-spacing: 0.5px; cursor: pointer;">
+        COMEÇAR AGORA
+    </button>
+</div>
 
 <button id="install-button" onclick="installPWA()">
     <span class="material-symbols-outlined" style="font-size: 20px;">download_for_offline</span>
@@ -203,39 +226,43 @@
         MNT: { statusTrab: "TRABALHO (MNT)", statusFolga: "FOLGA (MNT)", statsTitle: "Estatísticas Mnt", days: ['S','T','Q','Q','S','S','D'], locale: 'pt-BR' }
     };
 
+    function checkFirstVisit() {
+        if (!localStorage.getItem('braun_visited')) {
+            document.getElementById('welcomeScreen').style.display = 'flex';
+        } else {
+            document.getElementById('welcomeScreen').style.display = 'none';
+        }
+    }
+
+    function closeWelcome() {
+        localStorage.setItem('braun_visited', 'true');
+        document.getElementById('welcomeScreen').classList.add('hide');
+        setTimeout(() => {
+            document.getElementById('welcomeScreen').style.display = 'none';
+        }, 500);
+    }
+
     function setRegion(r) {
         currentRegion = r;
         localStorage.setItem('braun_last_region', r);
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-${r}`).classList.add('active');
-        
         const s = document.getElementById('turmaSelect');
         s.innerHTML = r === 'BR' ? 
             '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' : 
             '<option value="EG">TURMA E/G (AZUL)</option><option value="FH">TURMA F/H (VERDE)</option>';
-        
         const savedTurma = localStorage.getItem(`braun_turma_${r}`);
         if (savedTurma) s.value = savedTurma;
-        
         gerarCalendario(); tick(); scrollToToday();
     }
 
     function getFeriados(ano) {
         return {
-            "01-01":"Ano Novo", 
-            "01-10":"S. Gonçalo (Padroeiro)", 
-            "02-17":"Carnaval", 
-            "04-03":"Sexta Santa", 
-            "04-21":"Tiradentes", 
-            "04-23":"São Jorge",
-            "05-01":"Dia do Trabalho", 
-            "09-07":"Independência", 
-            "09-22":"Aniversário de S. Gonçalo",
-            "10-12":"Nsa. Sra. Aparecida", 
-            "11-02":"Finados", 
-            "11-15":"Proclamação da República", 
-            "11-20":"Consciência Negra", 
-            "12-25":"Natal"
+            "01-01":"Ano Novo", "01-10":"S. Gonçalo (Padroeiro)", "02-17":"Carnaval", 
+            "04-03":"Sexta Santa", "04-21":"Tiradentes", "04-23":"São Jorge",
+            "05-01":"Dia do Trabalho", "09-07":"Independência", "09-22":"Aniversário de S. Gonçalo",
+            "10-12":"Nsa. Sra. Aparecida", "11-02":"Finados", "11-15":"Proclamação da República", 
+            "11-20":"Consciência Negra", "12-25":"Natal"
         };
     }
 
@@ -259,9 +286,7 @@
         const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), 
               ano=parseInt(document.getElementById('anoSelect').value), 
               t=document.getElementById('turmaSelect').value, 
-              fer=getFeriados(ano), 
-              lang=translations[currentRegion];
-
+              fer=getFeriados(ano), lang=translations[currentRegion];
         for(let m=0; m<12; m++) {
             const dtM=new Date(ano,m,1);
             const nomeM=new Intl.DateTimeFormat(lang.locale,{month:'long'}).format(dtM);
@@ -269,7 +294,6 @@
             let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin: 5px 0 0 10px; font-size: 1.2em;">${nomeM}</div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
             let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:2px solid rgba(255,255,255,0.4); padding: 5px; margin-bottom:12px; font-size: 1.1em; text-transform:capitalize;">${nomeM}</div>`;
             let hasEv=false, esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
-            
             for(let d=1; d<=new Date(ano,m+1,0).getDate(); d++) {
                 const at=new Date(ano,m,d), isoS=`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, isoF=`${ano}-${isoS}`, f=fer[isoS], nt=logs[isoF];
                 if(d===1||at.getDay()===1) { hF+=`<div class="dia-label-w">${Math.ceil((((at-new Date(ano,0,1))/86400000)+new Date(ano,0,1).getDay()+1)/7)}</div>`; if(d===1) for(let i=0; i<esp; i++) hF+=`<div></div>`; }
@@ -305,7 +329,6 @@
         const ano = parseInt(document.getElementById('anoSelect').value);
         const feriados = getFeriados(ano);
         let trabFeriado = 0, folgaFeriado = 0, listaFeriadosHtml = "";
-        
         const sortedDates = Object.keys(feriados).sort();
         for (let dataIso of sortedDates) {
             const [mes, dia] = dataIso.split('-').map(Number);
@@ -323,29 +346,11 @@
     function salvarTurma() { localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); gerarCalendario(); tick(); }
     function salvarAno() { localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); gerarCalendario(); }
     function toggleDarkMode() { const isDark = document.body.classList.toggle('dark-mode'); localStorage.setItem('braun_dark', isDark); }
-    
-    function carregarPreferencias() { 
-        if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode'); 
-        const savedAno = localStorage.getItem('braun_ano'); 
-        if (savedAno) document.getElementById('anoSelect').value = savedAno; 
-    }
-    
-    function scrollToToday() { 
-        setTimeout(() => { 
-            const hojeEl = document.querySelector('.hoje'); 
-            if (hojeEl) { 
-                const container = hojeEl.closest('.mes-container'); 
-                const y = container.getBoundingClientRect().top + window.pageYOffset - 120; 
-                window.scrollTo({top: y, behavior: 'smooth'}); 
-            } 
-        }, 500); 
-    }
+    function carregarPreferencias() { if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode'); const savedAno = localStorage.getItem('braun_ano'); if (savedAno) document.getElementById('anoSelect').value = savedAno; }
+    function scrollToToday() { setTimeout(() => { const hojeEl = document.querySelector('.hoje'); if (hojeEl) { const container = hojeEl.closest('.mes-container'); const y = container.getBoundingClientRect().top + window.pageYOffset - 120; window.scrollTo({top: y, behavior: 'smooth'}); } }, 500); }
 
     setInterval(tick, 1000);
-    window.onload = () => { 
-        carregarPreferencias(); 
-        setRegion(currentRegion); 
-    };
+    window.onload = () => { carregarPreferencias(); setRegion(currentRegion); checkFirstVisit(); };
 </script>
 </body>
 </html>
