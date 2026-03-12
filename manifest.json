@@ -3,7 +3,7 @@
   "name": "Braun On Line 2026",
   "short_name": "BraunOnLine",
   "description": "Sistema de Escalas Braun 2026",
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F4F7F6",
