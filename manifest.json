@@ -1,9 +1,9 @@
 {
-  "id": "braun-online-2026",
+  "id": "braun-online-2026-pwa",
   "name": "Braun On Line 2026",
   "short_name": "BraunOnLine",
-  "description": "Sistema de Escalas Braun 2026",
-  "start_url": ".",
+  "description": "Consulta de escala de turnos e anotações para colaboradores Braun.",
+  "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F4F7F6",
