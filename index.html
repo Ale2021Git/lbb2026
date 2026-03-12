@@ -42,7 +42,6 @@
             -webkit-tap-highlight-color: transparent; user-select: none; scroll-behavior: smooth;
         }
 
-        /* Estilo Animado para o Dia de Hoje */
         .hoje { 
             background: var(--accent) !important; 
             color: white !important; 
@@ -281,22 +280,50 @@
         return { isEG, trab: (t === "EG" ? isEG : !isEG) };
     }
 
+    // Função robusta ISO-8601
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return weekNo;
+    }
+
     function gerarCalendario() {
         const box=document.getElementById('calendario-box'); box.innerHTML="";
         const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), 
               ano=parseInt(document.getElementById('anoSelect').value), 
               t=document.getElementById('turmaSelect').value, 
               fer=getFeriados(ano), lang=translations[currentRegion];
+        
         for(let m=0; m<12; m++) {
             const dtM=new Date(ano,m,1);
             const nomeM=new Intl.DateTimeFormat('pt-BR',{month:'long'}).format(dtM);
             const container=document.createElement('div'); container.className='mes-container';
+            
             let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin: 5px 0 0 10px; font-size: 1.1em;">${nomeM}</div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
             let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px; margin-bottom:10px; text-transform:capitalize;">${nomeM}</div>`;
-            let hasEv=false, esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
-            for(let d=1; d<=new Date(ano,m+1,0).getDate(); d++) {
+            
+            let hasEv=false;
+            let diaSemanaInicial = dtM.getDay(); // 0 (Dom) a 6 (Sab)
+            let esp = (diaSemanaInicial === 0) ? 6 : diaSemanaInicial - 1; // Ajuste para começar na Segunda
+            
+            // Controle da semana para evitar repetição no "W"
+            let dataCorrente = new Date(dtM);
+            let totalDias = new Date(ano, m + 1, 0).getDate();
+
+            // Adiciona a PRIMEIRA semana do mês
+            hF += `<div class="dia-label-w">${getWeekNumber(dataCorrente)}</div>`;
+            for(let i=0; i<esp; i++) hF += `<div></div>`;
+
+            for(let d=1; d<=totalDias; d++) {
                 const at=new Date(ano,m,d), isoS=`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, isoF=`${ano}-${isoS}`, f=fer[isoS], nt=logs[isoF];
-                if(d===1||at.getDay()===1) { hF+=`<div class="dia-label-w">${Math.ceil((((at-new Date(ano,0,1))/86400000)+new Date(ano,0,1).getDay()+1)/7)}</div>`; if(d===1) for(let i=0; i<esp; i++) hF+=`<div></div>`; }
+                
+                // Se for Segunda-feira e não for o primeiro dia, inicia nova linha com novo número de semana
+                if(at.getDay() === 1 && d !== 1) {
+                    hF += `<div class="dia-label-w">${getWeekNumber(at)}</div>`;
+                }
+
                 let cls="dia ";
                 if(currentRegion==='BR') { const r=checkBR(at,t); cls+=(r.isA?"AMARELO ":"VERDE "); cls+=(r.trab ? "TRABALHO " : "FOLGA "); } 
                 else { const mnt=checkMnt(at,t); cls+=(mnt.isEG?"AZUL ":"VERDE "); cls+=(mnt.trab ? "TRABALHO " : "FOLGA "); }
