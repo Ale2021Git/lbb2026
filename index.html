@@ -42,7 +42,6 @@
             -webkit-tap-highlight-color: transparent; user-select: none; scroll-behavior: smooth;
         }
 
-        /* Estilo Animado para o Dia de Hoje */
         .hoje { 
             background: var(--accent) !important; 
             color: white !important; 
@@ -131,7 +130,12 @@
         .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 35px 35px 0 0; padding: 30px 25px; z-index: 2000; transition: 0.5s; max-height: 85vh; overflow-y: auto; }
         .bottom-modal.show { bottom: 0; }
 
-        select { appearance: none; background: var(--card); color: var(--text); border: 2.5px solid var(--border); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 0.95em; outline: none; }
+        /* CORREÇÃO DO SELETOR DE TURMAS */
+        .select-group { display: flex; gap: 12px; padding: 0 15px 20px 15px; }
+        select { appearance: none; background: var(--card); color: var(--text); border: 2.5px solid var(--border); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 0.9em; outline: none; transition: 0.2s; }
+        #anoSelect { width: 95px; flex-shrink: 0; }
+        #turmaSelect { flex-grow: 1; }
+
         .stat-card { background: var(--bg); padding: 20px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
     </style>
 </head>
@@ -167,12 +171,12 @@
     <div id="status-msg" class="status-msg">---</div>
 </div>
 
-<div style="display: flex; gap: 12px; padding: 0 15px 20px 15px;">
+<div class="select-group">
     <select id="anoSelect" onchange="salvarAno()">
         <option value="2026">2026</option>
         <option value="2027">2027</option>
     </select>
-    <select id="turmaSelect" onchange="salvarTurma()" style="flex-grow:1;"></select>
+    <select id="turmaSelect" onchange="salvarTurma()"></select>
 </div>
 
 <div id="calendario-box"></div>
@@ -247,12 +251,16 @@
         currentRegion = r; localStorage.setItem('braun_last_region', r);
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-${r}`).classList.add('active');
+        
         const s = document.getElementById('turmaSelect');
         s.innerHTML = r === 'BR' ? 
             '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' : 
             '<option value="EG">TURMA E/G (AZUL)</option><option value="FH">TURMA F/H (VERDE)</option>';
+        
+        // Garante que a turma salva seja aplicada ao trocar de região ou iniciar
         const savedTurma = localStorage.getItem(`braun_turma_${r}`);
         if (savedTurma) s.value = savedTurma;
+        
         gerarCalendario(); tick(); scrollToToday();
     }
 
@@ -281,22 +289,46 @@
         return { isEG, trab: (t === "EG" ? isEG : !isEG) };
     }
 
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return weekNo;
+    }
+
     function gerarCalendario() {
         const box=document.getElementById('calendario-box'); box.innerHTML="";
         const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), 
               ano=parseInt(document.getElementById('anoSelect').value), 
               t=document.getElementById('turmaSelect').value, 
               fer=getFeriados(ano), lang=translations[currentRegion];
+        
         for(let m=0; m<12; m++) {
             const dtM=new Date(ano,m,1);
             const nomeM=new Intl.DateTimeFormat('pt-BR',{month:'long'}).format(dtM);
             const container=document.createElement('div'); container.className='mes-container';
+            
             let hF=`<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')"><div style="color:var(--primary); font-weight:800; text-transform:capitalize; margin: 5px 0 0 10px; font-size: 1.1em;">${nomeM}</div><div class="grid"><div class="dia-label">W</div>${lang.days.map(s=>`<div class="dia-label">${s}</div>`).join('')}`;
             let hB=`<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')"><div style="font-weight:800; border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px; margin-bottom:10px; text-transform:capitalize;">${nomeM}</div>`;
-            let hasEv=false, esp=(dtM.getDay()===0)?6:dtM.getDay()-1;
-            for(let d=1; d<=new Date(ano,m+1,0).getDate(); d++) {
+            
+            let hasEv=false;
+            let diaSemanaInicial = dtM.getDay(); 
+            let esp = (diaSemanaInicial === 0) ? 6 : diaSemanaInicial - 1; 
+            
+            let dataCorrente = new Date(dtM);
+            let totalDias = new Date(ano, m + 1, 0).getDate();
+
+            hF += `<div class="dia-label-w">${getWeekNumber(dataCorrente)}</div>`;
+            for(let i=0; i<esp; i++) hF += `<div></div>`;
+
+            for(let d=1; d<=totalDias; d++) {
                 const at=new Date(ano,m,d), isoS=`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`, isoF=`${ano}-${isoS}`, f=fer[isoS], nt=logs[isoF];
-                if(d===1||at.getDay()===1) { hF+=`<div class="dia-label-w">${Math.ceil((((at-new Date(ano,0,1))/86400000)+new Date(ano,0,1).getDay()+1)/7)}</div>`; if(d===1) for(let i=0; i<esp; i++) hF+=`<div></div>`; }
+                
+                if(at.getDay() === 1 && d !== 1) {
+                    hF += `<div class="dia-label-w">${getWeekNumber(at)}</div>`;
+                }
+
                 let cls="dia ";
                 if(currentRegion==='BR') { const r=checkBR(at,t); cls+=(r.isA?"AMARELO ":"VERDE "); cls+=(r.trab ? "TRABALHO " : "FOLGA "); } 
                 else { const mnt=checkMnt(at,t); cls+=(mnt.isEG?"AZUL ":"VERDE "); cls+=(mnt.trab ? "TRABALHO " : "FOLGA "); }
@@ -312,11 +344,18 @@
 
     function tick() {
         const now = new Date();
-        document.getElementById('big-clock').innerText = now.toLocaleTimeString('pt-BR');
-        const t = document.getElementById('turmaSelect').value, msg = document.getElementById('status-msg'), lang = translations[currentRegion];
-        const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
-        msg.innerText = res ? lang.statusTrab : lang.statusFolga;
-        msg.style.color = res ? "var(--accent)" : "var(--primary)";
+        const bigClock = document.getElementById('big-clock');
+        if (bigClock) bigClock.innerText = now.toLocaleTimeString('pt-BR');
+        
+        const t = document.getElementById('turmaSelect').value;
+        const msg = document.getElementById('status-msg');
+        const lang = translations[currentRegion];
+        
+        if (t && msg) {
+            const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
+            msg.innerText = res ? lang.statusTrab : lang.statusFolga;
+            msg.style.color = res ? "var(--accent)" : "var(--primary)";
+        }
     }
 
     function openCard(iso) { dataAtiva = iso; const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'), d = iso.split('-'); document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`; document.getElementById('noteInput').value = logs[iso] || ""; document.getElementById('overlay').style.display = 'block'; document.getElementById('infoCard').classList.add('show'); }
@@ -337,11 +376,37 @@
         document.getElementById('overlay').style.display = 'block'; document.getElementById('statsCard').classList.add('show');
     }
 
-    function salvarTurma() { localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); gerarCalendario(); tick(); }
-    function salvarAno() { localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); gerarCalendario(); }
-    function toggleDarkMode() { const isDark = document.body.classList.toggle('dark-mode'); localStorage.setItem('braun_dark', isDark); }
-    function carregarPreferencias() { if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode'); const sA = localStorage.getItem('braun_ano'); if (sA) document.getElementById('anoSelect').value = sA; }
-    function scrollToToday() { setTimeout(() => { const h = document.querySelector('.hoje'); if (h) { const y = h.closest('.mes-container').getBoundingClientRect().top + window.pageYOffset - 120; window.scrollTo({top: y, behavior: 'smooth'}); } }, 500); }
+    function salvarTurma() { 
+        localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); 
+        gerarCalendario(); 
+        tick(); 
+    }
+    
+    function salvarAno() { 
+        localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); 
+        gerarCalendario(); 
+    }
+    
+    function toggleDarkMode() { 
+        const isDark = document.body.classList.toggle('dark-mode'); 
+        localStorage.setItem('braun_dark', isDark); 
+    }
+    
+    function carregarPreferencias() { 
+        if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode'); 
+        const sA = localStorage.getItem('braun_ano'); 
+        if (sA) document.getElementById('anoSelect').value = sA; 
+    }
+    
+    function scrollToToday() { 
+        setTimeout(() => { 
+            const h = document.querySelector('.hoje'); 
+            if (h) { 
+                const y = h.closest('.mes-container').getBoundingClientRect().top + window.pageYOffset - 120; 
+                window.scrollTo({top: y, behavior: 'smooth'}); 
+            } 
+        }, 500); 
+    }
 
     setInterval(tick, 1000);
     window.onload = () => { carregarPreferencias(); setRegion(currentRegion); checkFirstVisit(); };
