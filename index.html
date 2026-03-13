@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#00A97A">
-    <title>Braun On Line 2026</title>
+    <title>Braun On Line 2026/2027</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="maskable_icon_x192.png">
@@ -130,7 +130,6 @@
         .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 35px 35px 0 0; padding: 30px 25px; z-index: 2000; transition: 0.5s; max-height: 85vh; overflow-y: auto; }
         .bottom-modal.show { bottom: 0; }
 
-        /* CORREÇÃO DO SELETOR DE TURMAS */
         .select-group { display: flex; gap: 12px; padding: 0 15px 20px 15px; }
         select { appearance: none; background: var(--card); color: var(--text); border: 2.5px solid var(--border); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 0.9em; outline: none; transition: 0.2s; }
         #anoSelect { width: 95px; flex-shrink: 0; }
@@ -257,7 +256,6 @@
             '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>' : 
             '<option value="EG">TURMA E/G (AZUL)</option><option value="FH">TURMA F/H (VERDE)</option>';
         
-        // Garante que a turma salva seja aplicada ao trocar de região ou iniciar
         const savedTurma = localStorage.getItem(`braun_turma_${r}`);
         if (savedTurma) s.value = savedTurma;
         
@@ -265,13 +263,21 @@
     }
 
     function getFeriados(ano) {
-        return {
-            "01-01":"Ano Novo", "01-10":"Padroeiro SG", "02-17":"Carnaval", 
-            "04-03":"Sexta Santa", "04-21":"Tiradentes", "04-23":"São Jorge",
-            "05-01":"Trabalho", "09-07":"Independência", "09-22":"Aniv. SG",
-            "10-12":"Aparecida", "11-02":"Finados", "11-15":"República", 
-            "11-20":"Zumbi", "12-25":"Natal"
+        const feriadosFixos = {
+            "01-01":"Ano Novo", "01-10":"Padroeiro SG", "04-21":"Tiradentes", 
+            "04-23":"São Jorge", "05-01":"Trabalho", "09-07":"Independência", 
+            "09-22":"Aniv. SG", "10-12":"Aparecida", "11-02":"Finados", 
+            "11-15":"República", "11-20":"Zumbi", "12-25":"Natal"
         };
+        
+        if (ano === 2027) {
+            feriadosFixos["02-09"] = "Carnaval";
+            feriadosFixos["03-26"] = "Sexta Santa";
+        } else {
+            feriadosFixos["02-17"] = "Carnaval";
+            feriadosFixos["04-03"] = "Sexta Santa";
+        }
+        return feriadosFixos;
     }
 
     function checkBR(dt, t) { 
