@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ale2021git.github.io/lbb2026/sitemap.xml
