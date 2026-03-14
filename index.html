@@ -82,13 +82,30 @@
         .brand-logo-svg { height: 32px; width: auto; }
         .st-logo-path { fill: #FFFFFF; transition: fill 0.3s; }
 
+        /* NOVO ESTILO DO BOTÃO DE INSTALAÇÃO */
         #install-button {
-            display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            background: var(--primary); color: white; padding: 10px 22px; border-radius: 30px;
-            font-weight: 800; font-size: 0.85em; z-index: 2000; border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); align-items: center; gap: 8px; animation: slideDown 0.5s ease;
+            display: none; 
+            background: var(--primary); 
+            color: white; 
+            padding: 16px 24px; 
+            border-radius: 20px;
+            font-weight: 800; 
+            font-size: 0.9em; 
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            margin: 20px auto; 
+            width: calc(100% - 30px);
+            max-width: 400px; 
+            animation: fadeIn 0.8s ease;
         }
-        @keyframes slideDown { from { top: -60px; } to { top: 15px; } }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
         .status-panel { 
             background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 20px 15px; 
@@ -147,10 +164,6 @@
     <button onclick="closeWelcome()" style="background:white; color:var(--primary); border:none; padding:18px 0; border-radius:20px; font-weight:800; margin-top:35px; width: 100%; max-width: 250px; box-shadow: 0 5px 20px rgba(0,0,0,0.2);">COMEÇAR</button>
 </div>
 
-<button id="install-button" onclick="installPWA()">
-    <span class="material-symbols-outlined">download_for_offline</span> INSTALAR APP
-</button>
-
 <header>
     <div class="brand-container">
         <svg version="1.1" viewBox="0 0 172 42" class="brand-logo-svg">
@@ -179,6 +192,10 @@
 </div>
 
 <div id="calendario-box"></div>
+
+<button id="install-button" onclick="installPWA()">
+    <span class="material-symbols-outlined">download_for_offline</span> INSTALAR APP DA ESCALA
+</button>
 
 <div class="tab-bar">
     <div class="tab" onclick="setRegion('BR')" id="tab-BR"><span class="material-symbols-outlined">factory</span>ECOFLAC</div>
