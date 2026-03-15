@@ -28,12 +28,12 @@
         :root {
             --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
             --accent: #A800C4; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
-            --semana-w: #85EBC9; --azul-mnt: #2196F3;
+            --semana-w: #00A97A; --azul-mnt: #2196F3;
         }
 
         body.dark-mode { 
             --bg: #121212; --card: #1E1E1E; --text: #E0E0E0; --border: #333333; 
-            --primary: #00C48D; --semana-w: #1B4D3E;
+            --primary: #00C48D; --semana-w: #00C48D;
         }
 
         body { 
@@ -98,7 +98,22 @@
         
         .grid { display: grid; grid-template-columns: 32px repeat(7, 1fr); gap: 7px; text-align: center; align-items: center; padding-top: 15px; }
         .dia-label { font-size: 0.7em; font-weight: 800; opacity: 0.6; color: var(--text); text-transform: uppercase; }
-        .dia-label-w { font-size: 0.65em; font-weight: 900; background: var(--semana-w); color: var(--primary); border-radius: 8px; height: 28px; display: flex; align-items: center; justify-content: center; }
+        
+        /* DESTAQUE DIFERENCIADO DA SEMANA (W) */
+        .dia-label-w { 
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75em; 
+            font-weight: 900; 
+            background: linear-gradient(135deg, var(--semana-w), #007d5a); 
+            color: #FFFFFF; 
+            border-radius: 8px; 
+            height: 28px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
         
         .dia { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-size: 1.1em; border: 2.8px solid transparent; transition: 0.2s; position: relative; }
 
