@@ -6,6 +6,10 @@
     <meta name="theme-color" content="#00A97A">
     <title>Braun On Line 2026/2027</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="maskable_icon_x192.png">
     <meta name="mobile-web-app-capable" content="yes">
@@ -99,7 +103,6 @@
         .grid { display: grid; grid-template-columns: 32px repeat(7, 1fr); gap: 7px; text-align: center; align-items: center; padding-top: 15px; }
         .dia-label { font-size: 0.7em; font-weight: 800; opacity: 0.6; color: var(--text); text-transform: uppercase; }
         
-        /* DESTAQUE DIFERENCIADO DA SEMANA (W) */
         .dia-label-w { 
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.75em; 
@@ -156,7 +159,7 @@
 <body>
 
 <div id="welcomeScreen" class="welcome-screen">
-    <img src="maskable_icon_x512.png" class="welcome-logo">
+    <img src="maskable_icon_x512.png" class="welcome-logo" alt="Braun Logo">
     <h1 style="font-weight: 800; margin-bottom: 10px;">Bem-vindo ao<br>Braun On Line</h1>
     <button onclick="closeWelcome()" style="background:white; color:var(--primary); border:none; padding:18px 0; border-radius:20px; font-weight:800; margin-top:35px; width: 100%; max-width: 250px;">COMEÇAR</button>
 </div>
@@ -271,8 +274,20 @@
     let deferredPrompt;
     const installBtn = document.getElementById('install-button');
 
+    // Registro Otimizado do Service Worker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log('Erro SW:', err)); });
+      window.addEventListener('load', () => { 
+        navigator.serviceWorker.register('./sw.js').then(reg => {
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing;
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('Nova versão pronta. Atualize o app.');
+              }
+            };
+          };
+        }).catch(err => console.log('Erro SW:', err)); 
+      });
     }
 
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; installBtn.style.display = 'flex'; });

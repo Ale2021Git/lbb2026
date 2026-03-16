@@ -5,10 +5,18 @@
   "description": "Consulta de escala de turnos e anotações para colaboradores Braun.",
   "start_url": "./index.html",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "portrait",
   "background_color": "#F4F7F6",
   "theme_color": "#00A97A",
   "scope": "./",
+  "shortcuts": [
+    {
+      "name": "Ver Escala",
+      "url": "./index.html",
+      "icons": [{ "src": "maskable_icon_x192.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "maskable_icon_x192.png",
