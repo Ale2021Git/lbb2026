@@ -1,6 +1,6 @@
 {
   "name": "Braun On Line",
-  "short_name": "BraunOL",
+  "short_name": "Braun Online",
   "description": "Plataforma oficial da Braun On Line para gestão e acesso.",
   "start_url": "./index.html",
   "display": "standalone",
