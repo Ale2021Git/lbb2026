@@ -160,9 +160,18 @@
 
 <div id="welcomeScreen" class="welcome-screen">
     <img src="maskable_icon_x512.png" class="welcome-logo" alt="Braun Logo">
-    <h1 style="font-weight: 800; margin-bottom: 10px;">Bem-vindo ao<br>Braun On Line</h1>
-    <button onclick="closeWelcome()" style="background:white; color:var(--primary); border:none; padding:18px 0; border-radius:20px; font-weight:800; margin-top:35px; width: 100%; max-width: 250px;">COMEÇAR</button>
+    <h1>Braun On Line</h1>
+    <p>Sua escala na palma da mão.</p>
+    
+    <button class="btn-comecar" onclick="closeWelcome()">
+        ENTRAR NO APP
+    </button>
+    
+    <div style="position: absolute; bottom: 40px; font-size: 0.75em; opacity: 0.7; font-weight: 600; letter-spacing: 1px;">
+        VERSÃO 2026 / 2027
+    </div>
 </div>
+
 
 <button id="install-button" onclick="installPWA()">
     <span class="material-symbols-outlined">download_for_offline</span> INSTALAR APP
