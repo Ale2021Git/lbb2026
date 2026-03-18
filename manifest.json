@@ -1,7 +1,7 @@
 {
-  "name": "Braun On Line",
+  "name": "Braun OnLine",
   "short_name": "Braun OnLine",
-  "description": "Plataforma oficial da Braun On Line para gestão e acesso.",
+  "description": "Plataforma oficial da Braun OnLine para gestão e acesso.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#00A97A",
