@@ -1,53 +1,56 @@
-// Nome do cache - Altere a versão (v1.1, v1.2...) sempre que atualizar o HTML ou CSS
-const CACHE_NAME = 'braun-v1.7';
+// Nome do cache - Incremente a versão sempre que fizer mudanças grandes
+const CACHE_NAME = 'braun-v2.0';
 
-// Lista de arquivos essenciais para o funcionamento offline
+// Lista de arquivos essenciais (Incluindo os novos screenshots do manifesto)
 const assets = [
   './',
   './index.html',
   './manifest.json',
   './maskable_icon_x192.png',
-  './maskable_icon_x512.png'
+  './maskable_icon_x512.png',
+  './screenshot-mobile.png',
+  './screenshot-desktop.png'
 ];
 
-// 1. Instalação: Salva os arquivos essenciais no cache do navegador
+// 1. Instalação: Armazena os arquivos básicos
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('PWA: Arquivos básicos armazenados no cache.');
+      console.log('PWA: Cacheando arquivos essenciais...');
+      // Usamos return para garantir que a instalação só termine após o cache
       return cache.addAll(assets);
     })
   );
-  // Força o Service Worker a se tornar ativo imediatamente
   self.skipWaiting();
 });
 
-// 2. Ativação: Remove caches de versões antigas para liberar espaço e evitar conflitos
+// 2. Ativação: Limpeza de caches antigos
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('PWA: Removendo cache antigo:', cache);
+            console.log('PWA: Removendo cache obsoleto:', cache);
             return caches.delete(cache);
           }
         })
       );
     })
   );
-  // Garante que o Service Worker controle a página imediatamente
   self.clients.claim();
 });
 
-// 3. Interceptação de Busca (Fetch): Estratégia Stale-While-Revalidate
-// Serve o conteúdo do cache para velocidade máxima, mas busca atualização na rede
+// 3. Interceptação (Fetch): Estratégia Stale-While-Revalidate melhorada
 self.addEventListener('fetch', (event) => {
+  // Ignora requisições que não sejam HTTP ou HTTPS (evita erro com extensões do Chrome)
+  if (!(event.request.url.indexOf('http') === 0)) return;
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
-        // Se a resposta da rede for válida, atualiza o cache para a próxima visita
-        if (networkResponse && networkResponse.status === 200) {
+        // Verifica se a resposta é válida e do tipo "basic" (mesma origem) antes de salvar
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
@@ -55,10 +58,10 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // Fallback: Se a rede falhar e não houver cache, você pode retornar uma página offline aqui
+        // Opcional: retornar uma página de erro offline específica aqui
+        return cachedResponse;
       });
 
-      // Retorna o cache se existir, caso contrário espera pela rede
       return cachedResponse || fetchPromise;
     })
   );
