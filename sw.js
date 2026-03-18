@@ -1,5 +1,5 @@
 // Nome do cache - Altere a versão (v1.1, v1.2...) sempre que atualizar o HTML ou CSS
-const CACHE_NAME = 'braun-v1.6';
+const CACHE_NAME = 'braun-v1.7';
 
 // Lista de arquivos essenciais para o funcionamento offline
 const assets = [
