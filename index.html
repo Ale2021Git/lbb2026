@@ -78,6 +78,12 @@
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
+        .btn-comecar {
+            background: white; color: var(--primary); border: none; padding: 15px 40px;
+            border-radius: 30px; font-weight: 800; font-size: 1.1em; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-top: 20px;
+        }
+
         header {
             background: var(--primary); padding: 45px 18px 20px 18px; color: white; display: flex;
             justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
@@ -151,7 +157,7 @@
         .ramal-badge:active { transform: scale(0.95); background: var(--primary); color: white; }
         .ramal-secao { background: var(--primary); color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.75em; font-weight: 800; margin: 20px 0 5px 0; }
        
-        /* Estilos Novos para Estatísticas baseados na imagem */
+        /* Estilos para Estatísticas */
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .stat-card-big {
             background: var(--bg); padding: 20px 10px; border-radius: 20px; border: 1px solid var(--border);
@@ -164,7 +170,7 @@
         .stat-val-big.teal { color: var(--verde); }
         .stat-lab-big { font-size: 0.75em; font-weight: 800; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Estilo do Gerador de Lote no Card */
+        /* Estilo do Gerador de Lote */
         .lote-box {
             background: var(--bg); border: 2px dashed var(--primary); border-radius: 15px;
             padding: 12px; margin-bottom: 15px; text-align: center; position: relative;
@@ -172,6 +178,10 @@
         .lote-label { font-size: 0.65em; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block;}
         .lote-value { font-family: 'JetBrains Mono', monospace; font-size: 1.6em; font-weight: 800; color: var(--text); letter-spacing: 2px; }
         .lote-copy { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; }
+
+        /* Rodapé de Segurança Google */
+        footer { text-align: center; padding: 40px 20px; font-size: 12px; color: var(--text); opacity: 0.6; }
+        .privacy-link { color: var(--primary); font-weight: 800; text-decoration: none; display: block; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -189,7 +199,6 @@
         VERSÃO 2026 / 2027
     </div>
 </div>
-
 
 <button id="install-button" onclick="installPWA()">
     <span class="material-symbols-outlined">download_for_offline</span> INSTALAR APP
@@ -224,6 +233,11 @@
 
 <div id="calendario-box"></div>
 
+<footer>
+    <p>© 2026 Braun OnLine - Todos os direitos reservados</p>
+    <span class="privacy-link" onclick="openPrivacy()">Política de Privacidade</span>
+</footer>
+
 <div class="tab-bar">
     <div class="tab" onclick="setRegion('BR')" id="tab-BR"><span class="material-symbols-outlined">factory</span>ECOFLAC</div>
     <div class="tab" onclick="setRegion('MNT')" id="tab-MNT"><span class="material-symbols-outlined">engineering</span>MANUTENÇÃO</div>
@@ -247,61 +261,59 @@
 <div id="statsCard" class="bottom-modal">
     <h2 style="font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 20px;">Estatísticas Detalhadas</h2>
     <div id="stats-content"></div>
-    <button onclick="closeAllModals()" id="btn-fechar-stats" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em; letter-spacing: 1px;">FECHAR</button>
+    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em;">FECHAR</button>
 </div>
 
 <div id="ramaisCard" class="bottom-modal">
     <h2 style="font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 10px;">Ramais Úteis</h2>
    
-    <div class="ramal-secao">SERVIÇOS & URGÊNCIAS</div>
+    <div class="ramal-secao">URGÊNCIAS & SERVIÇOS</div>
     <div class="ramal-item"><span class="ramal-nome">Portaria</span><div class="ramal-numeros-container"><a href="tel:26023211" class="ramal-badge">3211</a> <a href="tel:26023214" class="ramal-badge">3214</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Serviço Médico</span><div class="ramal-numeros-container"><a href="tel:26023160" class="ramal-badge">3160</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Banco Itaú</span><div class="ramal-numeros-container"><a href="tel:26023110" class="ramal-badge">3110</a></div></div>
 
     <div class="ramal-secao">ECOFLAC - ADMINISTRAÇÃO</div>
-    <div class="ramal-item"><span class="ramal-nome">Rosimar</span><div class="ramal-numeros-container"><a href="tel:26023436" class="ramal-badge">3436</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Rubens</span><div class="ramal-numeros-container"><a href="tel:26023269" class="ramal-badge">3269</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Adriana / Rafael</span><div class="ramal-numeros-container"><a href="tel:26023467" class="ramal-badge">3467</a></div></div>
-   
-    <div class="ramal-secao">CONTROLE & QUALIDADE</div>
+    <div class="ramal-item"><span class="ramal-nome">Administração - Rosimar</span><div class="ramal-numeros-container"><a href="tel:26023436" class="ramal-badge">3436</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Administr. - Rubens</span><div class="ramal-numeros-container"><a href="tel:26023269" class="ramal-badge">3269</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Administr. - Adriana/Rafael</span><div class="ramal-numeros-container"><a href="tel:26023467" class="ramal-badge">3467</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Controle Biológico</span><div class="ramal-numeros-container"><a href="tel:26023430" class="ramal-badge">3430</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Controle Físico</span><div class="ramal-numeros-container"><a href="tel:26023343" class="ramal-badge">3343</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Controle Químico</span><div class="ramal-numeros-container"><a href="tel:26023429" class="ramal-badge">3429</a></div></div>
+    
+    <div class="ramal-secao">PRODUÇÃO & ENGENHARIA</div>
     <div class="ramal-item"><span class="ramal-nome">Eng. de Produção</span><div class="ramal-numeros-container"><a href="tel:26023174" class="ramal-badge">3174</a></div></div>
-   
-    <div class="ramal-secao">OPERAÇÃO & MANUTENÇÃO</div>
     <div class="ramal-item"><span class="ramal-nome">Utilidades</span><div class="ramal-numeros-container"><a href="tel:26023427" class="ramal-badge">3427</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Manutenção</span><div class="ramal-numeros-container"><a href="tel:26023426" class="ramal-badge">3426</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Davis</span><div class="ramal-numeros-container"><a href="tel:26023478" class="ramal-badge">3478</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Osmose</span><div class="ramal-numeros-container"><a href="tel:26023529" class="ramal-badge">3529</a></div></div>
-    <div class="ramal-item">
-        <span class="ramal-nome">Moinho</span>
-        <div class="ramal-numeros-container">
-            <a href="tel:26023433" class="ramal-badge">3433</a>
-            <a href="tel:26023506" class="ramal-badge">3506</a>
-        </div>
-    </div>
+    <div class="ramal-item"><span class="ramal-nome">Moinho</span><div class="ramal-numeros-container"><a href="tel:26023433" class="ramal-badge">3433</a> <a href="tel:26023506" class="ramal-badge">3506</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Preparo</span><div class="ramal-numeros-container"><a href="tel:26023421" class="ramal-badge">3421</a></div></div>
-   
-    <div class="ramal-secao">ENVASAMENTO</div>
-    <div class="ramal-item"><span class="ramal-nome">Env. 1 (250/500ml)</span><div class="ramal-numeros-container"><a href="tel:26023431" class="ramal-badge">3431</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Env. 2 (100ml)</span><div class="ramal-numeros-container"><a href="tel:26023422" class="ramal-badge">3422</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Env. 3 (1000ml)</span><div class="ramal-numeros-container"><a href="tel:26023434" class="ramal-badge">3434</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Env. 4 (500ml)</span><div class="ramal-numeros-container"><a href="tel:26023561" class="ramal-badge">3561</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Env. 5 (100ml)</span><div class="ramal-numeros-container"><a href="tel:26023713" class="ramal-badge">3713</a></div></div>
-   
-    <div class="ramal-secao">FINALIZAÇÃO</div>
-    <div class="ramal-item"><span class="ramal-nome">Esterilização</span><div class="ramal-numeros-container"><a href="tel:26023432" class="ramal-badge">3432</a></div></div>
-    <div class="ramal-item">
-        <span class="ramal-nome">Rotulagem</span>
-        <div class="ramal-numeros-container">
-            <a href="tel:26023423" class="ramal-badge">3423</a>
-            <a href="tel:26023571" class="ramal-badge">3571</a>
-        </div>
-    </div>
-    <div class="ramal-item"><span class="ramal-nome">Farmacêuticos</span><div class="ramal-numeros-container"><a href="tel:26023408" class="ramal-badge">3408</a></div></div>
 
+    <div class="ramal-secao">ENVASAMENTO & APOIO</div>
+    <div class="ramal-item"><span class="ramal-nome">Envasamento 1 (250/500ml)</span><div class="ramal-numeros-container"><a href="tel:26023431" class="ramal-badge">3431</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Envasamento 2 (100ml)</span><div class="ramal-numeros-container"><a href="tel:26023422" class="ramal-badge">3422</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Envasamento 3 (1000ml)</span><div class="ramal-numeros-container"><a href="tel:26023434" class="ramal-badge">3434</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Envasamento 4 (500ml)</span><div class="ramal-numeros-container"><a href="tel:26023561" class="ramal-badge">3561</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Envasamento 5 (100ml)</span><div class="ramal-numeros-container"><a href="tel:26023713" class="ramal-badge">3713</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Esterilização</span><div class="ramal-numeros-container"><a href="tel:26023432" class="ramal-badge">3432</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Rotulagem</span><div class="ramal-numeros-container"><a href="tel:26023423" class="ramal-badge">3423</a> <a href="tel:26023571" class="ramal-badge">3571</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Farmacêuticos</span><div class="ramal-numeros-container"><a href="tel:26023408" class="ramal-badge">3408</a></div></div>
+   
     <button onclick="closeAllModals()" style="background:var(--border); color:var(--text); border:none; padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:20px;">FECHAR</button>
+</div>
+
+<div id="privacyCard" class="bottom-modal">
+    <h2 style="font-weight: 800; color: var(--primary); margin-top: 0;">Política de Privacidade</h2>
+    <p style="font-size: 0.9em; line-height: 1.6; opacity: 0.8;">
+        Este aplicativo (Braun OnLine) é uma ferramenta de uso pessoal e informativo para gestão de escalas e calendários.
+        <br><br>
+        <b>Coleta de Dados:</b> Não coletamos, não transmitimos e não compartilhamos nenhum dado pessoal ou sensível. 
+        <br><br>
+        <b>Armazenamento:</b> Todas as suas configurações (escolha de turma, modo escuro) e anotações pessoais são salvas exclusivamente no seu dispositivo através do recurso <i>localStorage</i> do navegador. Se você limpar o cache do navegador, os dados serão excluídos.
+        <br><br>
+        <b>Segurança:</b> O app funciona sob protocolo HTTPS e utiliza tecnologias padrão de Progressive Web App (PWA).
+    </p>
+    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:20px;">ENTENDI</button>
 </div>
 
 <script>
@@ -355,8 +367,27 @@
     }
 
     function getFeriados(ano) {
-        const f = {"01-01":"Ano Novo", "01-10":"Padroeiro SG", "04-21":"Tiradentes", "04-23":"São Jorge", "05-01":"Trabalho", "09-07":"Independência", "09-22":"Aniv. SG", "10-12":"Aparecida", "11-02":"Finados", "11-15":"República", "11-20":"Zumbi", "12-25":"Natal"};
-        if (ano === 2026) { f["02-17"] = "Carnaval"; f["04-03"] = "Sexta Santa"; } else { f["02-09"] = "Carnaval"; f["03-26"] = "Sexta Santa"; }
+        const f = {
+            "01-01":"Ano Novo", 
+            "01-10":"Padroeiro SG", 
+            "04-21":"Tiradentes", 
+            "04-23":"São Jorge", 
+            "05-01":"Trabalho", 
+            "09-07":"Independência", 
+            "09-22":"Aniv. SG", 
+            "10-12":"Aparecida", 
+            "11-02":"Finados", 
+            "11-15":"República", 
+            "11-20":"Zumbi", 
+            "12-25":"Natal"
+        };
+        if (ano === 2026) { 
+            f["02-17"] = "Carnaval"; 
+            f["04-03"] = "Sexta Santa"; 
+        } else if (ano === 2027) { 
+            f["02-09"] = "Carnaval"; 
+            f["03-26"] = "Sexta Santa"; 
+        }
         return f;
     }
 
@@ -410,21 +441,17 @@
         }
     }
 
-    let lastDateCheck = "";
     function tick() {
         const now = new Date();
         const bigClock = document.getElementById('big-clock');
         if (bigClock) bigClock.innerText = now.toLocaleTimeString('pt-BR');
         
-        const currentDateStr = now.toDateString();
         const t = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
-
-        if (currentDateStr !== lastDateCheck && t && msg) {
+        if (t && msg) {
             const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
             msg.innerText = res ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
             msg.style.color = res ? "var(--accent)" : "var(--primary)";
-            lastDateCheck = currentDateStr;
         }
     }
 
@@ -433,15 +460,11 @@
         const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'), d = iso.split('-'); 
         document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`; 
         document.getElementById('noteInput').value = logs[iso] || ""; 
-        
-        // Gerar Lote para o dia selecionado
         const dtSel = new Date(d[0], d[1]-1, d[2]);
         const yy = dtSel.getFullYear().toString().slice(-2);
         const ww = String(getWeekNumber(dtSel)).padStart(2, '0');
-        let diaSem = dtSel.getDay();
-        diaSem = (diaSem === 0) ? 7 : diaSem; // Ajuste para Domingo = 7
+        let diaSem = dtSel.getDay(); diaSem = (diaSem === 0) ? 7 : diaSem;
         document.getElementById('lote-display').innerText = `${yy}${ww}${diaSem}`;
-
         document.getElementById('overlay').style.display = 'block'; 
         document.getElementById('infoCard').classList.add('show'); 
     }
@@ -451,29 +474,40 @@
         navigator.clipboard.writeText(lote);
         const disp = document.getElementById('lote-display');
         const originalText = disp.innerText;
-        disp.innerText = "COPIADO!";
-        setTimeout(() => disp.innerText = originalText, 1000);
+        disp.innerText = "COPIADO!"; setTimeout(() => disp.innerText = originalText, 1000);
     }
 
     function openRamais() { document.getElementById('overlay').style.display = 'block'; document.getElementById('ramaisCard').classList.add('show'); }
+    function openPrivacy() { document.getElementById('overlay').style.display = 'block'; document.getElementById('privacyCard').classList.add('show'); }
    
-    // Função openStats Atualizada para o novo layout
     function openStats() {
         const ano = parseInt(document.getElementById('anoSelect').value);
         const turma = document.getElementById('turmaSelect').value;
         const feriados = getFeriados(ano);
         const content = document.getElementById('stats-content');
-       
+        
         let diasTrabalho = 0, diasFolga = 0, feriadosTrab = 0, feriadosFolga = 0;
+        let listaFeriadosHTML = "";
 
         for (let m = 0; m < 12; m++) {
             for (let d = 1; d <= new Date(ano, m + 1, 0).getDate(); d++) {
                 const dataTeste = new Date(ano, m, d);
                 const isoS = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const res = (currentRegion === 'BR') ? checkBR(dataTeste, turma).trab : checkMnt(dataTeste, turma).trab;
-               
+                
                 if (res) diasTrabalho++; else diasFolga++;
-                if (feriados[isoS]) { if (res) feriadosTrab++; else feriadosFolga++; }
+
+                if (feriados[isoS]) {
+                    const statusText = res ? "TRAB" : "FOLGA";
+                    const corTexto = res ? "#A800C4" : "#00A97A";
+                    if (res) feriadosTrab++; else feriadosFolga++;
+
+                    listaFeriadosHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--border); font-size: 0.9em;">
+                            <span style="font-weight: 600;">${d.toString().padStart(2,'0')}/${(m+1).toString().padStart(2,'0')} - ${feriados[isoS]}</span>
+                            <span style="font-weight: 900; color: ${corTexto};">${statusText}</span>
+                        </div>`;
+                }
             }
         }
 
@@ -484,27 +518,20 @@
                 <div class="stat-card-big purple"><div class="stat-val-big purple">${feriadosTrab}</div><div class="stat-lab-big">Feriado c/ Trab</div></div>
                 <div class="stat-card-big teal"><div class="stat-val-big teal">${feriadosFolga}</div><div class="stat-lab-big">Feriado de Folga</div></div>
             </div>
-
-            <h3 style="font-weight: 800; color: var(--primary); margin-bottom: 15px; font-size: 1.2em;">Cruzamento de Feriados</h3>
-            <div style="border: 1px solid var(--border); border-radius:22px; background:var(--bg); padding:5px 15px;">
-                ${Object.entries(feriados).map(([data, nome]) => {
-                    const [mes, dia] = data.split('-');
-                    const dtF = new Date(ano, parseInt(mes)-1, parseInt(dia));
-                    const isTrab = (currentRegion === 'BR') ? checkBR(dtF, turma).trab : checkMnt(dtF, turma).trab;
-                    return `<div style="display:flex; justify-content:space-between; align-items: center; padding:15px 0; border-bottom:1px solid rgba(0,0,0,0.05);">
-                        <span style="font-size: 0.95em;">${dia}/${mes} - <b>${nome}</b></span>
-                        <span style="color:${isTrab ? 'var(--accent)' : 'var(--primary)'}; font-weight:900; font-size: 0.85em; letter-spacing: 0.5px;">${isTrab ? 'TRAB' : 'FOLGA'}</span>
-                    </div>`;
-                }).join('')}
+            
+            <h3 style="font-size: 1.1em; color: var(--primary); margin: 25px 0 10px 0; font-weight: 800; text-align: left;">Cruzamento de Feriados</h3>
+            <div style="background: var(--bg); border-radius: 20px; padding: 10px; border: 1px solid var(--border); text-align: left;">
+                ${listaFeriadosHTML || '<div style="text-align:center; opacity:0.5; padding:10px;">Nenhum feriado encontrado.</div>'}
             </div>
         `;
+        
         document.getElementById('overlay').style.display = 'block'; 
         document.getElementById('statsCard').classList.add('show');
     }
 
     function saveNota() { const msg = document.getElementById('noteInput').value.trim(), logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'); if (msg) logs[dataAtiva] = msg; else delete logs[dataAtiva]; localStorage.setItem('logs_v26', JSON.stringify(logs)); closeAllModals(); gerarCalendario(); }
     function closeAllModals() { document.querySelectorAll('.bottom-modal').forEach(m => m.classList.remove('show')); document.getElementById('overlay').style.display = 'none'; }
-    function salvarTurma() { localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); lastDateCheck = ""; gerarCalendario(); tick(); }
+    function salvarTurma() { localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value); gerarCalendario(); tick(); }
     function salvarAno() { localStorage.setItem('braun_ano', document.getElementById('anoSelect').value); gerarCalendario(); }
     function toggleDarkMode() { const isDark = document.body.classList.toggle('dark-mode'); localStorage.setItem('braun_dark', isDark); }
     function scrollToToday() { setTimeout(() => { const h = document.querySelector('.hoje'); if (h) { const y = h.closest('.mes-container').getBoundingClientRect().top + window.pageYOffset - 120; window.scrollTo({top: y, behavior: 'smooth'}); } }, 500); }
