@@ -151,16 +151,34 @@
         .ramal-badge:active { transform: scale(0.95); background: var(--primary); color: white; }
         .ramal-secao { background: var(--primary); color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.75em; font-weight: 800; margin: 20px 0 5px 0; }
        
-        .stat-card-mini { background: var(--bg); padding: 10px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; }
-        .stat-val { font-size: 1.3em; font-weight: 800; color: var(--primary); }
-        .stat-lab { font-size: 0.65em; font-weight: 700; opacity: 0.7; text-transform: uppercase; }
+        /* Estilos Novos para Estatísticas baseados na imagem */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .stat-card-big {
+            background: var(--bg); padding: 20px 10px; border-radius: 20px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .stat-card-big.purple { border-color: var(--accent); }
+        .stat-card-big.teal { border-color: var(--verde); }
+        .stat-val-big { font-size: 2.2em; font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .stat-val-big.purple { color: var(--accent); }
+        .stat-val-big.teal { color: var(--verde); }
+        .stat-lab-big { font-size: 0.75em; font-weight: 800; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Estilo do Gerador de Lote no Card */
+        .lote-box {
+            background: var(--bg); border: 2px dashed var(--primary); border-radius: 15px;
+            padding: 12px; margin-bottom: 15px; text-align: center; position: relative;
+        }
+        .lote-label { font-size: 0.65em; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block;}
+        .lote-value { font-family: 'JetBrains Mono', monospace; font-size: 1.6em; font-weight: 800; color: var(--text); letter-spacing: 2px; }
+        .lote-copy { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="welcomeScreen" class="welcome-screen">
     <img src="maskable_icon_x512.png" class="welcome-logo" alt="Braun Logo">
-    <h1>Braun On Line</h1>
+    <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     
     <button class="btn-comecar" onclick="closeWelcome()">
@@ -185,7 +203,7 @@
         </svg>
     </div>
     <div style="display:flex; gap:12px;">
-        <span class="material-symbols-outlined" onclick="openRamais()">phone_in_talk</span>
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1" onclick="openRamais()">call</span>
         <span class="material-symbols-outlined" onclick="openStats()">analytics</span>
         <span class="material-symbols-outlined" onclick="toggleDarkMode()">brightness_4</span>
     </div>
@@ -214,15 +232,22 @@
 <div id="overlay" onclick="closeAllModals()"></div>
 
 <div id="infoCard" class="bottom-modal">
-    <div id="card-data" style="font-weight: 800; color: var(--primary); font-size: 1.3em; margin-bottom: 15px;"></div>
+    <div id="card-data" style="font-weight: 800; color: var(--primary); font-size: 1.3em; margin-bottom: 10px;"></div>
+    
+    <div class="lote-box">
+        <span class="lote-label">Lote Sugerido (YYWWD)</span>
+        <div id="lote-display" class="lote-value">------</div>
+        <span class="material-symbols-outlined lote-copy" onclick="copyLote()">content_copy</span>
+    </div>
+
     <textarea id="noteInput" placeholder="Sua anotação..." rows="5" style="width:100%; border-radius:20px; padding:18px; box-sizing:border-box; border: 2.5px solid var(--border); font-family: inherit; background: var(--bg); color: var(--text); outline: none;"></textarea>
     <button onclick="saveNota()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; width:100%; margin-top:15px;">SALVAR</button>
 </div>
 
 <div id="statsCard" class="bottom-modal">
-    <h2 style="font-weight: 800; color: var(--primary); margin-top: 0;">Estatísticas Detalhadas</h2>
-    <div id="stats-content" style="line-height: 1.6;"></div>
-    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:20px;">FECHAR</button>
+    <h2 style="font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 20px;">Estatísticas Detalhadas</h2>
+    <div id="stats-content"></div>
+    <button onclick="closeAllModals()" id="btn-fechar-stats" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em; letter-spacing: 1px;">FECHAR</button>
 </div>
 
 <div id="ramaisCard" class="bottom-modal">
@@ -385,7 +410,6 @@
         }
     }
 
-    // Tick otimizado para economizar bateria
     let lastDateCheck = "";
     function tick() {
         const now = new Date();
@@ -396,7 +420,6 @@
         const t = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
 
-        // Só recalcula status se o dia mudar ou se for a primeira vez
         if (currentDateStr !== lastDateCheck && t && msg) {
             const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
             msg.innerText = res ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
@@ -405,11 +428,37 @@
         }
     }
 
-    function openCard(iso) { dataAtiva = iso; const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'), d = iso.split('-'); document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`; document.getElementById('noteInput').value = logs[iso] || ""; document.getElementById('overlay').style.display = 'block'; document.getElementById('infoCard').classList.add('show'); }
+    function openCard(iso) { 
+        dataAtiva = iso; 
+        const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'), d = iso.split('-'); 
+        document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`; 
+        document.getElementById('noteInput').value = logs[iso] || ""; 
+        
+        // Gerar Lote para o dia selecionado
+        const dtSel = new Date(d[0], d[1]-1, d[2]);
+        const yy = dtSel.getFullYear().toString().slice(-2);
+        const ww = String(getWeekNumber(dtSel)).padStart(2, '0');
+        let diaSem = dtSel.getDay();
+        diaSem = (diaSem === 0) ? 7 : diaSem; // Ajuste para Domingo = 7
+        document.getElementById('lote-display').innerText = `${yy}${ww}${diaSem}`;
+
+        document.getElementById('overlay').style.display = 'block'; 
+        document.getElementById('infoCard').classList.add('show'); 
+    }
+
+    function copyLote() {
+        const lote = document.getElementById('lote-display').innerText;
+        navigator.clipboard.writeText(lote);
+        const disp = document.getElementById('lote-display');
+        const originalText = disp.innerText;
+        disp.innerText = "COPIADO!";
+        setTimeout(() => disp.innerText = originalText, 1000);
+    }
+
     function openRamais() { document.getElementById('overlay').style.display = 'block'; document.getElementById('ramaisCard').classList.add('show'); }
    
+    // Função openStats Atualizada para o novo layout
     function openStats() {
-        const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
         const ano = parseInt(document.getElementById('anoSelect').value);
         const turma = document.getElementById('turmaSelect').value;
         const feriados = getFeriados(ano);
@@ -429,26 +478,28 @@
         }
 
         content.innerHTML = `
-            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-bottom:15px;">
-                <div class="stat-card-mini"><div class="stat-val">${diasTrabalho}d</div><div class="stat-lab">Trabalho</div></div>
-                <div class="stat-card-mini"><div class="stat-val">${diasFolga}d</div><div class="stat-lab">Folgas</div></div>
-                <div class="stat-card-mini" style="border-color:var(--accent);"><div class="stat-val" style="color:var(--accent)">${feriadosTrab}</div><div class="stat-lab">Feriado c/ Trab</div></div>
-                <div class="stat-card-mini" style="border-color:var(--verde);"><div class="stat-val" style="color:var(--verde)">${feriadosFolga}</div><div class="stat-lab">Feriado de Folga</div></div>
+            <div class="stat-grid">
+                <div class="stat-card-big"><div class="stat-val-big">${diasTrabalho}d</div><div class="stat-lab-big">Trabalho</div></div>
+                <div class="stat-card-big"><div class="stat-val-big">${diasFolga}d</div><div class="stat-lab-big">Folgas</div></div>
+                <div class="stat-card-big purple"><div class="stat-val-big purple">${feriadosTrab}</div><div class="stat-lab-big">Feriado c/ Trab</div></div>
+                <div class="stat-card-big teal"><div class="stat-val-big teal">${feriadosFolga}</div><div class="stat-lab-big">Feriado de Folga</div></div>
             </div>
-            <h3 style="font-size:1em; color:var(--primary); margin-bottom:10px;">Cruzamento de Feriados</h3>
-            <div style="max-height:180px; overflow-y:auto; border: 1px solid var(--border); border-radius:15px; background:var(--bg); padding:10px;">
+
+            <h3 style="font-weight: 800; color: var(--primary); margin-bottom: 15px; font-size: 1.2em;">Cruzamento de Feriados</h3>
+            <div style="border: 1px solid var(--border); border-radius:22px; background:var(--bg); padding:5px 15px;">
                 ${Object.entries(feriados).map(([data, nome]) => {
                     const [mes, dia] = data.split('-');
                     const dtF = new Date(ano, parseInt(mes)-1, parseInt(dia));
                     const isTrab = (currentRegion === 'BR') ? checkBR(dtF, turma).trab : checkMnt(dtF, turma).trab;
-                    return `<div style="display:flex; justify-content:space-between; font-size:0.85em; padding:5px 0; border-bottom:1px solid var(--border);">
-                        <span>${dia}/${mes} - <b>${nome}</b></span>
-                        <span style="color:${isTrab ? 'var(--accent)' : 'var(--primary)'}; font-weight:800;">${isTrab ? 'TRAB' : 'FOLGA'}</span>
+                    return `<div style="display:flex; justify-content:space-between; align-items: center; padding:15px 0; border-bottom:1px solid rgba(0,0,0,0.05);">
+                        <span style="font-size: 0.95em;">${dia}/${mes} - <b>${nome}</b></span>
+                        <span style="color:${isTrab ? 'var(--accent)' : 'var(--primary)'}; font-weight:900; font-size: 0.85em; letter-spacing: 0.5px;">${isTrab ? 'TRAB' : 'FOLGA'}</span>
                     </div>`;
                 }).join('')}
             </div>
         `;
-        document.getElementById('overlay').style.display = 'block'; document.getElementById('statsCard').classList.add('show');
+        document.getElementById('overlay').style.display = 'block'; 
+        document.getElementById('statsCard').classList.add('show');
     }
 
     function saveNota() { const msg = document.getElementById('noteInput').value.trim(), logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'); if (msg) logs[dataAtiva] = msg; else delete logs[dataAtiva]; localStorage.setItem('logs_v26', JSON.stringify(logs)); closeAllModals(); gerarCalendario(); }
