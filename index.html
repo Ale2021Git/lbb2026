@@ -157,7 +157,6 @@
         .ramal-badge:active { transform: scale(0.95); background: var(--primary); color: white; }
         .ramal-secao { background: var(--primary); color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.75em; font-weight: 800; margin: 20px 0 5px 0; }
        
-        /* Estilos para Estatísticas */
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .stat-card-big {
             background: var(--bg); padding: 20px 10px; border-radius: 20px; border: 1px solid var(--border);
@@ -170,7 +169,6 @@
         .stat-val-big.teal { color: var(--verde); }
         .stat-lab-big { font-size: 0.75em; font-weight: 800; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Estilo do Gerador de Lote */
         .lote-box {
             background: var(--bg); border: 2px dashed var(--primary); border-radius: 15px;
             padding: 12px; margin-bottom: 15px; text-align: center; position: relative;
@@ -179,7 +177,6 @@
         .lote-value { font-family: 'JetBrains Mono', monospace; font-size: 1.6em; font-weight: 800; color: var(--text); letter-spacing: 2px; }
         .lote-copy { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; }
 
-        /* Rodapé de Segurança Google */
         footer { text-align: center; padding: 40px 20px; font-size: 12px; color: var(--text); opacity: 0.6; }
         .privacy-link { color: var(--primary); font-weight: 800; text-decoration: none; display: block; margin-top: 10px; cursor: pointer; }
     </style>
@@ -363,31 +360,17 @@
         const savedTurma = localStorage.getItem(`braun_turma_${r}`);
         if (savedTurma) s.value = savedTurma;
 
-        gerarCalendario(); tick(); scrollToToday();
+        gerarCalendario(); tick(); 
     }
 
     function getFeriados(ano) {
         const f = {
-            "01-01":"Ano Novo", 
-            "01-10":"Padroeiro SG", 
-            "04-21":"Tiradentes", 
-            "04-23":"São Jorge", 
-            "05-01":"Trabalho", 
-            "09-07":"Independência", 
-            "09-22":"Aniv. SG", 
-            "10-12":"Aparecida", 
-            "11-02":"Finados", 
-            "11-15":"República", 
-            "11-20":"Zumbi", 
-            "12-25":"Natal"
+            "01-01":"Ano Novo", "01-10":"Padroeiro SG", "04-21":"Tiradentes", "04-23":"São Jorge", 
+            "05-01":"Trabalho", "09-07":"Independência", "09-22":"Aniv. SG", "10-12":"Aparecida", 
+            "11-02":"Finados", "11-15":"República", "11-20":"Zumbi", "12-25":"Natal"
         };
-        if (ano === 2026) { 
-            f["02-17"] = "Carnaval"; 
-            f["04-03"] = "Sexta Santa"; 
-        } else if (ano === 2027) { 
-            f["02-09"] = "Carnaval"; 
-            f["03-26"] = "Sexta Santa"; 
-        }
+        if (ano === 2026) { f["02-17"] = "Carnaval"; f["04-03"] = "Sexta Santa"; }
+        else if (ano === 2027) { f["02-09"] = "Carnaval"; f["03-26"] = "Sexta Santa"; }
         return f;
     }
 
@@ -445,7 +428,6 @@
         const now = new Date();
         const bigClock = document.getElementById('big-clock');
         if (bigClock) bigClock.innerText = now.toLocaleTimeString('pt-BR');
-        
         const t = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
         if (t && msg) {
@@ -461,12 +443,10 @@
         document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`; 
         document.getElementById('noteInput').value = logs[iso] || ""; 
         const dtSel = new Date(d[0], d[1]-1, d[2]);
-        const yy = dtSel.getFullYear().toString().slice(-2);
-        const ww = String(getWeekNumber(dtSel)).padStart(2, '0');
+        const yy = dtSel.getFullYear().toString().slice(-2), ww = String(getWeekNumber(dtSel)).padStart(2, '0');
         let diaSem = dtSel.getDay(); diaSem = (diaSem === 0) ? 7 : diaSem;
         document.getElementById('lote-display').innerText = `${yy}${ww}${diaSem}`;
-        document.getElementById('overlay').style.display = 'block'; 
-        document.getElementById('infoCard').classList.add('show'); 
+        document.getElementById('overlay').style.display = 'block'; document.getElementById('infoCard').classList.add('show'); 
     }
 
     function copyLote() {
@@ -481,52 +461,22 @@
     function openPrivacy() { document.getElementById('overlay').style.display = 'block'; document.getElementById('privacyCard').classList.add('show'); }
    
     function openStats() {
-        const ano = parseInt(document.getElementById('anoSelect').value);
-        const turma = document.getElementById('turmaSelect').value;
-        const feriados = getFeriados(ano);
-        const content = document.getElementById('stats-content');
-        
-        let diasTrabalho = 0, diasFolga = 0, feriadosTrab = 0, feriadosFolga = 0;
-        let listaFeriadosHTML = "";
-
+        const ano = parseInt(document.getElementById('anoSelect').value), turma = document.getElementById('turmaSelect').value, feriados = getFeriados(ano), content = document.getElementById('stats-content');
+        let diasTrabalho = 0, diasFolga = 0, feriadosTrab = 0, feriadosFolga = 0, listaFeriadosHTML = "";
         for (let m = 0; m < 12; m++) {
             for (let d = 1; d <= new Date(ano, m + 1, 0).getDate(); d++) {
-                const dataTeste = new Date(ano, m, d);
-                const isoS = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                const dataTeste = new Date(ano, m, d), isoS = `${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                 const res = (currentRegion === 'BR') ? checkBR(dataTeste, turma).trab : checkMnt(dataTeste, turma).trab;
-                
                 if (res) diasTrabalho++; else diasFolga++;
-
                 if (feriados[isoS]) {
-                    const statusText = res ? "TRAB" : "FOLGA";
-                    const corTexto = res ? "#A800C4" : "#00A97A";
+                    const statusText = res ? "TRAB" : "FOLGA", corTexto = res ? "#A800C4" : "#00A97A";
                     if (res) feriadosTrab++; else feriadosFolga++;
-
-                    listaFeriadosHTML += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--border); font-size: 0.9em;">
-                            <span style="font-weight: 600;">${d.toString().padStart(2,'0')}/${(m+1).toString().padStart(2,'0')} - ${feriados[isoS]}</span>
-                            <span style="font-weight: 900; color: ${corTexto};">${statusText}</span>
-                        </div>`;
+                    listaFeriadosHTML += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--border); font-size: 0.9em;"><span style="font-weight: 600;">${d.toString().padStart(2,'0')}/${(m+1).toString().padStart(2,'0')} - ${feriados[isoS]}</span><span style="font-weight: 900; color: ${corTexto};">${statusText}</span></div>`;
                 }
             }
         }
-
-        content.innerHTML = `
-            <div class="stat-grid">
-                <div class="stat-card-big"><div class="stat-val-big">${diasTrabalho}d</div><div class="stat-lab-big">Trabalho</div></div>
-                <div class="stat-card-big"><div class="stat-val-big">${diasFolga}d</div><div class="stat-lab-big">Folgas</div></div>
-                <div class="stat-card-big purple"><div class="stat-val-big purple">${feriadosTrab}</div><div class="stat-lab-big">Feriado c/ Trab</div></div>
-                <div class="stat-card-big teal"><div class="stat-val-big teal">${feriadosFolga}</div><div class="stat-lab-big">Feriado de Folga</div></div>
-            </div>
-            
-            <h3 style="font-size: 1.1em; color: var(--primary); margin: 25px 0 10px 0; font-weight: 800; text-align: left;">Cruzamento de Feriados</h3>
-            <div style="background: var(--bg); border-radius: 20px; padding: 10px; border: 1px solid var(--border); text-align: left;">
-                ${listaFeriadosHTML || '<div style="text-align:center; opacity:0.5; padding:10px;">Nenhum feriado encontrado.</div>'}
-            </div>
-        `;
-        
-        document.getElementById('overlay').style.display = 'block'; 
-        document.getElementById('statsCard').classList.add('show');
+        content.innerHTML = `<div class="stat-grid"><div class="stat-card-big"><div class="stat-val-big">${diasTrabalho}d</div><div class="stat-lab-big">Trabalho</div></div><div class="stat-card-big"><div class="stat-val-big">${diasFolga}d</div><div class="stat-lab-big">Folgas</div></div><div class="stat-card-big purple"><div class="stat-val-big purple">${feriadosTrab}</div><div class="stat-lab-big">Feriado c/ Trab</div></div><div class="stat-card-big teal"><div class="stat-val-big teal">${feriadosFolga}</div><div class="stat-lab-big">Feriado de Folga</div></div></div><h3 style="font-size: 1.1em; color: var(--primary); margin: 25px 0 10px 0; font-weight: 800; text-align: left;">Cruzamento de Feriados</h3><div style="background: var(--bg); border-radius: 20px; padding: 10px; border: 1px solid var(--border); text-align: left;">${listaFeriadosHTML || '<div style="text-align:center; opacity:0.5; padding:10px;">Nenhum feriado encontrado.</div>'}</div>`;
+        document.getElementById('overlay').style.display = 'block'; document.getElementById('statsCard').classList.add('show');
     }
 
     function saveNota() { const msg = document.getElementById('noteInput').value.trim(), logs = JSON.parse(localStorage.getItem('logs_v26') || '{}'); if (msg) logs[dataAtiva] = msg; else delete logs[dataAtiva]; localStorage.setItem('logs_v26', JSON.stringify(logs)); closeAllModals(); gerarCalendario(); }
@@ -539,9 +489,19 @@
     window.onload = () => {
         if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode');
         const sA = localStorage.getItem('braun_ano'); if (sA) document.getElementById('anoSelect').value = sA;
-        setRegion(currentRegion);
-        if (!localStorage.getItem('braun_visited')) document.getElementById('welcomeScreen').style.display = 'flex';
+        
+        // RECUPERA REGIÃO E TURMA ANTES DE TUDO
+        const lastReg = localStorage.getItem('braun_last_region') || 'BR';
+        setRegion(lastReg); // Isso já configura a turma salva internamente
+        
+        if (!localStorage.getItem('braun_visited')) {
+            document.getElementById('welcomeScreen').style.display = 'flex';
+        } else {
+            document.getElementById('welcomeScreen').style.display = 'none';
+        }
+        
         setInterval(tick, 1000);
+        scrollToToday();
     };
 </script>
 </body>
