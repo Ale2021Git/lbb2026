@@ -31,7 +31,7 @@
        
         :root {
             --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
-            --accent: #A800C4; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
+            --accent: #7030A0; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
             --semana-w: #00A97A; --azul-mnt: #2196F3;
         }
 
@@ -77,6 +77,20 @@
         }
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+
+        /* Nova Tela de Boas-Vindas Dinâmica */
+        .greeting-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2900; display: none; flex-direction: column; 
+            align-items: center; justify-content: center; text-align: center;
+            transition: 0.5s; color: white;
+        }
+        .greeting-screen.work { background: var(--accent); }
+        .greeting-screen.off { background: var(--primary); }
+        .greeting-screen.hide { opacity: 0; pointer-events: none; }
+        .greeting-icon { font-size: 80px; margin-bottom: 20px; }
+        .greeting-text-main { font-size: 1.5em; font-weight: 300; margin-bottom: 10px; }
+        .greeting-text-status { font-size: 2.2em; font-weight: 800; text-transform: uppercase; line-height: 1.1; }
 
         .btn-comecar {
             background: white; color: var(--primary); border: none; padding: 15px 40px;
@@ -185,13 +199,19 @@
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     
-    <button class="btn-comecar" onclick="closeWelcome()">
+    <button class="btn-comecar" onclick="goToGreeting()">
         ENTRAR NO APP
     </button>
     
     <div style="position: absolute; bottom: 40px; font-size: 0.75em; opacity: 0.7; font-weight: 600; letter-spacing: 1px;">
         VERSÃO 2026 / 2027
     </div>
+</div>
+
+<div id="greetingScreen" class="greeting-screen">
+    <div id="greet-main" class="greeting-text-main">Boa noite!</div>
+    <span id="greet-icon" class="material-symbols-outlined greeting-icon">factory</span>
+    <div id="greet-status" class="greeting-text-status">HOJE VOCÊ<br>TRABALHA</div>
 </div>
 
 <button id="install-button" onclick="installPWA()">
@@ -264,7 +284,7 @@
     <div class="ramal-secao">URGÊNCIAS & SERVIÇOS</div>
     <div class="ramal-item"><span class="ramal-nome">Portaria Frente / Lateral</span><div class="ramal-numeros-container"><a href="tel:26023211" class="ramal-badge">3211</a> <a href="tel:26023214" class="ramal-badge">3214</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Enfermaria / Emergência</span><div class="ramal-numeros-container"><a href="tel:26023358" class="ramal-badge">3358</a> <a href="tel:26023359" class="ramal-badge">3359</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Consultório Médico</span><div class="ramal-numeros-container"><a href="tel:26023160" class="ramal-badge">3160</a> <a href="tel:26023245" class="ramal-badge">3245</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Serviço Médico</span><div class="ramal-numeros-container"><a href="tel:26023160" class="ramal-badge">3160</a> <a href="tel:26023245" class="ramal-badge">3245</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Segurança do Trabalho</span><div class="ramal-numeros-container"><a href="tel:26023356" class="ramal-badge">3356</a> <a href="tel:26023144" class="ramal-badge">3144</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Cozinha / Padaria / Restaurante</span><div class="ramal-numeros-container"><a href="tel:26023297" class="ramal-badge">3297</a> <a href="tel:26023532" class="ramal-badge">3532</a> <a href="tel:26023470" class="ramal-badge">3470</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Banco Itaú</span><div class="ramal-numeros-container"><a href="tel:26023110" class="ramal-badge">3110</a></div></div>
@@ -274,7 +294,7 @@
     <div class="ramal-item"><span class="ramal-nome">RH Geral / Nanda / Figueredo</span><div class="ramal-numeros-container"><a href="tel:26023123" class="ramal-badge">3123</a> <a href="tel:26023279" class="ramal-badge">3279</a> <a href="tel:26023483" class="ramal-badge">3483</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Administração (Rosimar/Rubens)</span><div class="ramal-numeros-container"><a href="tel:26023436" class="ramal-badge">3436</a> <a href="tel:26023269" class="ramal-badge">3269</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Administr. (Adriana/Rafael)</span><div class="ramal-numeros-container"><a href="tel:26023467" class="ramal-badge">3467</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Bradesco Saúde / Coopbraun</span><div class="ramal-numeros-container"><a href="tel:26023180" class="ramal-badge">3180</a> <a href="tel:26023284" class="ramal-badge">3284</a> <a href="tel:26023298" class="ramal-badge">3298</a> <a href="tel:976218473" class="ramal-badge" style="background: #25D366; color: white; border-color: #25D366;">97621-8473</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Bradesco Saúde / CoopBraun</span><div class="ramal-numeros-container"><a href="tel:26023180" class="ramal-badge">3180</a> <a href="tel:26023284" class="ramal-badge">3284</a> <a href="tel:26023298" class="ramal-badge">3298</a> <a href="tel:976218473" class="ramal-badge" style="background: #25D366; color: white; border-color: #25D366;">97621-8473</a></div></div>
 
     <div class="ramal-secao">ECOFLAC - PRODUÇÃO & QUALIDADE</div>
     <div class="ramal-item"><span class="ramal-nome">Eng. de Produção / Ricardo</span><div class="ramal-numeros-container"><a href="tel:26023174" class="ramal-badge">3174</a> <a href="tel:26023237" class="ramal-badge">3237</a></div></div>
@@ -345,10 +365,51 @@
 
     const translations = {
         BR: { statusTrab: "TRABALHANDO", statusFolga: "DE FOLGA", days: ['S','T','Q','Q','S','S','D'] },
-        MNT: { statusTrab: "MANUTENÇÃO", statusFolga: "FOLGA MNT", days: ['S','T','Q','Q','S','S','D'] }
+        MNT: { statusTrab: "TRABALHANDO", statusFolga: "FOLGA MNT", days: ['S','T','Q','Q','S','S','D'] }
     };
 
-    function closeWelcome() { localStorage.setItem('braun_visited', 'true'); document.getElementById('welcomeScreen').classList.add('hide'); setTimeout(() => document.getElementById('welcomeScreen').style.display = 'none', 500); }
+    /* Lógica de Transição de Boas-Vindas */
+    function goToGreeting() {
+        const welcome = document.getElementById('welcomeScreen');
+        const greeting = document.getElementById('greetingScreen');
+        const now = new Date();
+        const hour = now.getHours();
+        const t = document.getElementById('turmaSelect').value;
+        const isTrab = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
+
+        // Saudação por hora
+        let saudacao = "Bom dia!";
+        if (hour >= 12 && hour < 18) saudacao = "Boa tarde!";
+        else if (hour >= 18 || hour < 5) saudacao = "Boa noite!";
+        document.getElementById('greet-main').innerText = saudacao;
+
+        // Status e Ícone
+        const statusEl = document.getElementById('greet-status');
+        const iconEl = document.getElementById('greet-icon');
+        
+        greeting.classList.remove('work', 'off');
+        if (isTrab) {
+            greeting.classList.add('work');
+            statusEl.innerHTML = "HOJE VOCÊ<br>TRABALHA";
+            iconEl.innerText = (currentRegion === 'BR') ? "factory" : "engineering";
+        } else {
+            greeting.classList.add('off');
+            statusEl.innerHTML = (currentRegion === 'BR') ? "HOJE É<br>SUA FOLGA" : "FOLGA<br>MERECIDA";
+            iconEl.innerText = (currentRegion === 'BR') ? "home" : "chair";
+        }
+
+        // Transição
+        welcome.classList.add('hide');
+        setTimeout(() => {
+            welcome.style.display = 'none';
+            greeting.style.display = 'flex';
+            setTimeout(() => {
+                greeting.classList.add('hide');
+                localStorage.setItem('braun_visited', 'true');
+                setTimeout(() => greeting.style.display = 'none', 500);
+            }, 2000); // 2 segundos exibindo a saudação
+        }, 500);
+    }
 
     function setRegion(r) {
         currentRegion = r;
