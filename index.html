@@ -78,7 +78,6 @@
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
-        /* Nova Tela de Boas-Vindas Dinâmica */
         .greeting-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 2900; display: none; flex-direction: column; 
@@ -157,6 +156,17 @@
         #anoSelect { width: 95px; flex-shrink: 0; }
         #turmaSelect { flex-grow: 1; }
 
+        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .config-label { font-weight: 600; font-size: 0.95em; }
+
+        /* Toggle Switch Estilo iOS */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
         .ramal-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.9em; }
         .ramal-nome { font-weight: 600; flex: 1; margin-right: 10px; }
         .ramal-numeros-container { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
@@ -227,7 +237,7 @@
     </div>
     <div style="display:flex; gap:12px;">
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1" onclick="openRamais()">call</span>
-        <span class="material-symbols-outlined" onclick="openStats()">analytics</span>
+        <span class="material-symbols-outlined" onclick="openConfig()">settings</span>
         <span class="material-symbols-outlined" onclick="toggleDarkMode()">brightness_4</span>
     </div>
 </header>
@@ -272,10 +282,28 @@
     <button onclick="saveNota()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; width:100%; margin-top:15px;">SALVAR</button>
 </div>
 
+<div id="configCard" class="bottom-modal">
+    <h2 style="font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 20px;">Configurações</h2>
+    
+    <div class="config-item">
+        <span class="config-label">Saudação Minimalista<br><small style="font-weight:400; opacity:0.7;">Não exibe trabalho/folga ao entrar.</small></span>
+        <label class="switch">
+            <input type="checkbox" id="minimalGreetingToggle" onchange="toggleMinimalGreeting()">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <button onclick="openStats()" style="background:var(--bg); color:var(--text); border:1px solid var(--border); padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
+        <span class="material-symbols-outlined">analytics</span> ESTATÍSTICAS DA ESCALA
+    </button>
+
+    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em;">FECHAR</button>
+</div>
+
 <div id="statsCard" class="bottom-modal">
     <h2 style="font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 20px;">Estatísticas Detalhadas</h2>
     <div id="stats-content"></div>
-    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em;">FECHAR</button>
+    <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em;">VOLTAR</button>
 </div>
 
 <div id="ramaisCard" class="bottom-modal">
@@ -308,7 +336,7 @@
     <div class="ramal-secao">MANUTENÇÃO & APOIO</div>
     <div class="ramal-item"><span class="ramal-nome">Manutenção (Central/Injeção)</span><div class="ramal-numeros-container"><a href="tel:26023426" class="ramal-badge">3426</a> <a href="tel:26023363" class="ramal-badge">3363</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Mnt Elétrica / Mecânica</span><div class="ramal-numeros-container"><a href="tel:26023364" class="ramal-badge">3364</a> <a href="tel:26023365" class="ramal-badge">3365</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Utilidades / Osmose / Moinho</span><div class="ramal-numeros-container"><a href="tel:26023427" class="ramal-badge">3427</a> <a href="tel:26023529" class="ramal-badge">3529</a> <a href="tel:26023433" class="ramal-badge">3433</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Utilidades / Osmose / Moinho</span><div class="ramal-numeros-container"><a href="tel:26023427" class="ramal-badge">3427</a> <a href="tel:26023529" class="ramal-badge">3529</a> <a href="tel:26023433" class="ramal-badge">3433</a><a href="tel:26023506" class="ramal-badge">3506</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Preparo / Ferramentaria</span><div class="ramal-numeros-container"><a href="tel:26023421" class="ramal-badge">3421</a> <a href="tel:26023165" class="ramal-badge">3165</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Almoxarifado / Calibração</span><div class="ramal-numeros-container"><a href="tel:26023210" class="ramal-badge">3210</a> <a href="tel:26023186" class="ramal-badge">3186</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Expedição 2 / Quarentena</span><div class="ramal-numeros-container"><a href="tel:26023438" class="ramal-badge">3438</a> <a href="tel:26023342" class="ramal-badge">3342</a></div></div>
@@ -372,30 +400,40 @@
     function goToGreeting() {
         const welcome = document.getElementById('welcomeScreen');
         const greeting = document.getElementById('greetingScreen');
+        const minimalMode = localStorage.getItem('braun_minimal_greeting') === 'true';
         const now = new Date();
         const hour = now.getHours();
-        const t = document.getElementById('turmaSelect').value;
-        const isTrab = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
-
+        
         // Saudação por hora
         let saudacao = "Bom dia!";
         if (hour >= 12 && hour < 18) saudacao = "Boa tarde!";
         else if (hour >= 18 || hour < 5) saudacao = "Boa noite!";
         document.getElementById('greet-main').innerText = saudacao;
 
-        // Status e Ícone
         const statusEl = document.getElementById('greet-status');
         const iconEl = document.getElementById('greet-icon');
         
         greeting.classList.remove('work', 'off');
-        if (isTrab) {
-            greeting.classList.add('work');
-            statusEl.innerHTML = "HOJE VOCÊ<br>TRABALHA";
-            iconEl.innerText = (currentRegion === 'BR') ? "factory" : "engineering";
-        } else {
+
+        if (minimalMode) {
+            // MODO SÓ SAÚDA
             greeting.classList.add('off');
-            statusEl.innerHTML = (currentRegion === 'BR') ? "HOJE É<br>SUA FOLGA" : "FOLGA<br>MERECIDA";
-            iconEl.innerText = (currentRegion === 'BR') ? "home" : "chair";
+            statusEl.innerHTML = "BEM-VINDO<br>DE VOLTA";
+            iconEl.innerText = "mood";
+        } else {
+            // MODO MENCIONA FOLGA/TRABALHO
+            const t = document.getElementById('turmaSelect').value;
+            const isTrab = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
+
+            if (isTrab) {
+                greeting.classList.add('work');
+                statusEl.innerHTML = "HOJE VOCÊ<br>TRABALHA";
+                iconEl.innerText = (currentRegion === 'BR') ? "factory" : "engineering";
+            } else {
+                greeting.classList.add('off');
+                statusEl.innerHTML = (currentRegion === 'BR') ? "HOJE É<br>SUA FOLGA" : "FOLGA<br>MERECIDA";
+                iconEl.innerText = (currentRegion === 'BR') ? "home" : "chair";
+            }
         }
 
         // Transição
@@ -407,7 +445,7 @@
                 greeting.classList.add('hide');
                 localStorage.setItem('braun_visited', 'true');
                 setTimeout(() => greeting.style.display = 'none', 500);
-            }, 2000); // 2 segundos exibindo a saudação
+            }, 2000);
         }, 500);
     }
 
@@ -541,7 +579,19 @@
 
     function openRamais() { document.getElementById('overlay').style.display = 'block'; document.getElementById('ramaisCard').classList.add('show'); }
     function openPrivacy() { document.getElementById('overlay').style.display = 'block'; document.getElementById('privacyCard').classList.add('show'); }
-   
+    
+    function openConfig() {
+        const minimalMode = localStorage.getItem('braun_minimal_greeting') === 'true';
+        document.getElementById('minimalGreetingToggle').checked = minimalMode;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('configCard').classList.add('show');
+    }
+
+    function toggleMinimalGreeting() {
+        const checked = document.getElementById('minimalGreetingToggle').checked;
+        localStorage.setItem('braun_minimal_greeting', checked);
+    }
+
     function openStats() {
         const ano = parseInt(document.getElementById('anoSelect').value);
         const turma = document.getElementById('turmaSelect').value;
@@ -587,7 +637,7 @@
             </div>
         `;
         
-        document.getElementById('overlay').style.display = 'block'; 
+        document.getElementById('configCard').classList.remove('show');
         document.getElementById('statsCard').classList.add('show');
     }
 
