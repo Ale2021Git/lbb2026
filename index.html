@@ -32,7 +32,7 @@
         :root {
             --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
             --accent: #7030A0; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
-            --semana-w: #00A97A; --azul-mnt: #2196F3;
+            --semana-w: #00A97A; --azul-mnt: #2196F3; --ferias: #7030A0; /* Alterado para roxo solicitado */
         }
 
         body.dark-mode {
@@ -69,6 +69,32 @@
             100% { transform: scale(1.05); box-shadow: 0 0 5px var(--accent); }
         }
 
+        @keyframes plane-fly {
+            0% { transform: translate(0,0) rotate(0deg); opacity: 0.8; }
+            50% { transform: translate(2px, -2px) rotate(-5deg); opacity: 1; }
+            100% { transform: translate(0,0) rotate(0deg); opacity: 0.8; }
+        }
+
+        .FERIAS { 
+            position: relative;
+            border: 2px dashed var(--ferias) !important;
+            box-shadow: inset 0 0 10px rgba(112, 48, 160, 0.2);
+        }
+        .FERIAS::before {
+            content: 'flight';
+            font-family: 'Material Symbols Outlined';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            font-size: 16px;
+            color: var(--ferias);
+            background: var(--card);
+            border-radius: 50%;
+            z-index: 5;
+            animation: plane-fly 2s infinite ease-in-out;
+            font-variation-settings: 'FILL' 1;
+        }
+
         .welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); color: white; z-index: 3000;
@@ -86,6 +112,7 @@
         }
         .greeting-screen.work { background: var(--accent); }
         .greeting-screen.off { background: var(--primary); }
+        .greeting-screen.holiday { background: #7030A0; } /* Estilo para férias */
         .greeting-screen.hide { opacity: 0; pointer-events: none; }
         .greeting-icon { font-size: 80px; margin-bottom: 20px; }
         .greeting-text-main { font-size: 1.5em; font-weight: 300; margin-bottom: 10px; }
@@ -106,9 +133,18 @@
         .st-logo-path { fill: #FFFFFF; transition: fill 0.3s; }
 
         .status-panel {
-            background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 20px 15px;
-            border: 1px solid var(--border); text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            background: var(--card); 
+            border-radius: 25px; 
+            padding: 15px 10px; 
+            margin: 10px 15px 20px 15px; 
+            border: 1px solid var(--border); 
+            text-align: center; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 85px; 
+            z-index: 95;
         }
+
         .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
         .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
 
@@ -152,14 +188,13 @@
         .bottom-modal.show { bottom: 0; }
 
         .select-group { display: flex; gap: 12px; padding: 0 15px 20px 15px; }
-        select { appearance: none; background: var(--card); color: var(--text); border: 2.5px solid var(--border); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 0.9em; outline: none; transition: 0.2s; }
+        select, .input-date { appearance: none; background: var(--card); color: var(--text); border: 2.5px solid var(--border); padding: 14px; border-radius: 18px; font-weight: 800; font-size: 0.9em; outline: none; transition: 0.2s; font-family: inherit; }
         #anoSelect { width: 95px; flex-shrink: 0; }
         #turmaSelect { flex-grow: 1; }
 
         .config-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
         .config-label { font-weight: 600; font-size: 0.95em; }
 
-        /* Toggle Switch Estilo iOS */
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -293,11 +328,32 @@
         </label>
     </div>
 
-    <button onclick="openStats()" style="background:var(--bg); color:var(--text); border:1px solid var(--border); padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
+    <button onclick="openFerias()" style="background:var(--bg); color:var(--text); border:1px solid var(--border); padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:15px; display:flex; align-items:center; justify-content:center; gap:10px;">
+        <span class="material-symbols-outlined" style="animation: plane-fly 2s infinite ease-in-out; color: #7030A0;">flight</span> PROGRAMAR FÉRIAS
+    </button>
+
+    <button onclick="openStats()" style="background:var(--bg); color:var(--text); border:1px solid var(--border); padding:15px; border-radius:18px; font-weight:800; width:100%; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:10px;">
         <span class="material-symbols-outlined">analytics</span> ESTATÍSTICAS DA ESCALA
     </button>
 
     <button onclick="closeAllModals()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:22px; font-weight:800; width:100%; margin-top:25px; font-size: 1.1em;">FECHAR</button>
+</div>
+
+<div id="feriasCard" class="bottom-modal">
+    <h2 style="font-weight: 800; color: var(--primary); margin-top: 0; margin-bottom: 20px;">Programar Férias</h2>
+    <div style="display:flex; flex-direction:column; gap:15px;">
+        <div>
+            <label style="font-weight:800; font-size:0.8em; color:var(--primary); display:block; margin-bottom:5px;">DATA DE INÍCIO</label>
+            <input type="date" id="feriasInicio" class="input-date" style="width:100%; box-sizing:border-box;">
+        </div>
+        <div>
+            <label style="font-weight:800; font-size:0.8em; color:var(--primary); display:block; margin-bottom:5px;">DATA DE TÉRMINO</label>
+            <input type="date" id="feriasFim" class="input-date" style="width:100%; box-sizing:border-box;">
+        </div>
+        <button onclick="saveFerias()" style="background:var(--primary); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; width:100%; margin-top:10px;">SALVAR PERÍODO</button>
+        <button onclick="clearFerias()" style="background:#ffefef; color:#ff6b6b; border:1px solid #ff6b6b; padding:12px; border-radius:18px; font-weight:800; width:100%;">LIMPAR FÉRIAS</button>
+    </div>
+    <button onclick="closeAllModals()" style="background:var(--border); color:var(--text); border:none; padding:15px; border-radius:22px; font-weight:800; width:100%; margin-top:20px;">VOLTAR</button>
 </div>
 
 <div id="statsCard" class="bottom-modal">
@@ -375,7 +431,7 @@
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
             installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              if (installingWorker.state === 'installed' && navigator.worker.controller) {
                 console.log('Nova versão pronta.');
               }
             };
@@ -396,7 +452,6 @@
         MNT: { statusTrab: "TRABALHANDO", statusFolga: "FOLGA MNT", days: ['S','T','Q','Q','S','S','D'] }
     };
 
-    /* Lógica de Transição de Boas-Vindas */
     function goToGreeting() {
         const welcome = document.getElementById('welcomeScreen');
         const greeting = document.getElementById('greetingScreen');
@@ -404,24 +459,28 @@
         const now = new Date();
         const hour = now.getHours();
         
-        // Saudação por hora
         let saudacao = "Bom dia!";
         if (hour >= 12 && hour < 18) saudacao = "Boa tarde!";
         else if (hour >= 18 || hour < 5) saudacao = "Boa noite!";
-        document.getElementById('greet-main').innerText = saudacao;
-
+        
         const statusEl = document.getElementById('greet-status');
         const iconEl = document.getElementById('greet-icon');
         
-        greeting.classList.remove('work', 'off');
+        greeting.classList.remove('work', 'off', 'holiday');
 
-        if (minimalMode) {
-            // MODO SÓ SAÚDA
+        // Lógica de Saudação de Férias Corrigida
+        if (isFerias(now)) {
+            greeting.classList.add('holiday');
+            document.getElementById('greet-main').innerText = "Boas férias!";
+            statusEl.innerHTML = "APROVEITE SEU<br>DESCANSO";
+            iconEl.innerText = "flight";
+        } else if (minimalMode) {
+            document.getElementById('greet-main').innerText = saudacao;
             greeting.classList.add('off');
             statusEl.innerHTML = "BEM-VINDO<br>DE VOLTA";
             iconEl.innerText = "mood";
         } else {
-            // MODO MENCIONA FOLGA/TRABALHO
+            document.getElementById('greet-main').innerText = saudacao;
             const t = document.getElementById('turmaSelect').value;
             const isTrab = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
 
@@ -436,7 +495,6 @@
             }
         }
 
-        // Transição
         welcome.classList.add('hide');
         setTimeout(() => {
             welcome.style.display = 'none';
@@ -445,7 +503,7 @@
                 greeting.classList.add('hide');
                 localStorage.setItem('braun_visited', 'true');
                 setTimeout(() => greeting.style.display = 'none', 500);
-            }, 2000);
+            }, 2500);
         }, 500);
     }
 
@@ -468,26 +526,12 @@
 
     function getFeriados(ano) {
         const f = {
-            "01-01":"Ano Novo", 
-            "01-10":"Padroeiro SG", 
-            "04-21":"Tiradentes", 
-            "04-23":"São Jorge", 
-            "05-01":"Trabalho", 
-            "09-07":"Independência", 
-            "09-22":"Aniv. SG", 
-            "10-12":"Aparecida", 
-            "11-02":"Finados", 
-            "11-15":"República", 
-            "11-20":"Zumbi", 
-            "12-25":"Natal"
+            "01-01":"Ano Novo", "01-10":"Padroeiro SG", "04-21":"Tiradentes", "04-23":"São Jorge", 
+            "05-01":"Trabalho", "09-07":"Independência", "09-22":"Aniv. SG", "10-12":"Aparecida", 
+            "11-02":"Finados", "11-15":"República", "11-20":"Zumbi", "12-25":"Natal"
         };
-        if (ano === 2026) { 
-            f["02-17"] = "Carnaval"; 
-            f["04-03"] = "Sexta Santa"; 
-        } else if (ano === 2027) { 
-            f["02-09"] = "Carnaval"; 
-            f["03-26"] = "Sexta Santa"; 
-        }
+        if (ano === 2026) { f["02-17"] = "Carnaval"; f["04-03"] = "Sexta Santa"; } 
+        else if (ano === 2027) { f["02-09"] = "Carnaval"; f["03-26"] = "Sexta Santa"; }
         return f;
     }
 
@@ -513,6 +557,14 @@
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     }
 
+    function isFerias(dt) {
+        const inicio = localStorage.getItem('braun_ferias_inicio');
+        const fim = localStorage.getItem('braun_ferias_fim');
+        if(!inicio || !fim) return false;
+        const d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
+        return d >= new Date(inicio + 'T00:00:00').getTime() && d <= new Date(fim + 'T00:00:00').getTime();
+    }
+
     function gerarCalendario() {
         const box=document.getElementById('calendario-box'); box.innerHTML="";
         const logs=JSON.parse(localStorage.getItem('logs_v26')||'{}'), ano=parseInt(document.getElementById('anoSelect').value), t=document.getElementById('turmaSelect').value, fer=getFeriados(ano), lang=translations[currentRegion];
@@ -533,6 +585,7 @@
                 else { const mnt=checkMnt(at,t); cls+=(mnt.isEG?"AZUL ":"VERDE "); cls+=(mnt.trab ? "TRABALHO " : "FOLGA "); }
                 if(new Date().toDateString()===at.toDateString()) cls+="hoje ";
                 if(nt) cls+="HAS_NOTE ";
+                if(isFerias(at)) cls+="FERIAS ";
                 if(f||nt) { hasEv=true; hB+=`<div style="font-size:0.9em; margin-bottom:8px;"><b>${d}:</b> ${f||''} ${nt||''}</div>`; }
                 hF+=`<div class="${cls}" onclick="event.stopPropagation(); openCard('${isoF}')">${d}</div>`;
             }
@@ -549,9 +602,14 @@
         const t = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
         if (t && msg) {
-            const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
-            msg.innerText = res ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
-            msg.style.color = res ? "var(--accent)" : "var(--primary)";
+            if(isFerias(now)) {
+                msg.innerText = "EM FÉRIAS ✈️";
+                msg.style.color = "#7030A0"; // Cor solicitada
+            } else {
+                const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
+                msg.innerText = res ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
+                msg.style.color = res ? "var(--accent)" : "var(--primary)";
+            }
         }
     }
 
@@ -579,7 +637,30 @@
 
     function openRamais() { document.getElementById('overlay').style.display = 'block'; document.getElementById('ramaisCard').classList.add('show'); }
     function openPrivacy() { document.getElementById('overlay').style.display = 'block'; document.getElementById('privacyCard').classList.add('show'); }
+    function openFerias() { 
+        document.getElementById('feriasInicio').value = localStorage.getItem('braun_ferias_inicio') || "";
+        document.getElementById('feriasFim').value = localStorage.getItem('braun_ferias_fim') || "";
+        document.getElementById('configCard').classList.remove('show');
+        document.getElementById('overlay').style.display = 'block'; 
+        document.getElementById('feriasCard').classList.add('show'); 
+    }
     
+    function saveFerias() {
+        const ini = document.getElementById('feriasInicio').value;
+        const fim = document.getElementById('feriasFim').value;
+        if(ini && fim) {
+            localStorage.setItem('braun_ferias_inicio', ini);
+            localStorage.setItem('braun_ferias_fim', fim);
+            closeAllModals(); gerarCalendario(); tick();
+        } else { alert("Preencha as duas datas."); }
+    }
+
+    function clearFerias() {
+        localStorage.removeItem('braun_ferias_inicio');
+        localStorage.removeItem('braun_ferias_fim');
+        closeAllModals(); gerarCalendario(); tick();
+    }
+
     function openConfig() {
         const minimalMode = localStorage.getItem('braun_minimal_greeting') === 'true';
         document.getElementById('minimalGreetingToggle').checked = minimalMode;
