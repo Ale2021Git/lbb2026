@@ -251,7 +251,7 @@
 <div id="update-banner">
     <div style="display:flex; align-items:center; gap:10px;">
         <span class="material-symbols-outlined" style="font-size:18px;">new_releases</span>
-        <span>Versão 2.19: Função FÉRIAS adicionada!</span>
+        <span>Versão 2.20: Função FÉRIAS adicionada!</span>
     </div>
     <button class="btn-close-banner" onclick="this.parentElement.style.display='none'">✕</button>
 </div>
@@ -448,7 +448,7 @@
           reg.onupdatefound = () => {
             const installingWorker = reg.installing;
             installingWorker.onstatechange = () => {
-              if (installingWorker.state === 'installed' && navigator.worker.controller) {
+              if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 console.log('Nova versão pronta.');
               }
             };
@@ -470,6 +470,11 @@
     };
 
     function goToGreeting() {
+        // Solicita permissão de notificação ao entrar
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+
         const welcome = document.getElementById('welcomeScreen');
         const greeting = document.getElementById('greetingScreen');
         const minimalMode = localStorage.getItem('braun_minimal_greeting') === 'true';
@@ -621,7 +626,7 @@
         if (t && msg) {
             if(isFerias(now)) {
                 msg.innerText = "EM FÉRIAS ✈️";
-                msg.style.color = "#7030A0"; // Cor solicitada
+                msg.style.color = "#7030A0"; 
             } else {
                 const res = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
                 msg.innerText = res ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
