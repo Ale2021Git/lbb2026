@@ -1,9 +1,11 @@
 {
-  "id": "/lbb2026/index.html",
+  "id": "./",
   "name": "Braun OnLine",
   "short_name": "Braun OnLine",
-  "description": "Plataforma oficial da Braun OnLine para gestão e acesso.",
+  "description": "Plataforma oficial da Braun OnLine para gestão e acesso à escala de trabalho.",
+  "lang": "pt-BR",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#00A97A",
   "theme_color": "#00A97A",
@@ -52,4 +54,3 @@
     }
   ]
 }
-
