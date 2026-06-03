@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><script>
+<head>
+<script>
+  // ========== CORREÇÃO CRÍTICA PARA IPHONE ==========
+  // Desativa Service Worker no iOS para evitar travamento
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for (let registration of registrations) {
-        registration.unregister();
-      }
-    });
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (!isIOS) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
   }
 </script>
     <meta charset="UTF-8">
@@ -46,6 +52,8 @@
             font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
             margin: 0; padding-bottom: 90px; transition: 0.3s; overflow-x: hidden;
             -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
         }
         
         /* ========== SPLASH SCREEN ORIGINAL ========== */
@@ -59,7 +67,7 @@
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
-                /* ========== SPLASH SCREEN COPA 2026 ========== */
+        /* ========== SPLASH SCREEN COPA 2026 ========== */
         #copaSplashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); z-index: 5000; display: none;
@@ -87,7 +95,7 @@
         }
         .cs-trophy-wrap img { 
             width: 80%; max-width: 300px; 
-            max-height: 45vh; /* Regra de Ouro: impede a sobreposição! */
+            max-height: 45vh;
             height: auto; object-fit: contain; 
             filter: drop-shadow(0 20px 48px rgba(0,0,0,0.35)); 
             animation: csFloat 4s ease-in-out infinite; 
@@ -240,13 +248,14 @@
         .brand-logo-svg { height: 35px; width: auto; }
         .st-logo-path { fill: #FFFFFF; transition: fill 0.3s; }
         .status-panel {
-            background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 10px 15px 20px 15px;
-            border: 1px solid var(--border); text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 0px 15px 0px 15px;
+            border: 1px solid var(--border); text-align: center; box-shadow: 0 8px 16px rgba(0,0,0,0.05);
             position: sticky; top: 85px; z-index: 95;
         }
         .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
         .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
-        .mes-container { perspective: 1000px; margin: 0 10px 25px 10px; min-height: 400px; display: flex; flex-direction: column; }
+        .mes-container { perspective: 1000px; margin: 0 10px 25px 10px; min-height: 400px; display: flex; flex-direction: column; padding-top: 0px; }
+        #calendario-box > .mes-container:first-child { margin-top: 0px; }
         .mes-inner { position: relative; width: 100%; flex-grow: 1; transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); transform-style: preserve-3d; cursor: pointer; }
         .mes-inner.flipped { transform: rotateY(180deg); }
         .mes-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 22px; padding: 12px; border: 1px solid var(--border); box-sizing: border-box; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
@@ -370,7 +379,6 @@
             letter-spacing: 1.5px; color: var(--primary); opacity: 0.5;
             padding: 15px 20px 5px 20px;
         }
-        /* ========== NOVO ESTILO DO MENU - ESTILO DOM ATACADISTA ========== */
         .drawer-item {
             display: flex;
             align-items: center;
@@ -429,7 +437,6 @@
         .drawer-item.no-arrow .drawer-item-arrow {
             display: none;
         }
-        /* ========== FIM DO NOVO ESTILO ========== */
         .drawer-footer {
             padding: 15px 20px;
             border-top: 1px solid var(--border);
@@ -575,7 +582,6 @@
             padding: 15px 14px; border-radius: 16px; font-weight: 800; font-size: 0.85em; cursor: pointer;
         }
 
-        /* ========== CLASS PARA ESCONDER O LINK DE ACESSIBILIDADE ========== */
         .skip-link {
             position: absolute;
             top: -9999px;
@@ -595,6 +601,18 @@
             z-index: 9999;
             border-radius: 8px;
         }
+        
+        /* Correções iOS */
+        @supports (-webkit-touch-callout: none) {
+            .mes-inner {
+                transform-style: preserve-3d;
+                -webkit-transform-style: preserve-3d;
+            }
+            .mes-face {
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+        }
     </style>
 </head>
 <body>
@@ -606,7 +624,7 @@
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
-    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.1 / 2026 / 2027</div>
+    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.3 / 2026 / 2027</div>
 </div>
 
 <div id="copaSplashScreen">
@@ -633,7 +651,7 @@
                 <polygon class="st-logo-path" points="116.4,31.6 114.1,35.4 111.9,31.6 110.6,31.6 113.5,36.5 110.3,41.8 111.5,41.8 114.1,37.5 116.7,41.8 118,41.8 114.8,36.5 117.6,31.6"/>
                 <path class="st-logo-path" d="M121.5,32.6h1c0.8,0,2.3,0,2.3,1.9c0,1.2-0.6,1.8-2.1,1.8h-1.2V32.6z M120.3,41.8h1.2v-4.6h1.2c1.9,0,3.2-0.8,3.2-2.8c0-2.8-2.4-2.8-2.4-2.8h-2.4V41.8z"/>
                 <polygon class="st-logo-path" points="128.8,31.6 128.8,41.8 133.9,41.8 133.9,40.9 130,40.9 130,37 133.6,37 133.6,36 130,36 130,32.6 133.7,32.6 133.7,31.6"/>
-                <path class="st-logo-path" d="M138.1,32.6h0.9c1.2,0,2.6,0,2.6,1.7c0,1.7-1.4,2-2.8,2h-0.6V32.6z M137,41.8h1.2v-4.5h1.1c1.6,0,1.9,0.7,2.2,2.2l0.5,2.4h1.2l-0.6-2.8c-0.2-1.1-0.4-1.9-1.8-2.3v0c0.9-0.2,2.1-0.7,2.1-2.6c0-2.5-2.6-2.6-3.3-2.6H137V41.8z"/>
+                <path class="st-logo-path" d="M138.1,32.6h0.9c1.2,0,2.6,0,2.6,1.7c0,1.7-1.4,2-2.8,2h-0.6V32.6z M137,41.8h1.2v-4.5h1.1c1.6,0,1.9,0.7,2.2,2.2l0.5,2.4h1.2l-0.6-2.8c-0.2-1.1-0.4-1.9-1.8-2.3v0c0.9-0.2,2.1-0.7,2.1-2.6c0-2.5-2.6-2.6-3.3-2.6h-2.5V41.8z"/>
                 <polygon class="st-logo-path" points="145,31.6 145,32.6 147.5,32.6 147.5,41.8 148.6,41.8 148.6,32.6 151.1,32.6 151.1,31.6"/>
                 <rect x="153.5" y="31.6" class="st-logo-path" width="1.2" height="10.2"/>
                 <path class="st-logo-path" d="M161.7,36.3c1,0.6,2.2,1.2,2.2,2.8c0,2.1-1.7,2.9-3.6,2.9c-1.1,0-2.1-0.3-2.4-0.3v-1.2c0.2,0.1,1.2,0.5,2.5,0.5c1.3,0,2.2-0.6,2.2-1.7c0-1.2-0.9-1.6-1.7-2.1l-0.9-0.5c-0.9-0.5-2.2-1.1-2.2-2.6c0-1.8,1.4-2.6,3.3-2.6c1,0,1.8,0.2,2.1,0.3v1.1c-0.3-0.1-1.1-0.4-2.2-0.4c-1.2,0-1.9,0.6-1.9,1.6c0,0.9,0.9,1.4,1.7,1.8L161.7,36.3z"/>
@@ -658,7 +676,7 @@
         <svg version="1.1" viewBox="0 0 172 42" class="brand-logo-svg" role="img" aria-label="Braun Logo">
             <title>Braun Logo</title>
             <g><path class="st-logo-path" d="M46.8,3.1c5.2,0,5.4,4.5,5.4,4.5c0,4.7-4,4.6-4,4.6c5.8,0,5.6,5.4,5.6,5.4c0,6.4-7.7,6.1-7.7,6.1H32.2c0,0,1.6-0.4,1.6-1.9V5.1c0-1.5-1.5-2-1.5-2H46.8z M40.4,6.6v13.4h3.9c0,0,3.4,0,3.2-2.9c0,0,0-2.4-6.3-5.1h2.5c0,0,2.7,0.1,2.7-2.8c0-2.7-2.9-2.7-2.9-2.7L40.4,6.6z"/><path class="st-logo-path" d="M14.5,3.1c5.2,0,5.4,4.5,5.4,4.5c0,4.7-4,4.6-4,4.6c5.8,0,5.6,5.4,5.6,5.4c0,6.4-7.7,6.1-7.7,6.1H0c0,0,1.6-0.4,1.6-1.9V5.1c0-1.5-1.5-2-1.5-2H14.5z M8.1,6.6v13.4H12c0,0,3.4,0,3.2-2.9c0,0,0-2.4-6.3-5.1h2.5c0,0,2.7,0.1,2.7-2.8c0-2.7-2.9-2.7-2.9-2.7L8.1,6.6z"/><path class="st-logo-path" d="M55.5,3.1c0,0,1.6,0.4,1.6,2v16.6c0,1.5-1.6,2-1.6,2h8.2v-17H67c0,0,3.1,0,3.1,3.2c0,3.2-2.8,3.3-2.8,3.3h-3c0,0,1.3,1.1,3,4.8c1.7,3.7,1.7,3.7,1.7,3.7c0,0,1.1,2.1,2.5,2.1h6.5c0,0-1.4-0.4-2.3-2.4c-0.9-2-0.7-1.6-1.8-4.3c-1.2-2.9-3.2-2.8-3.2-2.8s5.5-0.1,5.5-5.8c0-5.8-8.3-5.3-8.3-5.3H55.5z"/><path class="st-logo-path" d="M96.1,23.7h8.2c0,0-1.2-0.3-2.1-2.6c-0.9-2.4-5.7-15.8-5.7-15.8S96,3.1,94.2,3.1h-9.1c0,0,1.9,0.4,1.3,2c-0.3,0.9-2,5.3-3.4,9h-2.1c-1.4,0-1.6,1-2.1,2.3c-0.5,1.3-1.7,2.3-1.7,2.3c0.7-0.4,3.2-0.4,3.2-0.4l1.3,0l-0.4,1.1c0,0-1.2,3.2-2.2,4.2H85l2-5.3c0.5,0,0.9,0,1.2,0c1.4-0.1,1.9-0.9,2.2-1.9c0.4-1,1.7-2.6,1.7-2.6c-0.7,0.2-2.7,0.2-2.7,0.2h-1l2.1-5.6L96.1,23.7z"/><path class="st-logo-path" d="M102.4,3.1c0,0,1.6,0.4,1.6,2.1v11c0,0-0.4,7.8,9.8,7.8c10.2,0,9.9-7.4,9.9-7.4V5.2c0,0,0-2.1-1.9-2.1h-4.8c0,0,1.6,0.3,1.6,2.1v11.2c0,0,0.2,3.5-3.9,3.5c0,0-3.6,0.1-3.6-3.7v-11c0,0-0.1-2.1-1.9-2.1H102.4z"/><path class="st-logo-path" d="M126.2,3.1c0,0,1.6,0.3,1.6,2.2v16.3c0,1.7-1.6,2.1-1.6,2.1h6.5V12.9l8.3,9.1c0,0,1.1,1.6,3.5,1.6h3.1V5.4c0,0,0.2-2.3-1.9-2.3H141c0,0,1.5,0.4,1.5,2.1v8.7L133,3.1H126.2z"/><rect x="26.5" class="st-logo-path" width="0.8" height="26.2"/></g>
-            <g><path class="st-logo-path" d="M37.6,36.3c1,0.6,2.2,1.2,2.2,2.8c0,2.1-1.7,2.9-3.6,2.9c-1.1,0-2.1-0.3-2.4-0.3v-1.2c0.2,0.1,1.2,0.5,2.5,0.5c1.3,0,2.2-0.6,2.2-1.7c0-1.2-0.9-1.6-1.7-2.1l-0.9-0.5c-0.9-0.5-2.2-1.1-2.2-2.6c0-1.8,1.4-2.6,3.3-2.6c1,0,1.8,0.2,2.1,0.3v1.1c-0.3-0.1-1.1-0.4-2.2-0.4C35.7,32.4,35,33,35,34c0,0.9,0.9,1.4,1.7,1.8L37.6,36.3z"/><polygon class="st-logo-path" points="48.2,31.6 48.2,36.1 44,36.1 44,31.6 42.8,31.6 42.8,41.8 44,41.8 44,37 48.2,37 48.2,41.8 49.4,41.8 49.4,31.6"/><path class="st-logo-path" d="M56,32.7L56,32.7l1.5,5h-3L56,32.7z M55.3,31.6l-3.3,10.2h1.2l1-3.2h3.6l1,3.2H60l-3.3-10.2H55.3z"/><path class="st-logo-path" d="M63.9,32.6h0.9c1.2,0,2.6,0,2.6,1.7c0,1.7-1.4,2-2.8,2h-0.6V32.6z M62.8,41.8h1.2v-4.5H65c1.6,0,1.9,0.7,2.2,2.2l0.5,2.4h1.2L68.2,39c-0.2-1.1-0.4-1.9-1.8-2.3v0c0.9-0.2,2.1-0.7,2.1-2.6c0-2.5-2.6-2.6-3.3-2.6h-2.5V41.8z"/><rect x="72.1" y="31.6" class="st-logo-path" width="1.2" height="10.2"/><polygon class="st-logo-path" points="82.9,31.6 82.9,40.3 82.9,40.3 78.7,31.6 77.2,31.6 77.2,41.8 78.3,41.8 78.3,33.2 78.3,33.2 82.5,41.8 84,41.8 84,31.6"/><path class="st-logo-path" d="M94.4,41c-0.3,0.2-1.3,1-2.9,1c-3.2,0-4.1-2.6-4.1-5.6c0-2.6,1-4.9,3.8-4.9c2,0,3.3,1.2,3.3,2.9h-1.3c0-0.9-0.5-2-2-2c-2.1,0-2.6,2.1-2.6,4c0,2,0.3,4.6,2.7,4.6c1,0,1.7-0.4,1.9-0.6V37h-2.3v-1h3.5V41z"/><polygon class="st-logo-path" points="103.1,31.6 103.1,41.8 108.2,41.8 108.2,40.9 104.3,40.9 104.3,37 107.9,37 107.9,36 104.3,36 104.3,32.6 108.1,32.6 108.1,31.6"/><polygon class="st-logo-path" points="116.4,31.6 114.1,35.4 111.9,31.6 110.6,31.6 113.5,36.5 110.3,41.8 111.5,41.8 114.1,37.5 116.7,41.8 118,41.8 114.8,36.5 117.6,31.6"/><path class="st-logo-path" d="M121.5,32.6h1c0.8,0,2.3,0,2.3,1.9c0,1.2-0.6,1.8-2.1,1.8h-1.2V32.6z M120.3,41.8h1.2v-4.6h1.2c1.9,0,3.2-0.8,3.2-2.8c0-2.8-2.4-2.8-2.4-2.8h-2.4V41.8z"/><polygon class="st-logo-path" points="128.8,31.6 128.8,41.8 133.9,41.8 133.9,40.9 130,40.9 130,37 133.6,37 133.6,36 130,36 130,32.6 133.7,32.6 133.7,31.6"/><path class="st-logo-path" d="M138.1,32.6h0.9c1.2,0,2.6,0,2.6,1.7c0,1.7-1.4,2-2.8,2h-0.6V32.6z M137,41.8h1.2v-4.5h1.1c1.6,0,1.9,0.7,2.2,2.2l0.5,2.4h1.2l-0.6-2.8c-0.2-1.1-0.4-1.9-1.8-2.3v0c0.9-0.2,2.1-0.7,2.1-2.6c0-2.5-2.6-2.6-3.3-2.6H137V41.8z"/><polygon class="st-logo-path" points="145,31.6 145,32.6 147.5,32.6 147.5,41.8 148.6,41.8 148.6,32.6 151.1,32.6 151.1,31.6"/><rect x="153.5" y="31.6" class="st-logo-path" width="1.2" height="10.2"/><path class="st-logo-path" d="M161.7,36.3c1,0.6,2.2,1.2,2.2,2.8c0,2.1-1.7,2.9-3.6,2.9c-1.1,0-2.1-0.3-2.4-0.3v-1.2c0.2,0.1,1.2,0.5,2.5,0.5c1.3,0,2.2-0.6,2.2-1.7c0-1.2-0.9-1.6-1.7-2.1l-0.9-0.5c-0.9-0.5-2.2-1.1-2.2-2.6c0-1.8,1.4-2.6,3.3-2.6c1,0,1.8,0.2,2.1,0.3v1.1c-0.3-0.1-1.1-0.4-2.2-0.4c-1.2,0-1.9,0.6-1.9,1.6c0,0.9,0.9,1.4,1.7,1.8L161.7,36.3z"/><polygon class="st-logo-path" points="166.9,31.6 166.9,41.8 172,41.8 172,40.9 168.1,40.9 168.1,37 171.7,37 171.7,36 168.1,36 168.1,32.6 171.9,32.6 171.9,31.6"/></g>
+            <g><path class="st-logo-path" d="M37.6,36.3c1,0.6,2.2,1.2,2.2,2.8c0,2.1-1.7,2.9-3.6,2.9c-1.1,0-2.1-0.3-2.4-0.3v-1.2c0.2,0.1,1.2,0.5,2.5,0.5c1.3,0,2.2-0.6,2.2-1.7c0-1.2-0.9-1.6-1.7-2.1l-0.9-0.5c-0.9-0.5-2.2-1.1-2.2-2.6c0-1.8,1.4-2.6,3.3-2.6c1,0,1.8,0.2,2.1,0.3v1.1c-0.3-0.1-1.1-0.4-2.2-0.4C35.7,32.4,35,33,35,34c0,0.9,0.9,1.4,1.7,1.8L37.6,36.3z"/><polygon class="st-logo-path" points="48.2,31.6 48.2,36.1 44,36.1 44,31.6 42.8,31.6 42.8,41.8 44,41.8 44,37 48.2,37 48.2,41.8 49.4,41.8 49.4,31.6"/><path class="st-logo-path" d="M56,32.7L56,32.7l1.5,5h-3L56,32.7z M55.3,31.6l-3.3,10.2h1.2l1-3.2h3.6l1,3.2H60l-3.3-10.2H55.3z"/><path class="st-logo-path" d="M63.9,32.6h0.9c1.2,0,2.6,0,2.6,1.7c0,1.7-1.4,2-2.8,2h-0.6V32.6z M62.8,41.8h1.2v-4.5H65c1.6,0,1.9,0.7,2.2,2.2l0.5,2.4h1.2L68.2,39c-0.2-1.1-0.4-1.9-1.8-2.3v0c0.9-0.2,2.1-0.7,2.1-2.6c0-2.5-2.6-2.6-3.3-2.6h-2.5V41.8z"/><rect x="72.1" y="31.6" class="st-logo-path" width="1.2" height="10.2"/><polygon class="st-logo-path" points="82.9,31.6 82.9,40.3 82.9,40.3 78.7,31.6 77.2,31.6 77.2,41.8 78.3,41.8 78.3,33.2 78.3,33.2 82.5,41.8 84,41.8 84,31.6"/><path class="st-logo-path" d="M94.4,41c-0.3,0.2-1.3,1-2.9,1c-3.2,0-4.1-2.6-4.1-5.6c0-2.6,1-4.9,3.8-4.9c2,0,3.3,1.2,3.3,2.9h-1.3c0-0.9-0.5-2-2-2c-2.1,0-2.6,2.1-2.6,4c0,2,0.3,4.6,2.7,4.6c1,0,1.7-0.4,1.9-0.6V37h-2.3v-1h3.5V41z"/><polygon class="st-logo-path" points="103.1,31.6 103.1,41.8 108.2,41.8 108.2,40.9 104.3,40.9 104.3,37 107.9,37 107.9,36 104.3,36 104.3,32.6 108.1,32.6 108.1,31.6"/><polygon class="st-logo-path" points="116.4,31.6 114.1,35.4 111.9,31.6 110.6,31.6 113.5,36.5 110.3,41.8 111.5,41.8 114.1,37.5 116.7,41.8 118,41.8 114.8,36.5 117.6,31.6"/><path class="st-logo-path" d="M121.5,32.6h1c0.8,0,2.3,0,2.3,1.9c0,1.2-0.6,1.8-2.1,1.8h-1.2V32.6z M120.3,41.8h1.2v-4.6h1.2c1.9,0,3.2-0.8,3.2-2.8c0-2.8-2.4-2.8-2.4-2.8h-2.4V41.8z"/><polygon class="st-logo-path" points="128.8,31.6 128.8,41.8 133.9,41.8 133.9,40.9 130,40.9 130,37 133.6,37 133.6,36 130,36 130,32.6 133.7,32.6 133.7,31.6"/><path class="st-logo-path" d="M138.1,32.6h0.9c1.2,0,2.6,0,2.6,1.7c0,1.7-1.4,2-2.8,2h-0.6V32.6z M137,41.8h1.2v-4.5h1.1c1.6,0,1.9,0.7,2.2,2.2l0.5,2.4h1.2l-0.6-2.8c-0.2-1.1-0.4-1.9-1.8-2.3v0c0.9-0.2,2.1-0.7,2.1-2.6c0-2.5-2.6-2.6-3.3-2.6h-2.5V41.8z"/><polygon class="st-logo-path" points="145,31.6 145,32.6 147.5,32.6 147.5,41.8 148.6,41.8 148.6,32.6 151.1,32.6 151.1,31.6"/><rect x="153.5" y="31.6" class="st-logo-path" width="1.2" height="10.2"/><path class="st-logo-path" d="M161.7,36.3c1,0.6,2.2,1.2,2.2,2.8c0,2.1-1.7,2.9-3.6,2.9c-1.1,0-2.1-0.3-2.4-0.3v-1.2c0.2,0.1,1.2,0.5,2.5,0.5c1.3,0,2.2-0.6,2.2-1.7c0-1.2-0.9-1.6-1.7-2.1l-0.9-0.5c-0.9-0.5-2.2-1.1-2.2-2.6c0-1.8,1.4-2.6,3.3-2.6c1,0,1.8,0.2,2.1,0.3v1.1c-0.3-0.1-1.1-0.4-2.2-0.4c-1.2,0-1.9,0.6-1.9,1.6c0,0.9,0.9,1.4,1.7,1.8L161.7,36.3z"/><polygon class="st-logo-path" points="166.9,31.6 166.9,41.8 172,41.8 172,40.9 168.1,40.9 168.1,37 171.7,37 171.7,36 168.1,36 168.1,32.6 171.9,32.6 171.9,31.6"/></g>
         </svg>
     </div>
     <div style="display:flex; gap:10px; align-items:center;">
@@ -672,16 +690,6 @@
 <div class="status-panel" aria-live="polite">
     <div id="big-clock" class="clock">00:00:00</div>
     <div id="status-msg" class="status-msg">---</div>
-</div>
-
-<div class="select-group">
-    <label for="anoSelect" class="sr-only">Selecionar ano</label>
-    <select id="anoSelect" onchange="salvarAno()">
-        <option value="2026">2026</option>
-        <option value="2027">2027</option>
-    </select>
-    <label for="turmaSelect" class="sr-only">Selecionar turma</label>
-    <select id="turmaSelect" onchange="salvarTurma()"></select>
 </div>
 
 <div id="calendario-box"></div>
@@ -717,8 +725,18 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-        
-        <div class="drawer-section-label">Ferramentas</div>
+
+        <div class="drawer-section-label">Perfil</div>
+        <button class="drawer-item" onclick="openMeuPerfil()">
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">👤</div>
+            <div>
+                <div class="drawer-item-label">Meu Perfil</div>
+                <div class="drawer-item-sub">Nome · Matrícula · Turma · Ano</div>
+            </div>
+            <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
+        </button>
+
+        <div class="drawer-section-label">Contatos</div>
         <button class="drawer-item" onclick="closeHamburger(); openRamais();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📞</div>
             <div>
@@ -727,6 +745,27 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
+        
+        <div class="drawer-section-label">Colaborador</div>
+        <button class="drawer-item" onclick="openColaboradorDoMes()">
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">🏆</div>
+            <div>
+                <div class="drawer-item-label">Colaborador do Mês</div>
+                <div class="drawer-item-sub">Votação mensal</div>
+            </div>
+            <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
+        </button>
+
+        <button class="drawer-item" onclick="openMeusPedidos()">
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📦</div>
+            <div>
+                <div class="drawer-item-label">Meus Pedidos</div>
+                <div class="drawer-item-sub">Uniformes e requisitos</div>
+            </div>
+            <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
+        </button>
+
+        <div class="drawer-section-label">Ferramentas</div>
         <button class="drawer-item" onclick="closeHamburger(); openConfig();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">⚙️</div>
             <div>
@@ -915,6 +954,98 @@
     <button onclick="closeAllModals()" style="background:var(--primary);color:white;border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">ENTENDI</button>
 </div>
 
+<!-- ==================== MODAL MEU PERFIL ==================== -->
+<div id="meuPerfilCard" class="bottom-modal" role="dialog" aria-label="Meu Perfil" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Meu Perfil</h2>
+    <div style="display:flex;flex-direction:column;gap:15px;">
+        <!-- NOME COMPLETO -->
+        <div>
+            <label for="nomePerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Nome Completo</label>
+            <input type="text" id="nomePerfil" placeholder="Digite seu nome completo" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;">
+        </div>
+        <!-- MATRÍCULA -->
+        <div>
+            <label for="matriculaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Matrícula</label>
+            <input type="text" id="matriculaPerfil" placeholder="Digite sua matrícula" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;">
+        </div>
+        <!-- TURMA -->
+        <div>
+            <label for="turmaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Turma</label>
+            <select id="turmaPerfil" onchange="salvarDadosPerfil()" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
+                <option value="A">Turma A</option>
+                <option value="B">Turma B</option>
+                <option value="C">Turma C</option>
+                <option value="D">Turma D</option>
+            </select>
+        </div>
+        <!-- ANO -->
+        <div>
+            <label for="anoPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Ano</label>
+            <select id="anoPerfil" onchange="salvarDadosPerfil()" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+            </select>
+        </div>
+    </div>
+    <button onclick="salvarDadosPerfil(); closeAllModals();" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;">SALVAR E FECHAR</button>
+</div>
+
+<!-- ==================== MODAL COLABORADOR DO MÊS ==================== -->
+<div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏆 Colaborador do Mês</h2>
+    <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="votacaoNome" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Matrícula:</span> <span id="votacaoMatricula" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="votacaoAno" style="font-weight:800;">---</span></div>
+        </div>
+    </div>
+    <p style="font-size:0.9em;opacity:0.7;margin-bottom:15px;">Seus dados já estão pré-preenchidos. Clique abaixo para votar.</p>
+    <button onclick="abrirFormularioVotacao()" style="background:linear-gradient(135deg, #FFD700, #EBC13D);color:#1A1A1A;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(235,193,61,0.3);">
+        <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">how_to_vote</span>
+        VOTAR AGORA
+    </button>
+    <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;">FECHAR</button>
+</div>
+
+<!-- ==================== MODAL MEUS PEDIDOS ==================== -->
+<div id="meusPedidosCard" class="bottom-modal" role="dialog" aria-label="Meus Pedidos" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">📦 Meus Pedidos</h2>
+    
+    <!-- Dados do perfil já preenchidos -->
+    <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
+        <div style="display:flex;flex-direction:column;gap:5px;">
+            <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="pedidoNome" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Matrícula:</span> <span id="pedidoMatricula" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Turma:</span> <span id="pedidoTurma" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="pedidoAno" style="font-weight:800;">---</span></div>
+        </div>
+    </div>
+
+    <!-- Campos para preenchimento -->
+    <div style="margin-bottom:15px;">
+        <label for="pedidoItem" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Item desejado</label>
+        <input type="text" id="pedidoItem" placeholder="Ex: Uniforme completo, Camisa, Calça..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
+    </div>
+
+    <div style="margin-bottom:15px;">
+        <label for="pedidoTamanho" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Tamanho</label>
+        <input type="text" id="pedidoTamanho" placeholder="Ex: M, G, GG..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
+    </div>
+
+    <div style="margin-bottom:15px;">
+        <label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Observações</label>
+        <textarea id="pedidoObs" placeholder="Digite qualquer observação..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea>
+    </div>
+
+    <button onclick="enviarPedidoEmail()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(0,169,122,0.3);">
+        <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">send</span>
+        ENVIAR POR E-MAIL
+    </button>
+
+    <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;">FECHAR</button>
+</div>
+
 <style>
     .sr-only {
         position: absolute;
@@ -930,13 +1061,47 @@
 </style>
 
 <script>
+    // ==================== STORAGE COMPATÍVEL ====================
+    function getStorageValue(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            try {
+                return sessionStorage.getItem(key);
+            } catch (f) {
+                return null;
+            }
+        }
+    }
+
+    function setStorageValue(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            try {
+                sessionStorage.setItem(key, value);
+            } catch (f) {
+                // Não salva
+            }
+        }
+    }
+
+    function removeStorageValue(key) {
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {
+            try {
+                sessionStorage.removeItem(key);
+            } catch (f) {}
+        }
+    }
+
     // ==================== LÓGICA DA SPLASH DA COPA ====================
     function showCopaSplash() {
-        closeHamburger(); // Fecha o menu lateral
+        closeHamburger();
         const splash = document.getElementById('copaSplashScreen');
-        splash.style.display = 'flex'; // Exibe a splash da Copa
+        splash.style.display = 'flex';
         
-        // Aguarda 3.5 segundos para a animação finalizar e então abre o painel da Copa
         setTimeout(() => {
             splash.style.display = 'none';
             openCopaPanel();
@@ -947,8 +1112,8 @@
     let cachedFerias = null;
     function getFeriasRange() {
         if (cachedFerias) return cachedFerias;
-        const inicio = localStorage.getItem('braun_ferias_inicio');
-        const fim = localStorage.getItem('braun_ferias_fim');
+        const inicio = getStorageValue('braun_ferias_inicio');
+        const fim = getStorageValue('braun_ferias_fim');
         cachedFerias = { inicio, fim };
         return cachedFerias;
     }
@@ -996,14 +1161,14 @@
     function startClock() {
         if (clockInterval) clearInterval(clockInterval);
         clockInterval = setInterval(() => {
-            if (!document.hidden) {
+            if (document.visibilityState === 'visible') {
                 tick();
             }
         }, 1000);
     }
     
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
+        if (document.visibilityState === 'hidden') {
             if (clockInterval) clearInterval(clockInterval);
         } else {
             startClock();
@@ -1017,30 +1182,33 @@
     const installBtn = document.getElementById('install-button');
 
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => {
-                    reg.onupdatefound = () => {
-                        const iw = reg.installing;
-                        iw.onstatechange = () => {
-                            if (iw.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('Nova versão pronta.');
-                            }
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (!isIOS) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => {
+                        reg.onupdatefound = () => {
+                            const iw = reg.installing;
+                            iw.onstatechange = () => {
+                                if (iw.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('Nova versão pronta.');
+                                }
+                            };
                         };
-                    };
-                })
-                .catch(err => console.log('Erro SW:', err));
-        });
+                    })
+                    .catch(err => console.log('Erro SW:', err));
+            });
+        }
     }
-// Listener para receber a mensagem de atualização do sw.js
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SW_UPDATED') {
-      console.log('Nova versão detectada. Atualizando...');
-      window.location.reload();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'SW_UPDATED') {
+          console.log('Nova versão detectada. Atualizando...');
+          window.location.reload();
+        }
+      });
     }
-  });
-}
 
     window.addEventListener('beforeinstallprompt', e => {
         e.preventDefault();
@@ -1056,7 +1224,7 @@ if ('serviceWorker' in navigator) {
         }
     }
 
-    let currentRegion = localStorage.getItem('braun_last_region') || 'BR';
+    let currentRegion = getStorageValue('braun_last_region') || 'BR';
     let dataAtiva = '';
     const _escalaCache = new Map();
 
@@ -1072,53 +1240,226 @@ if ('serviceWorker' in navigator) {
     };
     const BRAZIL_GAMES_2026 = Object.keys(BRAZIL_GAMES_2026_DETAILS);
 
+    let currentAno = getStorageValue('braun_ano') || '2026';
+    let currentTurma = getStorageValue(`braun_turma_${currentRegion}`) || 'AC';
+
+    // ==================== FUNÇÃO DE SAUDAÇÃO PERSONALIZADA ====================
     function goToGreeting() {
-        const welcome  = document.getElementById('welcomeScreen');
+        const welcome = document.getElementById('welcomeScreen');
         const greeting = document.getElementById('greetingScreen');
-        const minimalMode = localStorage.getItem('braun_minimal_greeting') === 'true';
-        const now  = new Date();
+        const minimalMode = getStorageValue('braun_minimal_greeting') === 'true';
+        const now = new Date();
         const hour = now.getHours();
 
-        let saudacao = 'Bom dia!';
-        if (hour >= 12 && hour < 18) saudacao = 'Boa tarde!';
-        else if (hour >= 18 || hour < 5) saudacao = 'Boa noite!';
+        // Pega o nome do perfil e detecta gênero
+        const nomeCompleto = getStorageValue('braun_nome_completo') || '';
+        const nome = nomeCompleto.split(' ')[0]; // Primeiro nome
+        const genero = detectarGenero(nome); // 'masculino', 'feminino' ou 'neutro'
 
-        const statusEl = document.getElementById('greet-status');
-        const iconEl   = document.getElementById('greet-icon');
+        // Verifica se hoje é feriado
+        const ano = now.getFullYear();
+        const mes = String(now.getMonth() + 1).padStart(2, '0');
+        const dia = String(now.getDate()).padStart(2, '0');
+        const isoS = `${mes}-${dia}`;
+        const feriados = getFeriados(ano);
+        const isFeriado = feriados[isoS] !== undefined;
+
+        // Saudação base
+        let saudacao = 'Bom dia';
+        if (hour >= 12 && hour < 18) saudacao = 'Boa tarde';
+        else if (hour >= 18 || hour < 5) saudacao = 'Boa noite';
+
+        // Monta a saudação inicial
+        let saudacaoCompleta = nome ? `${saudacao}, ${nome}!` : `${saudacao}!`;
+
+        // Listas de mensagens avançadas
+        const mensagens = {
+            trabalho: {
+                feriado: {
+                    masculino: [
+                        'Bora trabalhar, guerreiro! É feriado, mas temos missão! 💪',
+                        'Feriado trabalhado, dobro de força! Vamos nessa! 🔥',
+                        'Mesmo no feriado, você não para! Que garra! ⚡',
+                        'Bora vencer, guerreiro! O trabalho não espera! 🚀',
+                        'Foco total! Feriado é só mais um dia de vitória! 🌟'
+                    ],
+                    feminino: [
+                        'Bora trabalhar, guerreira! É feriado, mas temos missão! 💪',
+                        'Feriado trabalhado, dobro de força! Vamos nessa! 🔥',
+                        'Mesmo no feriado, você não para! Que garra! ⚡',
+                        'Bora vencer, guerreira! O trabalho não espera! 🚀',
+                        'Foco total! Feriado é só mais um dia de vitória! 🌟'
+                    ],
+                    neutro: [
+                        'Bora trabalhar! É feriado, mas temos missão! 💪',
+                        'Feriado trabalhado, dobro de força! Vamos nessa! 🔥',
+                        'Mesmo no feriado, você não para! Que garra! ⚡',
+                        'Bora vencer! O trabalho não espera! 🚀',
+                        'Foco total! Feriado é só mais um dia de vitória! 🌟'
+                    ]
+                },
+                normal: {
+                    masculino: [
+                        'Bora trabalhar, guerreiro! Vamos vencer hoje! 💪',
+                        'Mais um dia de luta, você consegue! 🔥',
+                        'Que a força esteja com você! Vamos nessa! ⚡',
+                        'Foco e determinação, guerreiro! 🚀',
+                        'O sucesso começa com a sua atitude! 🌟'
+                    ],
+                    feminino: [
+                        'Bora trabalhar, guerreira! Vamos vencer hoje! 💪',
+                        'Mais um dia de luta, você consegue! 🔥',
+                        'Que a força esteja com você! Vamos nessa! ⚡',
+                        'Foco e determinação, guerreira! 🚀',
+                        'O sucesso começa com a sua atitude! 🌟'
+                    ],
+                    neutro: [
+                        'Bora trabalhar! Vamos vencer hoje! 💪',
+                        'Mais um dia de luta, você consegue! 🔥',
+                        'Que a força esteja com você! Vamos nessa! ⚡',
+                        'Foco e determinação! 🚀',
+                        'O sucesso começa com a sua atitude! 🌟'
+                    ]
+                }
+            },
+            folga: {
+                feriado: {
+                    masculino: [
+                        'Excelente dia de feriado, guerreiro! Aproveite! 🎉',
+                        'Feriado é sagrado! Curta cada momento! 🌴',
+                        'O melhor do feriado é você descansar! Aproveite! ✨',
+                        'Feriado merecido! Seja feliz e descanse! 😊',
+                        'Hoje é seu dia! Aproveite o feriado! 🌟'
+                    ],
+                    feminino: [
+                        'Excelente dia de feriado, guerreira! Aproveite! 🎉',
+                        'Feriado é sagrado! Curta cada momento! 🌴',
+                        'O melhor do feriado é você descansar! Aproveite! ✨',
+                        'Feriado merecido! Seja feliz e descanse! 😊',
+                        'Hoje é seu dia! Aproveite o feriado! 🌟'
+                    ],
+                    neutro: [
+                        'Excelente dia de feriado! Aproveite! 🎉',
+                        'Feriado é sagrado! Curta cada momento! 🌴',
+                        'O melhor do feriado é você descansar! Aproveite! ✨',
+                        'Feriado merecido! Seja feliz e descanse! 😊',
+                        'Hoje é seu dia! Aproveite o feriado! 🌟'
+                    ]
+                },
+                normal: {
+                    masculino: [
+                        'Descanse, guerreiro! Você merece! 😌',
+                        'A vida é boa quando a gente descansa! 😊',
+                        'Hoje é seu dia, faça o que quiser! ✨',
+                        'Curta sua folga, você trabalhou duro! 🌴',
+                        'Renove as energias, você merece descanso! 🔋'
+                    ],
+                    feminino: [
+                        'Descanse, guerreira! Você merece! 😌',
+                        'A vida é boa quando a gente descansa! 😊',
+                        'Hoje é seu dia, faça o que quiser! ✨',
+                        'Curta sua folga, você trabalhou duro! 🌴',
+                        'Renove as energias, você merece descanso! 🔋'
+                    ],
+                    neutro: [
+                        'Descanse! Você merece! 😌',
+                        'A vida é boa quando a gente descansa! 😊',
+                        'Hoje é seu dia, faça o que quiser! ✨',
+                        'Curta sua folga, você trabalhou duro! 🌴',
+                        'Renove as energias, você merece descanso! 🔋'
+                    ]
+                }
+            },
+            ferias: {
+                mensagens: {
+                    masculino: [
+                        'Aproveite suas férias, guerreiro! O mundo espera por você! ✈️',
+                        'Descanse, viaje e seja feliz! 🌴',
+                        'Férias merecidas, curta muito! 🎉',
+                        'Desconecte-se e renove as energias! 🔋',
+                        'Você trabalhou duro, agora é hora de curtir! 🌍'
+                    ],
+                    feminino: [
+                        'Aproveite suas férias, guerreira! O mundo espera por você! ✈️',
+                        'Descanse, viaje e seja feliz! 🌴',
+                        'Férias merecidas, curta muito! 🎉',
+                        'Desconecte-se e renove as energias! 🔋',
+                        'Você trabalhou duro, agora é hora de curtir! 🌍'
+                    ],
+                    neutro: [
+                        'Aproveite suas férias! O mundo espera por você! ✈️',
+                        'Descanse, viaje e seja feliz! 🌴',
+                        'Férias merecidas, curta muito! 🎉',
+                        'Desconecte-se e renove as energias! 🔋',
+                        'Você trabalhou duro, agora é hora de curtir! 🌍'
+                    ]
+                }
+            },
+            minimal: {
+                mensagens: [
+                    'Você já está no app, isso é o que importa! 😊',
+                    'Sorria, você está aqui! 🌟',
+                    'Que bom te ver por aqui! 👋',
+                    'O app está feliz com a sua presença! 🎉',
+                    'Você é bem-vindo sempre! ❤️'
+                ]
+            }
+        };
+
+        // Função para escolher mensagem aleatória
+        function escolherMensagem(lista, genero) {
+            const listaGenero = lista[genero] || lista['neutro'];
+            const index = Math.floor(Math.random() * listaGenero.length);
+            return listaGenero[index];
+        }
+
+        // Escolhe a mensagem baseada na situação
+        let mensagemStatus = '';
+        let icon = '';
         greeting.classList.remove('work', 'off', 'holiday');
 
         if (isFerias(now)) {
             greeting.classList.add('holiday');
-            document.getElementById('greet-main').innerText = 'Boas férias!';
-            statusEl.innerHTML = 'APROVEITE SEU<br>DESCANSO';
-            iconEl.innerText   = 'flight';
+            mensagemStatus = escolherMensagem(mensagens.ferias.mensagens, genero);
+            icon = 'flight';
         } else if (minimalMode) {
-            document.getElementById('greet-main').innerText = saudacao;
             greeting.classList.add('off');
-            statusEl.innerHTML = 'BEM-VINDO<br>DE VOLTA';
-            iconEl.innerText   = 'mood';
+            mensagemStatus = mensagens.minimal.mensagens[Math.floor(Math.random() * mensagens.minimal.mensagens.length)];
+            icon = 'mood';
         } else {
-            document.getElementById('greet-main').innerText = saudacao;
-            const t    = document.getElementById('turmaSelect').value;
-            const isTrab = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
+            const isTrab = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
             if (isTrab) {
                 greeting.classList.add('work');
-                statusEl.innerHTML = 'HOJE VOCÊ<br>TRABALHA';
-                iconEl.innerText   = (currentRegion === 'BR') ? 'factory' : 'engineering';
+                if (isFeriado) {
+                    mensagemStatus = escolherMensagem(mensagens.trabalho.feriado, genero);
+                } else {
+                    mensagemStatus = escolherMensagem(mensagens.trabalho.normal, genero);
+                }
+                icon = (currentRegion === 'BR') ? 'factory' : 'engineering';
             } else {
                 greeting.classList.add('off');
-                statusEl.innerHTML = (currentRegion === 'BR') ? 'HOJE É<br>SUA FOLGA' : 'FOLGA<br>MERECIDA';
-                iconEl.innerText   = (currentRegion === 'BR') ? 'home' : 'chair';
+                if (isFeriado) {
+                    mensagemStatus = escolherMensagem(mensagens.folga.feriado, genero);
+                } else {
+                    mensagemStatus = escolherMensagem(mensagens.folga.normal, genero);
+                }
+                icon = (currentRegion === 'BR') ? 'home' : 'chair';
             }
         }
 
+        // Atualiza a interface
+        document.getElementById('greet-main').innerText = saudacaoCompleta;
+        document.getElementById('greet-status').innerHTML = mensagemStatus;
+        document.getElementById('greet-icon').innerText = icon;
+
+        // Transição
         welcome.classList.add('hide');
         setTimeout(() => {
             welcome.style.display = 'none';
             greeting.style.display = 'flex';
             setTimeout(() => {
                 greeting.classList.add('hide');
-                localStorage.setItem('braun_visited', 'true');
+                setStorageValue('braun_visited', 'true');
                 setTimeout(() => {
                     greeting.style.display = 'none';
                     scrollToToday();
@@ -1127,9 +1468,37 @@ if ('serviceWorker' in navigator) {
         }, 500);
     }
 
+    // ==================== FUNÇÃO PARA DETECTAR GÊNERO ====================
+    function detectarGenero(nome) {
+        if (!nome) return 'neutro';
+
+        const terminaisFemininos = ['a', 'ia', 'na', 'ra', 'la', 'sa', 'ta'];
+        const terminaisMasculinos = ['o', 'io', 'no', 'ro', 'lo', 'so', 'to'];
+
+        const ultimaLetra = nome.toLowerCase().slice(-1);
+        const duasUltimas = nome.toLowerCase().slice(-2);
+
+        const femininosEspeciais = ['Daniele', 'Gabriele', 'Rafaele', 'Simone', 'Michele', 'Dany'];
+        const masculinosEspeciais = ['Lucas', 'André', 'Andrey', 'Matheus', 'Pedro', 'Junior'];
+
+        if (femininosEspeciais.some(n => nome.toLowerCase() === n.toLowerCase())) return 'feminino';
+        if (masculinosEspeciais.some(n => nome.toLowerCase() === n.toLowerCase())) return 'masculino';
+
+        if (terminaisFemininos.includes(ultimaLetra)) return 'feminino';
+        if (terminaisMasculinos.includes(ultimaLetra)) return 'masculino';
+        if (ultimaLetra === 'e') {
+            if (duasUltimas === 'le' || duasUltimas === 'ne') return 'feminino';
+            if (duasUltimas === 're' || duasUltimas === 'se') return 'masculino';
+        }
+
+        return 'neutro';
+    }
+
+    // ==================== DEMAIS FUNÇÕES DO APP ====================
+    
     function setRegion(r) {
         currentRegion = r;
-        localStorage.setItem('braun_last_region', r);
+        setStorageValue('braun_last_region', r);
         document.querySelectorAll('.tab').forEach(t => {
             t.classList.remove('active');
             t.setAttribute('aria-selected', 'false');
@@ -1138,14 +1507,13 @@ if ('serviceWorker' in navigator) {
         activeTab.classList.add('active');
         activeTab.setAttribute('aria-selected', 'true');
 
-        const s = document.getElementById('turmaSelect');
-        s.innerHTML = r === 'BR'
-            ? '<option value="AC">TURMA A/C (AMARELO)</option><option value="BD">TURMA B/D (VERDE)</option>'
-            : '<option value="EG">TURMA E/G (AZUL)</option><option value="FH">TURMA F/H (VERDE)</option>';
-
-        const savedTurma = localStorage.getItem(`braun_turma_${r}`);
-        if (savedTurma) s.value = savedTurma;
-
+        const savedTurma = getStorageValue(`braun_turma_${r}`);
+        if (savedTurma) {
+            currentTurma = savedTurma;
+        } else {
+            currentTurma = r === 'BR' ? 'AC' : 'EG';
+        }
+        
         _escalaCache.clear();
         gerarCalendario();
         tick();
@@ -1188,9 +1556,9 @@ if ('serviceWorker' in navigator) {
     function gerarCalendario() {
         const box  = document.getElementById('calendario-box');
         const frag = document.createDocumentFragment();
-        const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
-        const ano  = parseInt(document.getElementById('anoSelect').value);
-        const t    = document.getElementById('turmaSelect').value;
+        const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
+        const ano  = parseInt(currentAno);
+        const t    = currentTurma;
         const fer  = getFeriados(ano);
         const lang = translations[currentRegion];
         const hojeStr = new Date().toDateString();
@@ -1201,14 +1569,22 @@ if ('serviceWorker' in navigator) {
             const container = document.createElement('div');
             container.className = 'mes-container';
 
+            // 🔹 ANO NA EXTREMIDADE DIREITA 🔹
             let hF = `<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')">
-                        <div style="color:var(--primary);font-weight:800;text-transform:capitalize;margin:5px 0 0 10px;font-size:1.1em;">${nomeM}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin:5px 10px 0 10px;">
+                            <span style="color:var(--primary);font-weight:800;text-transform:capitalize;font-size:1.1em;">${nomeM}</span>
+                            <span style="color:var(--primary);font-weight:800;font-size:1.1em;">${ano}</span>
+                        </div>
                         <div class="grid">
                           <div class="dia-label">W</div>
                           ${lang.days.map(s => `<div class="dia-label">${s}</div>`).join('')}`;
 
             let hB = `<div class="mes-face mes-back" onclick="this.parentElement.classList.toggle('flipped')">
-                        <div style="font-weight:800;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:5px;margin-bottom:10px;text-transform:capitalize;">${nomeM}</div>`;
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin:5px 10px 0 10px;">
+                            <span style="font-weight:800;text-transform:capitalize;font-size:1.1em;">${nomeM}</span>
+                            <span style="font-weight:800;font-size:1.1em;">${ano}</span>
+                        </div>
+                        <div style="font-weight:800;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:5px;margin-bottom:10px;">Eventos do mês</div>`;
 
             let hasEv = false;
             const diasNoMes = new Date(ano, m + 1, 0).getDate();
@@ -1233,22 +1609,20 @@ if ('serviceWorker' in navigator) {
                 }
 
                 let cls = 'dia ';
-                let trabGameStatus = false;
 
                 if (currentRegion === 'BR') {
                     const r = checkBR(at, t);
                     cls += (r.isA ? 'AMARELO ' : 'VERDE ');
                     cls += (r.trab ? 'TRABALHO ' : 'FOLGA ');
-                    trabGameStatus = r.trab;
                 } else {
                     const mnt = checkMnt(at, t);
                     cls += (mnt.isEG ? 'AZUL ' : 'VERDE ');
                     cls += (mnt.trab ? 'TRABALHO ' : 'FOLGA ');
-                    trabGameStatus = mnt.trab;
                 }
 
                 const isBrazilGame = (ano === 2026 && BRAZIL_GAMES_2026.includes(isoF));
                 if (isBrazilGame) {
+                    const trabGameStatus = (currentRegion === 'BR') ? checkBR(at, t).trab : checkMnt(at, t).trab;
                     cls += ` brasil-game-${trabGameStatus ? 'work' : 'off'} `;
                 }
 
@@ -1258,6 +1632,7 @@ if ('serviceWorker' in navigator) {
 
                 let titleAttr = '';
                 if (isBrazilGame) {
+                    const trabGameStatus = (currentRegion === 'BR') ? checkBR(at, t).trab : checkMnt(at, t).trab;
                     const statusMsg = trabGameStatus ? 'Você TRABALHA neste dia' : 'Você está de FOLGA neste dia';
                     titleAttr = ` title="🇧🇷 Jogo do Brasil! ${statusMsg}"`;
                 }
@@ -1287,15 +1662,14 @@ if ('serviceWorker' in navigator) {
         const bigClock = document.getElementById('big-clock');
         if (bigClock) bigClock.innerText = now.toLocaleTimeString('pt-BR');
 
-        const t   = document.getElementById('turmaSelect').value;
         const msg = document.getElementById('status-msg');
-        if (!t || !msg) return;
+        if (!msg) return;
 
         if (isFerias(now)) {
             msg.innerText   = 'EM FÉRIAS ✈️';
             msg.style.color = '#7030A0';
         } else {
-            const trab      = (currentRegion === 'BR') ? checkBR(now, t).trab : checkMnt(now, t).trab;
+            const trab      = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
             msg.innerText   = trab ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
             msg.style.color = trab ? 'var(--accent)' : 'var(--primary)';
         }
@@ -1305,20 +1679,20 @@ if ('serviceWorker' in navigator) {
         const btn = document.getElementById('btn-flutuante-votar');
         const agora = new Date();
         const chave = `voto_realizado_${agora.getMonth()}_${agora.getFullYear()}`;
-        btn.style.display = localStorage.getItem(chave) === 'true' ? 'none' : 'flex';
+        btn.style.display = getStorageValue(chave) === 'true' ? 'none' : 'flex';
     }
 
     function registrarVoto() {
         const agora = new Date();
         const chave = `voto_realizado_${agora.getMonth()}_${agora.getFullYear()}`;
         window.open('https://forms.gle/KfS9XFv9UseZYqnS7', '_blank');
-        localStorage.setItem(chave, 'true');
+        setStorageValue(chave, 'true');
         document.getElementById('btn-flutuante-votar').style.display = 'none';
     }
 
     function openCard(iso) {
         dataAtiva = iso;
-        const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
+        const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
         const d    = iso.split('-');
         document.getElementById('card-data').innerText  = `${d[2]}/${d[1]}/${d[0]}`;
         document.getElementById('noteInput').value       = logs[iso] || '';
@@ -1334,8 +1708,7 @@ if ('serviceWorker' in navigator) {
         const anoNum = parseInt(d[0]);
         if (anoNum === 2026 && BRAZIL_GAMES_2026_DETAILS[iso]) {
             const game = BRAZIL_GAMES_2026_DETAILS[iso];
-            const turmaSelecionada = document.getElementById('turmaSelect').value;
-            const isTrab = (currentRegion === 'BR') ? checkBR(dtSel, turmaSelecionada).trab : checkMnt(dtSel, turmaSelecionada).trab;
+            const isTrab = (currentRegion === 'BR') ? checkBR(dtSel, currentTurma).trab : checkMnt(dtSel, currentTurma).trab;
             const statusText = isTrab ? 'TRABALHA' : 'FOLGA';
             const statusClass = isTrab ? 'work' : 'off';
             gameContainer.innerHTML = `
@@ -1378,165 +1751,153 @@ if ('serviceWorker' in navigator) {
         if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
     }
 
-// COPA 2026 DATA
-const COPA_GROUPS = {
-    A: { teams: [
-        { id:'MEX', n:'México',        f:'🇲🇽' }, { id:'RSA', n:'África do Sul', f:'🇿🇦' },
-        { id:'KOR', n:'Coreia do Sul', f:'🇰🇷' }, { id:'CZE', n:'Rep. Tcheca',   f:'🇨🇿' }],
-        matches:[
-        { id:'A1', h:'MEX', a:'RSA', rd:1, dt:'11/jun 15h30', stadium:'Estádio do México' },
-        { id:'A2', h:'KOR', a:'CZE', rd:1, dt:'11/jun 19h00', stadium:'Estádio da Coreia do Sul' },
-        { id:'A3', h:'MEX', a:'KOR', rd:2, dt:'18/jun 15h30', stadium:'Estádio do México' },
-        { id:'A4', h:'RSA', a:'CZE', rd:2, dt:'18/jun 19h00', stadium:'Estádio da África do Sul' },
-        { id:'A5', h:'MEX', a:'CZE', rd:3, dt:'24/jun 15h30', stadium:'Estádio do México' },
-        { id:'A6', h:'RSA', a:'KOR', rd:3, dt:'24/jun 19h00', stadium:'Estádio da África do Sul' }]
-    },
-    B: { teams: [
-        { id:'CAN', n:'Canadá',  f:'🇨🇦' }, { id:'BIH', n:'Bósnia',  f:'🇧🇦' },
-        { id:'QAT', n:'Qatar',   f:'🇶🇦' }, { id:'SUI', n:'Suíça',   f:'🇨🇭' }],
-        matches:[
-        { id:'B1', h:'CAN', a:'BIH', rd:1, dt:'12/jun 14h00', stadium:'Estádio do Canadá' },
-        { id:'B2', h:'QAT', a:'SUI', rd:1, dt:'12/jun 17h00', stadium:'Estádio do Catar' },
-        { id:'B3', h:'CAN', a:'QAT', rd:2, dt:'18/jun 20h00', stadium:'Estádio do Canadá' },
-        { id:'B4', h:'BIH', a:'SUI', rd:2, dt:'18/jun 23h00', stadium:'Estádio da Bósnia' },
-        { id:'B5', h:'CAN', a:'SUI', rd:3, dt:'24/jun 20h00', stadium:'Estádio do Canadá' },
-        { id:'B6', h:'BIH', a:'QAT', rd:3, dt:'24/jun 23h00', stadium:'Estádio da Bósnia' }]
-    },
-    C: { teams: [
-        { id:'BRA', n:'Brasil',  f:'🇧🇷' }, { id:'MAR', n:'Marrocos', f:'🇲🇦' },
-        { id:'HAI', n:'Haiti',   f:'🇭🇹' }, { id:'SCO', n:'Escócia',  f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿' }],
-        matches:[
-        { id:'C1', h:'BRA', a:'MAR', rd:1, dt:'13/jun 19h00', stadium:'Estádio do Brasil' },
-        { id:'C2', h:'HAI', a:'SCO', rd:1, dt:'13/jun 16h00', stadium:'Estádio do Haiti' }, // Mesmo horário no PDF
-        { id:'C3', h:'BRA', a:'HAI', rd:2, dt:'18/jun 21h30', stadium:'Estádio do Brasil' },
-        { id:'C4', h:'MAR', a:'SCO', rd:2, dt:'18/jun 23h00', stadium:'Estádio do Marrocos' },
-        { id:'C5', h:'BRA', a:'SCO', rd:3, dt:'24/jun 19h00', stadium:'Estádio do Brasil' },
-        { id:'C6', h:'MAR', a:'HAI', rd:3, dt:'24/jun 23h00', stadium:'Estádio do Marrocos' }]
-    },
-    D: { teams: [
-        { id:'USA', n:'EUA',      f:'🇺🇸' }, { id:'PAR', n:'Paraguai', f:'🇵🇾' },
-        { id:'AUS', n:'Austrália',f:'🇦🇺' }, { id:'TUR', n:'Turquia',  f:'🇹🇷' }],
-        matches:[
-        { id:'D1', h:'USA', a:'AUS', rd:1, dt:'12/jun 20h00', stadium:'Estádio dos EUA' },
-        { id:'D2', h:'PAR', a:'TUR', rd:1, dt:'12/jun 14h00', stadium:'Estádio do Paraguai' },
-        { id:'D3', h:'USA', a:'PAR', rd:2, dt:'19/jun 20h00', stadium:'Estádio dos EUA' },
-        { id:'D4', h:'AUS', a:'TUR', rd:2, dt:'19/jun 23h00', stadium:'Estádio da Austrália' },
-        { id:'D5', h:'USA', a:'TUR', rd:3, dt:'25/jun 20h00', stadium:'Estádio dos EUA' },
-        { id:'D6', h:'PAR', a:'AUS', rd:3, dt:'25/jun 23h00', stadium:'Estádio do Paraguai' }]
-    },
-    E: { teams: [
-    { id:'GER', n:'Alemanha', f:'🇩🇪' },
-    { id:'CUW', n:'Curaçao', f:'🇨🇼' },
-    { id:'CIV', n:'Costa do Marfim', f:'🇨🇮' },
-    { id:'ECU', n:'Equador', f:'🇪🇨' }
-],
-matches:[
-    // 1º Jogo: Alemanha vs Curaçao (14/06 14h) 
-    { id:'E1', h:'GER', a:'CUW', rd:1, dt:'14/jun 14h00', stadium:'Estádio da Alemanha' },
-    
-    // Para completar a tabela do grupo (não aparece no destaque do Google, mas precisa existir)
-    { id:'E2', h:'CIV', a:'ECU', rd:1, dt:'14/jun 17h00', stadium:'Estádio da Costa do Marfim' },
+    // COPA 2026 DATA
+    const COPA_GROUPS = {
+        A: { teams: [
+            { id:'MEX', n:'México',        f:'🇲🇽' }, { id:'RSA', n:'África do Sul', f:'🇿🇦' },
+            { id:'KOR', n:'Coreia do Sul', f:'🇰🇷' }, { id:'CZE', n:'Rep. Tcheca',   f:'🇨🇿' }],
+            matches:[
+            { id:'A1', h:'MEX', a:'RSA', rd:1, dt:'11/jun 15h30', stadium:'Estádio do México' },
+            { id:'A2', h:'KOR', a:'CZE', rd:1, dt:'11/jun 19h00', stadium:'Estádio da Coreia do Sul' },
+            { id:'A3', h:'MEX', a:'KOR', rd:2, dt:'18/jun 15h30', stadium:'Estádio do México' },
+            { id:'A4', h:'RSA', a:'CZE', rd:2, dt:'18/jun 19h00', stadium:'Estádio da África do Sul' },
+            { id:'A5', h:'MEX', a:'CZE', rd:3, dt:'24/jun 15h30', stadium:'Estádio do México' },
+            { id:'A6', h:'RSA', a:'KOR', rd:3, dt:'24/jun 19h00', stadium:'Estádio da África do Sul' }]
+        },
+        B: { teams: [
+            { id:'CAN', n:'Canadá',  f:'🇨🇦' }, { id:'BIH', n:'Bósnia',  f:'🇧🇦' },
+            { id:'QAT', n:'Qatar',   f:'🇶🇦' }, { id:'SUI', n:'Suíça',   f:'🇨🇭' }],
+            matches:[
+            { id:'B1', h:'CAN', a:'BIH', rd:1, dt:'12/jun 14h00', stadium:'Estádio do Canadá' },
+            { id:'B2', h:'QAT', a:'SUI', rd:1, dt:'12/jun 17h00', stadium:'Estádio do Catar' },
+            { id:'B3', h:'CAN', a:'QAT', rd:2, dt:'18/jun 20h00', stadium:'Estádio do Canadá' },
+            { id:'B4', h:'BIH', a:'SUI', rd:2, dt:'18/jun 23h00', stadium:'Estádio da Bósnia' },
+            { id:'B5', h:'CAN', a:'SUI', rd:3, dt:'24/jun 20h00', stadium:'Estádio do Canadá' },
+            { id:'B6', h:'BIH', a:'QAT', rd:3, dt:'24/jun 23h00', stadium:'Estádio da Bósnia' }]
+        },
+        C: { teams: [
+            { id:'BRA', n:'Brasil',  f:'🇧🇷' }, { id:'MAR', n:'Marrocos', f:'🇲🇦' },
+            { id:'HAI', n:'Haiti',   f:'🇭🇹' }, { id:'SCO', n:'Escócia',  f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿' }],
+            matches:[
+            { id:'C1', h:'BRA', a:'MAR', rd:1, dt:'13/jun 19h00', stadium:'Estádio do Brasil' },
+            { id:'C2', h:'HAI', a:'SCO', rd:1, dt:'13/jun 16h00', stadium:'Estádio do Haiti' },
+            { id:'C3', h:'BRA', a:'HAI', rd:2, dt:'18/jun 21h30', stadium:'Estádio do Brasil' },
+            { id:'C4', h:'MAR', a:'SCO', rd:2, dt:'18/jun 23h00', stadium:'Estádio do Marrocos' },
+            { id:'C5', h:'BRA', a:'SCO', rd:3, dt:'24/jun 19h00', stadium:'Estádio do Brasil' },
+            { id:'C6', h:'MAR', a:'HAI', rd:3, dt:'24/jun 23h00', stadium:'Estádio do Marrocos' }]
+        },
+        D: { teams: [
+            { id:'USA', n:'EUA',      f:'🇺🇸' }, { id:'PAR', n:'Paraguai', f:'🇵🇾' },
+            { id:'AUS', n:'Austrália',f:'🇦🇺' }, { id:'TUR', n:'Turquia',  f:'🇹🇷' }],
+            matches:[
+            { id:'D1', h:'USA', a:'AUS', rd:1, dt:'12/jun 20h00', stadium:'Estádio dos EUA' },
+            { id:'D2', h:'PAR', a:'TUR', rd:1, dt:'12/jun 14h00', stadium:'Estádio do Paraguai' },
+            { id:'D3', h:'USA', a:'PAR', rd:2, dt:'19/jun 20h00', stadium:'Estádio dos EUA' },
+            { id:'D4', h:'AUS', a:'TUR', rd:2, dt:'19/jun 23h00', stadium:'Estádio da Austrália' },
+            { id:'D5', h:'USA', a:'TUR', rd:3, dt:'25/jun 20h00', stadium:'Estádio dos EUA' },
+            { id:'D6', h:'PAR', a:'AUS', rd:3, dt:'25/jun 23h00', stadium:'Estádio do Paraguai' }]
+        },
+        E: { teams: [
+        { id:'GER', n:'Alemanha', f:'🇩🇪' },
+        { id:'CUW', n:'Curaçao', f:'🇨🇼' },
+        { id:'CIV', n:'Costa do Marfim', f:'🇨🇮' },
+        { id:'ECU', n:'Equador', f:'🇪🇨' }
+    ],
+    matches:[
+        { id:'E1', h:'GER', a:'CUW', rd:1, dt:'14/jun 14h00', stadium:'Estádio da Alemanha' },
+        { id:'E2', h:'CIV', a:'ECU', rd:1, dt:'14/jun 17h00', stadium:'Estádio da Costa do Marfim' },
+        { id:'E3', h:'GER', a:'CIV', rd:2, dt:'20/jun 17h00', stadium:'Estádio da Alemanha' },
+        { id:'E4', h:'CUW', a:'ECU', rd:2, dt:'20/jun 20h00', stadium:'Estádio de Curaçao' },
+        { id:'E5', h:'ECU', a:'GER', rd:3, dt:'25/jun 17h00', stadium:'Estádio do Equador' },
+        { id:'E6', h:'CIV', a:'CUW', rd:3, dt:'25/jun 20h00', stadium:'Estádio da Costa do Marfim' }
+    ]},
+        F: { teams: [
+            { id:'NED', n:'Holanda', f:'🇳🇱' }, { id:'JPN', n:'Japão',   f:'🇯🇵' },
+            { id:'SWE', n:'Suécia',  f:'🇸🇪' }, { id:'TUN', n:'Tunísia', f:'🇹🇳' }],
+            matches:[
+            { id:'F1', h:'NED', a:'JPN', rd:1, dt:'14/jun 20h00', stadium:'Estádio da Holanda' },
+            { id:'F2', h:'SWE', a:'TUN', rd:1, dt:'14/jun 17h00', stadium:'Estádio da Suécia' },
+            { id:'F3', h:'NED', a:'SWE', rd:2, dt:'21/jun 14h00', stadium:'Estádio da Holanda' },
+            { id:'F4', h:'JPN', a:'TUN', rd:2, dt:'21/jun 17h00', stadium:'Estádio do Japão' },
+            { id:'F5', h:'NED', a:'TUN', rd:3, dt:'25/jun 20h00', stadium:'Estádio da Holanda' },
+            { id:'F6', h:'JPN', a:'SWE', rd:3, dt:'25/jun 17h00', stadium:'Estádio do Japão' }]
+        },
+        G: { teams: [
+            { id:'BEL', n:'Bélgica',       f:'🇧🇪' }, { id:'EGY', n:'Egito',         f:'🇪🇬' },
+            { id:'IRN', n:'Irã',            f:'🇮🇷' }, { id:'NZL', n:'Nova Zelândia', f:'🇳🇿' }],
+            matches:[
+            { id:'G1', h:'BEL', a:'IRN', rd:1, dt:'15/jun 14h00', stadium:'Estádio da Bélgica' },
+            { id:'G2', h:'EGY', a:'NZL', rd:1, dt:'15/jun 17h00', stadium:'Estádio do Egito' },
+            { id:'G3', h:'BEL', a:'EGY', rd:2, dt:'21/jun 20h00', stadium:'Estádio da Bélgica' },
+            { id:'G4', h:'IRN', a:'NZL', rd:2, dt:'21/jun 17h00', stadium:'Estádio do Irã' },
+            { id:'G5', h:'BEL', a:'NZL', rd:3, dt:'26/jun 14h00', stadium:'Estádio da Bélgica' },
+            { id:'G6', h:'EGY', a:'IRN', rd:3, dt:'26/jun 17h00', stadium:'Estádio do Egito' }]
+        },
+        H: { teams: [
+            { id:'ESP', n:'Espanha',       f:'🇪🇸' }, { id:'CPV', n:'Cabo Verde',     f:'🇨🇻' },
+            { id:'KSA', n:'Arábia Saudita',f:'🇸🇦' }, { id:'URU', n:'Uruguai',        f:'🇺🇾' }],
+            matches:[
+            { id:'H1', h:'ESP', a:'URU', rd:1, dt:'15/jun 20h00', stadium:'Estádio da Espanha' },
+            { id:'H2', h:'CPV', a:'KSA', rd:1, dt:'15/jun 17h00', stadium:'Estádio de Cabo Verde' },
+            { id:'H3', h:'ESP', a:'CPV', rd:2, dt:'22/jun 14h00', stadium:'Estádio da Espanha' },
+            { id:'H4', h:'KSA', a:'URU', rd:2, dt:'22/jun 17h00', stadium:'Estádio da Arábia Saudita' },
+            { id:'H5', h:'ESP', a:'KSA', rd:3, dt:'26/jun 20h00', stadium:'Estádio da Espanha' },
+            { id:'H6', h:'CPV', a:'URU', rd:3, dt:'26/jun 17h00', stadium:'Estádio de Cabo Verde' }]
+        },
+        I: { teams: [
+            { id:'FRA', n:'França',  f:'🇫🇷' }, { id:'SEN', n:'Senegal', f:'🇸🇳' },
+            { id:'IRQ', n:'Iraque',  f:'🇮🇶' }, { id:'NOR', n:'Noruega', f:'🇳🇴' }],
+            matches:[
+            { id:'I1', h:'FRA', a:'SEN', rd:1, dt:'16/jun 14h00', stadium:'Estádio da França' },
+            { id:'I2', h:'IRQ', a:'NOR', rd:1, dt:'16/jun 17h00', stadium:'Estádio do Iraque' },
+            { id:'I3', h:'FRA', a:'IRQ', rd:2, dt:'22/jun 20h00', stadium:'Estádio da França' },
+            { id:'I4', h:'SEN', a:'NOR', rd:2, dt:'22/jun 17h00', stadium:'Estádio do Senegal' },
+            { id:'I5', h:'FRA', a:'NOR', rd:3, dt:'26/jun 14h00', stadium:'Estádio da França' },
+            { id:'I6', h:'SEN', a:'IRQ', rd:3, dt:'26/jun 17h00', stadium:'Estádio do Senegal' }]
+        },
+        J: { teams: [
+            { id:'ARG', n:'Argentina', f:'🇦🇷' }, { id:'ALG', n:'Argélia',  f:'🇩🇿' },
+            { id:'AUT', n:'Áustria',   f:'🇦🇹' }, { id:'JOR', n:'Jordânia', f:'🇯🇴' }],
+            matches:[
+            { id:'J1', h:'ARG', a:'AUT', rd:1, dt:'17/jun 14h00', stadium:'Estádio da Argentina' },
+            { id:'J2', h:'ALG', a:'JOR', rd:1, dt:'17/jun 17h00', stadium:'Estádio da Argélia' },
+            { id:'J3', h:'ARG', a:'ALG', rd:2, dt:'23/jun 14h00', stadium:'Estádio da Argentina' },
+            { id:'J4', h:'AUT', a:'JOR', rd:2, dt:'23/jun 17h00', stadium:'Estádio da Áustria' },
+            { id:'J5', h:'ARG', a:'JOR', rd:3, dt:'27/jun 14h00', stadium:'Estádio da Argentina' },
+            { id:'J6', h:'ALG', a:'AUT', rd:3, dt:'27/jun 17h00', stadium:'Estádio da Argélia' }]
+        },
+        K: { teams: [
+            { id:'POR', n:'Portugal',    f:'🇵🇹' }, { id:'COD', n:'RD Congo',     f:'🇨🇩' },
+            { id:'UZB', n:'Uzbequistão', f:'🇺🇿' }, { id:'COL', n:'Colômbia',     f:'🇨🇴' }],
+            matches:[
+            { id:'K1', h:'POR', a:'COL', rd:1, dt:'17/jun 20h00', stadium:'Estádio de Portugal' },
+            { id:'K2', h:'COD', a:'UZB', rd:1, dt:'17/jun 17h00', stadium:'Estádio da RD Congo' },
+            { id:'K3', h:'POR', a:'COD', rd:2, dt:'23/jun 20h00', stadium:'Estádio de Portugal' },
+            { id:'K4', h:'UZB', a:'COL', rd:2, dt:'23/jun 17h00', stadium:'Estádio do Uzbequistão' },
+            { id:'K5', h:'POR', a:'UZB', rd:3, dt:'27/jun 20h00', stadium:'Estádio de Portugal' },
+            { id:'K6', h:'COD', a:'COL', rd:3, dt:'27/jun 17h00', stadium:'Estádio da RD Congo' }]
+        },
+        L: { teams: [
+            { id:'ENG', n:'Inglaterra', f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' }, { id:'CRO', n:'Croácia', f:'🇭🇷' },
+            { id:'GHA', n:'Gana',       f:'🇬🇭' }, { id:'PAN', n:'Panamá',  f:'🇵🇦' }],
+            matches:[
+            { id:'L1', h:'ENG', a:'CRO', rd:1, dt:'18/jun 14h00', stadium:'Estádio da Inglaterra' },
+            { id:'L2', h:'GHA', a:'PAN', rd:1, dt:'18/jun 18h00', stadium:'Estádio de Gana' },
+            { id:'L3', h:'ENG', a:'GHA', rd:2, dt:'24/jun 20h00', stadium:'Estádio da Inglaterra' },
+            { id:'L4', h:'CRO', a:'PAN', rd:2, dt:'24/jun 23h00', stadium:'Estádio da Croácia' },
+            { id:'L5', h:'ENG', a:'PAN', rd:3, dt:'27/jun 20h00', stadium:'Estádio da Inglaterra' },
+            { id:'L6', h:'CRO', a:'GHA', rd:3, dt:'27/jun 23h00', stadium:'Estádio da Croácia' }]
+        }
+    };
 
-    // 2º Jogo da Alemanha: Alemanha vs Costa do Marfim (20/06 17h)
-    { id:'E3', h:'GER', a:'CIV', rd:2, dt:'20/jun 17h00', stadium:'Estádio da Alemanha' },
-
-    // Para completar a tabela do grupo
-    { id:'E4', h:'CUW', a:'ECU', rd:2, dt:'20/jun 20h00', stadium:'Estádio de Curaçao' },
-
-    // 3º Jogo da Alemanha: Equador vs Alemanha (25/06 17h)
-    { id:'E5', h:'ECU', a:'GER', rd:3, dt:'25/jun 17h00', stadium:'Estádio do Equador' },
-
-    // Para completar a tabela do grupo
-    { id:'E6', h:'CIV', a:'CUW', rd:3, dt:'25/jun 20h00', stadium:'Estádio da Costa do Marfim' }
-]},
-    F: { teams: [
-        { id:'NED', n:'Holanda', f:'🇳🇱' }, { id:'JPN', n:'Japão',   f:'🇯🇵' },
-        { id:'SWE', n:'Suécia',  f:'🇸🇪' }, { id:'TUN', n:'Tunísia', f:'🇹🇳' }],
-        matches:[
-        { id:'F1', h:'NED', a:'JPN', rd:1, dt:'14/jun 20h00', stadium:'Estádio da Holanda' },
-        { id:'F2', h:'SWE', a:'TUN', rd:1, dt:'14/jun 17h00', stadium:'Estádio da Suécia' },
-        { id:'F3', h:'NED', a:'SWE', rd:2, dt:'21/jun 14h00', stadium:'Estádio da Holanda' },
-        { id:'F4', h:'JPN', a:'TUN', rd:2, dt:'21/jun 17h00', stadium:'Estádio do Japão' },
-        { id:'F5', h:'NED', a:'TUN', rd:3, dt:'25/jun 20h00', stadium:'Estádio da Holanda' },
-        { id:'F6', h:'JPN', a:'SWE', rd:3, dt:'25/jun 17h00', stadium:'Estádio do Japão' }]
-    },
-    G: { teams: [
-        { id:'BEL', n:'Bélgica',       f:'🇧🇪' }, { id:'EGY', n:'Egito',         f:'🇪🇬' },
-        { id:'IRN', n:'Irã',            f:'🇮🇷' }, { id:'NZL', n:'Nova Zelândia', f:'🇳🇿' }],
-        matches:[
-        { id:'G1', h:'BEL', a:'IRN', rd:1, dt:'15/jun 14h00', stadium:'Estádio da Bélgica' },
-        { id:'G2', h:'EGY', a:'NZL', rd:1, dt:'15/jun 17h00', stadium:'Estádio do Egito' },
-        { id:'G3', h:'BEL', a:'EGY', rd:2, dt:'21/jun 20h00', stadium:'Estádio da Bélgica' },
-        { id:'G4', h:'IRN', a:'NZL', rd:2, dt:'21/jun 17h00', stadium:'Estádio do Irã' },
-        { id:'G5', h:'BEL', a:'NZL', rd:3, dt:'26/jun 14h00', stadium:'Estádio da Bélgica' },
-        { id:'G6', h:'EGY', a:'IRN', rd:3, dt:'26/jun 17h00', stadium:'Estádio do Egito' }]
-    },
-    H: { teams: [
-        { id:'ESP', n:'Espanha',       f:'🇪🇸' }, { id:'CPV', n:'Cabo Verde',     f:'🇨🇻' },
-        { id:'KSA', n:'Arábia Saudita',f:'🇸🇦' }, { id:'URU', n:'Uruguai',        f:'🇺🇾' }],
-        matches:[
-        { id:'H1', h:'ESP', a:'URU', rd:1, dt:'15/jun 20h00', stadium:'Estádio da Espanha' },
-        { id:'H2', h:'CPV', a:'KSA', rd:1, dt:'15/jun 17h00', stadium:'Estádio de Cabo Verde' },
-        { id:'H3', h:'ESP', a:'CPV', rd:2, dt:'22/jun 14h00', stadium:'Estádio da Espanha' },
-        { id:'H4', h:'KSA', a:'URU', rd:2, dt:'22/jun 17h00', stadium:'Estádio da Arábia Saudita' },
-        { id:'H5', h:'ESP', a:'KSA', rd:3, dt:'26/jun 20h00', stadium:'Estádio da Espanha' },
-        { id:'H6', h:'CPV', a:'URU', rd:3, dt:'26/jun 17h00', stadium:'Estádio de Cabo Verde' }]
-    },
-    I: { teams: [
-        { id:'FRA', n:'França',  f:'🇫🇷' }, { id:'SEN', n:'Senegal', f:'🇸🇳' },
-        { id:'IRQ', n:'Iraque',  f:'🇮🇶' }, { id:'NOR', n:'Noruega', f:'🇳🇴' }],
-        matches:[
-        { id:'I1', h:'FRA', a:'SEN', rd:1, dt:'16/jun 14h00', stadium:'Estádio da França' },
-        { id:'I2', h:'IRQ', a:'NOR', rd:1, dt:'16/jun 17h00', stadium:'Estádio do Iraque' },
-        { id:'I3', h:'FRA', a:'IRQ', rd:2, dt:'22/jun 20h00', stadium:'Estádio da França' },
-        { id:'I4', h:'SEN', a:'NOR', rd:2, dt:'22/jun 17h00', stadium:'Estádio do Senegal' },
-        { id:'I5', h:'FRA', a:'NOR', rd:3, dt:'26/jun 14h00', stadium:'Estádio da França' },
-        { id:'I6', h:'SEN', a:'IRQ', rd:3, dt:'26/jun 17h00', stadium:'Estádio do Senegal' }]
-    },
-    J: { teams: [
-        { id:'ARG', n:'Argentina', f:'🇦🇷' }, { id:'ALG', n:'Argélia',  f:'🇩🇿' },
-        { id:'AUT', n:'Áustria',   f:'🇦🇹' }, { id:'JOR', n:'Jordânia', f:'🇯🇴' }],
-        matches:[
-        { id:'J1', h:'ARG', a:'AUT', rd:1, dt:'17/jun 14h00', stadium:'Estádio da Argentina' },
-        { id:'J2', h:'ALG', a:'JOR', rd:1, dt:'17/jun 17h00', stadium:'Estádio da Argélia' },
-        { id:'J3', h:'ARG', a:'ALG', rd:2, dt:'23/jun 14h00', stadium:'Estádio da Argentina' },
-        { id:'J4', h:'AUT', a:'JOR', rd:2, dt:'23/jun 17h00', stadium:'Estádio da Áustria' },
-        { id:'J5', h:'ARG', a:'JOR', rd:3, dt:'27/jun 14h00', stadium:'Estádio da Argentina' },
-        { id:'J6', h:'ALG', a:'AUT', rd:3, dt:'27/jun 17h00', stadium:'Estádio da Argélia' }]
-    },
-    K: { teams: [
-        { id:'POR', n:'Portugal',    f:'🇵🇹' }, { id:'COD', n:'RD Congo',     f:'🇨🇩' },
-        { id:'UZB', n:'Uzbequistão', f:'🇺🇿' }, { id:'COL', n:'Colômbia',     f:'🇨🇴' }],
-        matches:[
-        { id:'K1', h:'POR', a:'COL', rd:1, dt:'17/jun 20h00', stadium:'Estádio de Portugal' },
-        { id:'K2', h:'COD', a:'UZB', rd:1, dt:'17/jun 17h00', stadium:'Estádio da RD Congo' },
-        { id:'K3', h:'POR', a:'COD', rd:2, dt:'23/jun 20h00', stadium:'Estádio de Portugal' },
-        { id:'K4', h:'UZB', a:'COL', rd:2, dt:'23/jun 17h00', stadium:'Estádio do Uzbequistão' },
-        { id:'K5', h:'POR', a:'UZB', rd:3, dt:'27/jun 20h00', stadium:'Estádio de Portugal' },
-        { id:'K6', h:'COD', a:'COL', rd:3, dt:'27/jun 17h00', stadium:'Estádio da RD Congo' }]
-    },
-    L: { teams: [
-        { id:'ENG', n:'Inglaterra', f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' }, { id:'CRO', n:'Croácia', f:'🇭🇷' },
-        { id:'GHA', n:'Gana',       f:'🇬🇭' }, { id:'PAN', n:'Panamá',  f:'🇵🇦' }],
-        matches:[
-        { id:'L1', h:'ENG', a:'CRO', rd:1, dt:'18/jun 14h00', stadium:'Estádio da Inglaterra' },
-        { id:'L2', h:'GHA', a:'PAN', rd:1, dt:'18/jun 18h00', stadium:'Estádio de Gana' },
-        { id:'L3', h:'ENG', a:'GHA', rd:2, dt:'24/jun 20h00', stadium:'Estádio da Inglaterra' },
-        { id:'L4', h:'CRO', a:'PAN', rd:2, dt:'24/jun 23h00', stadium:'Estádio da Croácia' },
-        { id:'L5', h:'ENG', a:'PAN', rd:3, dt:'27/jun 20h00', stadium:'Estádio da Inglaterra' },
-        { id:'L6', h:'CRO', a:'GHA', rd:3, dt:'27/jun 23h00', stadium:'Estádio da Croácia' }]
-    }
-};
-
-let copaGrupoAtivo = 'A'; // Agora é 'A' pois o grupo A começa com 11/jun
-let scoreEditMatchId = null;
-
+    let copaGrupoAtivo = 'A';
+    let scoreEditMatchId = null;
 
     function copaTeam(groupKey, id) {
         return COPA_GROUPS[groupKey].teams.find(t => t.id === id);
     }
-    function getScores() { return JSON.parse(localStorage.getItem('copa2026_scores') || '{}'); }
-    function setScores(s) { localStorage.setItem('copa2026_scores', JSON.stringify(s)); }
+    function getScores() { return JSON.parse(getStorageValue('copa2026_scores') || '{}'); }
+    function setScores(s) { setStorageValue('copa2026_scores', JSON.stringify(s)); }
 
     function calcStandings(groupKey) {
         const g = COPA_GROUPS[groupKey];
@@ -1692,8 +2053,8 @@ let scoreEditMatchId = null;
     function openPrivacy() { document.getElementById('overlay').style.display = 'block'; document.getElementById('privacyCard').classList.add('show'); }
 
     function openFerias() {
-        document.getElementById('feriasInicio').value = localStorage.getItem('braun_ferias_inicio') || '';
-        document.getElementById('feriasFim').value    = localStorage.getItem('braun_ferias_fim')    || '';
+        document.getElementById('feriasInicio').value = getStorageValue('braun_ferias_inicio') || '';
+        document.getElementById('feriasFim').value    = getStorageValue('braun_ferias_fim')    || '';
         document.getElementById('configCard').classList.remove('show');
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('feriasCard').classList.add('show');
@@ -1704,32 +2065,32 @@ let scoreEditMatchId = null;
         const fim = document.getElementById('feriasFim').value;
         if (!ini || !fim) { alert('Preencha as duas datas.'); return; }
         if (ini > fim)    { alert('A data de início não pode ser após o término.'); return; }
-        localStorage.setItem('braun_ferias_inicio', ini);
-        localStorage.setItem('braun_ferias_fim', fim);
+        setStorageValue('braun_ferias_inicio', ini);
+        setStorageValue('braun_ferias_fim', fim);
         clearFeriasCache();
         closeAllModals(); gerarCalendario(); tick();
     }
 
     function clearFerias() {
-        localStorage.removeItem('braun_ferias_inicio');
-        localStorage.removeItem('braun_ferias_fim');
+        removeStorageValue('braun_ferias_inicio');
+        removeStorageValue('braun_ferias_fim');
         clearFeriasCache();
         closeAllModals(); gerarCalendario(); tick();
     }
 
     function openConfig() {
-        document.getElementById('minimalGreetingToggle').checked = (localStorage.getItem('braun_minimal_greeting') === 'true');
+        document.getElementById('minimalGreetingToggle').checked = (getStorageValue('braun_minimal_greeting') === 'true');
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('configCard').classList.add('show');
     }
 
     function toggleMinimalGreeting() {
-        localStorage.setItem('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked);
+        setStorageValue('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked);
     }
 
     function openStats() {
-        const ano      = parseInt(document.getElementById('anoSelect').value);
-        const turma    = document.getElementById('turmaSelect').value;
+        const ano      = parseInt(currentAno);
+        const turma    = currentTurma;
         const cacheKey = `${ano}_${turma}_${currentRegion}`;
         
         if (cachedStats[cacheKey]) {
@@ -1777,9 +2138,9 @@ let scoreEditMatchId = null;
 
     function saveNota() {
         const msg  = document.getElementById('noteInput').value.trim();
-        const logs = JSON.parse(localStorage.getItem('logs_v26') || '{}');
+        const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
         if (msg) logs[dataAtiva] = msg; else delete logs[dataAtiva];
-        localStorage.setItem('logs_v26', JSON.stringify(logs));
+        setStorageValue('logs_v26', JSON.stringify(logs));
         closeAllModals(); gerarCalendario();
     }
 
@@ -1788,21 +2149,135 @@ let scoreEditMatchId = null;
         document.getElementById('overlay').style.display = 'none';
     }
 
-    function salvarTurma() {
-        localStorage.setItem(`braun_turma_${currentRegion}`, document.getElementById('turmaSelect').value);
-        _escalaCache.clear();
-        gerarCalendario(); tick();
+    // ==================== NOVAS FUNÇÕES DO MENU ====================
+
+    function openMeuPerfil() {
+        closeHamburger();
+        // Carregar dados salvos
+        const ano = getStorageValue('braun_ano_perfil') || '2026';
+        const nome = getStorageValue('braun_nome_completo') || '';
+        const matricula = getStorageValue('braun_matricula') || '';
+        const turma = getStorageValue('braun_turma_perfil') || 'A';
+        
+        document.getElementById('nomePerfil').value = nome;
+        document.getElementById('matriculaPerfil').value = matricula;
+        document.getElementById('turmaPerfil').value = turma;
+        document.getElementById('anoPerfil').value = ano;
+        
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('meuPerfilCard').classList.add('show');
     }
 
-    function salvarAno() {
-        localStorage.setItem('braun_ano', document.getElementById('anoSelect').value);
-        _escalaCache.clear();
-        gerarCalendario();
+    function salvarDadosPerfil() {
+        const nome = document.getElementById('nomePerfil').value.trim();
+        const matricula = document.getElementById('matriculaPerfil').value.trim();
+        const turma = document.getElementById('turmaPerfil').value;
+        const ano = document.getElementById('anoPerfil').value;
+        
+        setStorageValue('braun_nome_completo', nome);
+        setStorageValue('braun_matricula', matricula);
+        setStorageValue('braun_turma_perfil', turma);
+        setStorageValue('braun_ano_perfil', ano);
+        
+        // Atualizar também o ano da escala (já existe)
+        if (ano !== currentAno) {
+            currentAno = ano;
+            setStorageValue('braun_ano', currentAno);
+            _escalaCache.clear();
+            gerarCalendario();
+            tick();
+        }
+        
+        // Feedback visual
+        const btn = document.querySelector('#meuPerfilCard button[onclick*="salvarDadosPerfil"]');
+        if (btn) {
+            const originalText = btn.textContent;
+            btn.textContent = '✓ SALVO!';
+            setTimeout(() => { btn.textContent = originalText; }, 1500);
+        }
     }
+
+    function getDadosPerfil() {
+        return {
+            ano: getStorageValue('braun_ano_perfil') || '2026',
+            nome: getStorageValue('braun_nome_completo') || 'Colaborador',
+            matricula: getStorageValue('braun_matricula') || '000000',
+            turma: getStorageValue('braun_turma_perfil') || 'A'
+        };
+    }
+
+    function preencherDadosVotacao() {
+        const dados = getDadosPerfil();
+        document.getElementById('votacaoNome').textContent = dados.nome;
+        document.getElementById('votacaoMatricula').textContent = dados.matricula;
+        document.getElementById('votacaoAno').textContent = dados.ano;
+    }
+
+    function preencherDadosPedidos() {
+        const dados = getDadosPerfil();
+        document.getElementById('pedidoNome').textContent = dados.nome;
+        document.getElementById('pedidoMatricula').textContent = dados.matricula;
+        document.getElementById('pedidoTurma').textContent = dados.turma;
+        document.getElementById('pedidoAno').textContent = dados.ano;
+    }
+
+    function openColaboradorDoMes() {
+        closeHamburger();
+        preencherDadosVotacao();
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('colaboradorDoMesCard').classList.add('show');
+    }
+
+    function openMeusPedidos() {
+        closeHamburger();
+        preencherDadosPedidos();
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('meusPedidosCard').classList.add('show');
+    }
+
+    function abrirFormularioVotacao() {
+        const dados = getDadosPerfil();
+        // URL do formulário de votação com parâmetros pré-preenchidos
+        const url = `https://docs.google.com/forms/d/e/1FAIpQLSdwSSfo4S1yP0yF1raqpWigpLKJV__DPBlb_9QGBrWoqmezxA/viewform?usp=dialog`;
+        window.open(url, '_blank');
+        closeAllModals();
+    }
+
+    function enviarPedidoEmail() {
+        const dados = getDadosPerfil();
+        const item = document.getElementById('pedidoItem').value.trim();
+        const tamanho = document.getElementById('pedidoTamanho').value.trim();
+        const obs = document.getElementById('pedidoObs').value.trim();
+
+        // Validação
+        if (!dados.nome || dados.nome === 'Colaborador') {
+            alert('Por favor, preencha seu nome no Meu Perfil primeiro.');
+            closeAllModals();
+            openMeuPerfil();
+            return;
+        }
+
+        if (!item) {
+            alert('Por favor, digite o item desejado.');
+            return;
+        }
+
+        // Monta a mensagem
+        const mensagem = `📦 NOVO PEDIDO\n\n👤 Nome: ${dados.nome}\n🔢 Matrícula: ${dados.matricula}\n📚 Turma: ${dados.turma}\n📅 Ano: ${dados.ano}\n\n📦 Item: ${item}\n📏 Tamanho: ${tamanho || 'Não informado'}\n📝 Observações: ${obs || 'Nenhuma'}`;
+
+        // Envia por e-mail
+        const emailDestino = 'pedidos@braun.com.br'; // Substitua pelo e-mail correto
+        const urlEmail = `mailto:${emailDestino}?subject=${encodeURIComponent('Novo Pedido - ' + dados.nome)}&body=${encodeURIComponent(mensagem)}`;
+        
+        window.open(urlEmail, '_blank');
+        closeAllModals();
+    }
+
+    // ==================== FIM DAS NOVAS FUNÇÕES ====================
 
     function toggleDarkMode() {
         const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('braun_dark', isDark);
+        setStorageValue('braun_dark', isDark);
         closeHamburger();
     }
 
@@ -1812,27 +2287,26 @@ let scoreEditMatchId = null;
             if (!h) return;
             const mes = h.closest('.mes-container');
             if (!mes) return;
-            const y = mes.getBoundingClientRect().top + window.pageYOffset - 120;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-        }, 400);
+            
+            // Calcula a posição do topo do mês, considerando o cabeçalho fixo
+            const headerHeight = document.querySelector('header')?.offsetHeight || 80;
+            const statusHeight = document.querySelector('.status-panel')?.offsetHeight || 80;
+            const y = mes.getBoundingClientRect().top + window.pageYOffset - (headerHeight + statusHeight + 20);
+            
+            try {
+                window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+            } catch (e) {
+                window.scrollTo(0, Math.max(0, y));
+            }
+        }, 500);
     }
 
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeAllModals();
-            closeCopaPanel();
-            if (document.getElementById('hamburgerDrawer').classList.contains('open')) {
-                closeHamburger();
-            }
-        }
-    });
-
     window.onload = () => {
-        if (localStorage.getItem('braun_dark') === 'true') document.body.classList.add('dark-mode');
-        const sA = localStorage.getItem('braun_ano');
-        if (sA) document.getElementById('anoSelect').value = sA;
+        if (getStorageValue('braun_dark') === 'true') document.body.classList.add('dark-mode');
+        const sA = getStorageValue('braun_ano');
+        if (sA) currentAno = sA;
         setRegion(currentRegion);
-        if (!localStorage.getItem('braun_visited')) {
+        if (!getStorageValue('braun_visited')) {
             document.getElementById('welcomeScreen').style.display = 'flex';
         } else {
             scrollToToday();
