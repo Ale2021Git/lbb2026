@@ -2,14 +2,23 @@
 <html lang="pt-BR">
 <head>
 <script>
-  // ========== CORREÇÃO CRÍTICA PARA IPHONE ==========
+  // ========== CORREÇÃO CRÍTICA E DEFINITIVA ==========
   if ('serviceWorker' in navigator) {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (!isIOS) {
+    
+    if (isIOS) {
+      // Se for iPhone, desativa o Service Worker para evitar bugs de cache do iOS
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for (let registration of registrations) {
           registration.unregister();
         }
+      });
+    } else {
+      // Se for Android/Chrome, REGISTRA o Service Worker para liberar o botão de instalar!
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA pronto para instalação no Android!', reg.scope))
+          .catch(err => console.error('Erro no instalador:', err));
       });
     }
   }
@@ -22,7 +31,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="manifest.json" id="pwa-manifest">
     <link rel="apple-touch-icon" href="maskable_icon_x192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -66,6 +75,26 @@
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
+        /* ========== TELA DE SAUDAÇÃO PERSONALIZADA ========== */
+        .greeting-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2900; display: none; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center;
+            transition: 0.5s; color: white;
+        }
+        .greeting-screen.work    { background: var(--accent); }
+        .greeting-screen.off     { background: var(--primary); }
+        .greeting-screen.holiday { background: #7030A0; }
+        .greeting-screen.hide    { opacity: 0; pointer-events: none; }
+        .greeting-icon     { font-size: 80px; margin-bottom: 20px; }
+        .greeting-text-main   { font-size: 1.5em; font-weight: 300; margin-bottom: 10px; }
+        .greeting-text-status { font-size: 2.2em; font-weight: 800; text-transform: uppercase; line-height: 1.1; }
+        .btn-comecar {
+            background: white; color: var(--primary); border: none; padding: 15px 40px;
+            border-radius: 30px; font-weight: 800; font-size: 1.1em; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-top: 20px;
+        }
+
         /* ========== SPLASH SCREEN COPA 2026 ========== */
         #copaSplashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -116,24 +145,6 @@
         @keyframes csFadeIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
         @keyframes csFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
 
-        .greeting-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2900; display: none; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            transition: 0.5s; color: white;
-        }
-        .greeting-screen.work    { background: var(--accent); }
-        .greeting-screen.off     { background: var(--primary); }
-        .greeting-screen.holiday { background: #7030A0; }
-        .greeting-screen.hide    { opacity: 0; pointer-events: none; }
-        .greeting-icon     { font-size: 80px; margin-bottom: 20px; }
-        .greeting-text-main   { font-size: 1.5em; font-weight: 300; margin-bottom: 10px; }
-        .greeting-text-status { font-size: 2.2em; font-weight: 800; text-transform: uppercase; line-height: 1.1; }
-        .btn-comecar {
-            background: white; color: var(--primary); border: none; padding: 15px 40px;
-            border-radius: 30px; font-weight: 800; font-size: 1.1em; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-top: 20px;
-        }
         #install-button {
             display: none; position: fixed; top: 135px; left: 50%; transform: translateX(-50%);
             background: var(--primary); color: white; padding: 10px 22px; border-radius: 30px;
@@ -247,21 +258,20 @@
         .brand-logo-svg { height: 35px; width: auto; }
         .st-logo-path { fill: #FFFFFF; transition: fill 0.3s; }
         .status-panel {
-            background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 0px 15px 0px 15px; /* CORRIGIDO: margem inferior 0 */
+            background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 0px 15px 0px 15px;
             border: 1px solid var(--border); text-align: center; box-shadow: 0 8px 16px rgba(0,0,0,0.05);
             position: sticky; top: 85px; z-index: 95;
         }
         .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
         .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
         
-        /* ========== CORREÇÃO DE ESPAÇAMENTO ========== */
         #calendario-box {
             margin-top: 0px;
             padding-top: 0px;
         }
         .mes-container { 
             perspective: 1000px; 
-            margin: 0 10px 25px 10px; /* A margem superior agora é 0 */
+            margin: 0 10px 25px 10px;
             min-height: 400px; 
             display: flex; 
             flex-direction: column; 
@@ -638,6 +648,13 @@
     <p>Sua escala na palma da mão.</p>
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
     <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.3 / 2026 / 2027</div>
+</div>
+
+<!-- TELA DE SAUDAÇÃO PERSONALIZADA -->
+<div id="greetingScreen" class="greeting-screen">
+    <div class="greeting-icon" id="greet-icon">🚀</div>
+    <div class="greeting-text-main" id="greet-main">Carregando...</div>
+    <div class="greeting-text-status" id="greet-status"></div>
 </div>
 
 <div id="copaSplashScreen">
@@ -1502,7 +1519,7 @@
         } else if (minimalMode) {
             greeting.classList.add('off');
             mensagemStatus = mensagens.minimal.mensagens[Math.floor(Math.random() * mensagens.minimal.mensagens.length)];
-            icon = 'Sorria';
+            icon = 'mood';
         } else {
             const isTrab = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
             if (isTrab) {
@@ -1512,7 +1529,7 @@
                 } else {
                     mensagemStatus = escolherMensagem(mensagens.trabalho.normal, genero);
                 }
-                icon = (currentRegion === 'BR') ? 'Trabalho': 'No Trampo';
+                icon = (currentRegion === 'BR') ? 'factory' : 'engineering';
             } else {
                 greeting.classList.add('off');
                 if (isFeriado) {
@@ -1520,7 +1537,7 @@
                 } else {
                     mensagemStatus = escolherMensagem(mensagens.folga.normal, genero);
                 }
-                icon = (currentRegion === 'BR') ? 'Folga' : '';
+                icon = (currentRegion === 'BR') ? 'home' : 'chair';
             }
         }
 
@@ -2381,7 +2398,7 @@
             if (mesContainer) {
                 mesContainer.scrollIntoView({ 
                     behavior: 'smooth', 
-                    block: 'start'  // Isso alinha o topo do mês com o bottom do painel de status
+                    block: 'start'
                 });
             }
         }
@@ -2398,12 +2415,11 @@
         tick();
         gerarCalendario();
         gerenciarBotaoVotacao();
-        setupScrollPadding(); // Aplica o espaçamento perfeito
+        setupScrollPadding();
         setTimeout(() => {
             const visited = getStorageValue('braun_visited');
             if (visited === 'true') {
                 document.getElementById('welcomeScreen').style.display = 'none';
-                // Rola para o dia atual se já visitou
                 scrollToToday();
             } else {
                 document.getElementById('welcomeScreen').style.display = 'flex';
