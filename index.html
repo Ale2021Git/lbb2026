@@ -2374,7 +2374,7 @@
         }
         
         const corpo = `Pedido de Uniforme:\n\nNome: ${nome}\nMatrícula: ${matricula}\nTurma: ${turma}\nAno: ${ano}\n\nItem desejado: ${item}\nTamanho: ${tamanho}\nObservações: ${obs}\n\nEnviado via Braun OnLine.`;
-        const mailto = `mailto:uniformes@braun.com.br?subject=Pedido de Uniforme - ${nome}&body=${encodeURIComponent(corpo)}`;
+        const mailto = `mailto:embreve@braun.com.br?subject=Pedido de Uniforme - ${nome}&body=${encodeURIComponent(corpo)}`;
         window.open(mailto, '_blank');
         closeAllModals();
     }
@@ -2416,7 +2416,10 @@
         gerarCalendario();
         gerenciarBotaoVotacao();
         setupScrollPadding();
-        setTimeout(() => {
+        setTimeout(() => {function gerenciarBotaoVotacao() {
+    const btn = document.getElementById('btn-flutuante-votar');
+    btn.style.display = (new Date().getDate() <= 3) ? 'flex' : 'none';
+}
             const visited = getStorageValue('braun_visited');
             if (visited === 'true') {
                 document.getElementById('welcomeScreen').style.display = 'none';
