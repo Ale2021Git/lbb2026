@@ -1,4 +1,4 @@
-const CACHE_NAME = 'braun-online-v3-2026';
+const CACHE_NAME = 'braun-online-v3.3-2026';
 const LOCAL_ASSETS = [
   './',
   './index.html',
