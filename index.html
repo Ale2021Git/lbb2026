@@ -7,14 +7,12 @@
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
     if (isIOS) {
-      // Se for iPhone, desativa o Service Worker para evitar bugs de cache do iOS
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for (let registration of registrations) {
           registration.unregister();
         }
       });
     } else {
-      // Se for Android/Chrome, REGISTRA o Service Worker para liberar o botão de instalar!
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then(reg => console.log('PWA pronto para instalação no Android!', reg.scope))
@@ -482,7 +480,7 @@
         }
         #copaPanel.open { right: 0; }
         .copa-panel-header {
-            background: linear-gradient(135deg, #7030A0, #7030A0);
+            background: linear-gradient(135deg, #005c2b, #003d1c);
             padding: 48px 16px 14px 16px; flex-shrink: 0; color: white;
         }
         .copa-panel-nav { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -506,6 +504,8 @@
         .copa-group-pill.active { background: white; color: #005c2b; }
         .copa-group-pill.brasil-pill { border: 1.5px solid #ffdf00; }
         .copa-panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+        
+        /* Estilos aprimorados da Copa para igualar a imagem */
         .copa-standings {
             background: var(--card); border-radius: 18px; overflow: hidden;
             border: 1px solid var(--border); margin-bottom: 14px;
@@ -1782,16 +1782,17 @@
             { id:'C6', h:'MAR', a:'HAI', rd:3, dt:'24/jun 23h00', stadium:'Estádio do Marrocos' }]
         },
         D: { teams: [
-            { id:'USA', n:'EUA',      f:'🇺🇸' }, { id:'PAR', n:'Paraguai', f:'🇵🇾' },
-            { id:'AUS', n:'Austrália',f:'🇦🇺' }, { id:'TUR', n:'Turquia',  f:'🇹🇷' }],
-            matches:[
-            { id:'D1', h:'USA', a:'AUS', rd:1, dt:'12/jun 20h00', stadium:'Estádio dos EUA' },
-            { id:'D2', h:'PAR', a:'TUR', rd:1, dt:'12/jun 14h00', stadium:'Estádio do Paraguai' },
-            { id:'D3', h:'USA', a:'PAR', rd:2, dt:'19/jun 20h00', stadium:'Estádio dos EUA' },
-            { id:'D4', h:'AUS', a:'TUR', rd:2, dt:'19/jun 23h00', stadium:'Estádio da Austrália' },
-            { id:'D5', h:'USA', a:'TUR', rd:3, dt:'25/jun 20h00', stadium:'Estádio dos EUA' },
-            { id:'D6', h:'PAR', a:'AUS', rd:3, dt:'25/jun 23h00', stadium:'Estádio do Paraguai' }]
-        },
+    { id:'USA', n:'EUA',      f:'🇺🇸' }, { id:'PAR', n:'Paraguai', f:'🇵🇾' },
+    { id:'AUS', n:'Austrália',f:'🇦🇺' }, { id:'TUR', n:'Turquia',  f:'🇹🇷' }],
+    matches:[
+    // CORREÇÃO: Primeiro jogo EUA x PAR, depois AUS x TUR
+    { id:'D1', h:'USA', a:'PAR', rd:1, dt:'12/jun 20h00', stadium:'Estádio dos EUA' },
+    { id:'D2', h:'AUS', a:'TUR', rd:1, dt:'12/jun 14h00', stadium:'Estádio da Austrália' },
+    { id:'D3', h:'USA', a:'AUS', rd:2, dt:'19/jun 20h00', stadium:'Estádio dos EUA' },
+    { id:'D4', h:'PAR', a:'TUR', rd:2, dt:'19/jun 23h00', stadium:'Estádio do Paraguai' },
+    { id:'D5', h:'USA', a:'TUR', rd:3, dt:'25/jun 20h00', stadium:'Estádio dos EUA' },
+    { id:'D6', h:'PAR', a:'AUS', rd:3, dt:'25/jun 23h00', stadium:'Estádio do Paraguai' }]
+},
         E: { teams: [
             { id:'GER', n:'Alemanha', f:'🇩🇪' },
             { id:'CUW', n:'Curaçao', f:'🇨🇼' },
