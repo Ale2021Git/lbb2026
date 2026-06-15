@@ -271,7 +271,8 @@
             min-height: 400px; 
             display: flex; 
             flex-direction: column; 
-            padding-top: 0px; 
+            padding-top: 0px;
+            scroll-margin-top: 110px; /* Ajuda no alinhamento manual */
         }
         #calendario-box > .mes-container:first-child { margin-top: 0px; }
         
@@ -2350,7 +2351,7 @@
             Tamanho: ${tamanho}
             Observações: ${obs}
         `;
-        const mailto = `mailto:rh@braun.com.br?subject=Pedido de Uniforme - ${nome}&body=${encodeURIComponent(corpo)}`;
+        const mailto = `mailto:em_breve@braun.com.br?subject=Pedido de Uniforme - ${nome}&body=${encodeURIComponent(corpo)}`;
         window.open(mailto, '_blank');
     }
 
@@ -2409,12 +2410,37 @@
         setStorageValue('braun_dark_mode', document.body.classList.contains('dark-mode'));
     }
 
-    // Rolagem para o dia atual
+    // Rolagem para o dia atual - CORRIGIDA PROFISSIONALMENTE
     function scrollToToday() {
         setTimeout(() => {
             const hoje = document.querySelector('.hoje');
-            if (hoje) hoje.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300);
+            if (!hoje) return;
+            
+            // Encontra o container do mês que contém o dia atual
+            const container = hoje.closest('.mes-container');
+            if (!container) return;
+            
+            // Aguarda o layout final (evita problemas com reflow)
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const header = document.querySelector('header');
+                    const statusPanel = document.querySelector('.status-panel');
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    const statusHeight = statusPanel ? statusPanel.offsetHeight : 0;
+                    const gap = 15; // margem visual extra abaixo do painel
+                    
+                    // Calcula a posição top do container em relação ao documento
+                    const rect = container.getBoundingClientRect();
+                    const scrollTarget = window.scrollY + rect.top - (headerHeight + statusHeight + gap);
+                    
+                    // Aplica o scroll suave
+                    window.scrollTo({
+                        top: Math.max(0, scrollTarget),
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }, 300); // O timeout garante que o DOM já está renderizado
     }
 
     // ==================== INICIALIZAÇÃO FINAL ====================
