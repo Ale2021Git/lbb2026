@@ -1830,15 +1830,18 @@
             { id:'G6', h:'EGY', a:'IRN', rd:3, dt:'26/jun 17h00', stadium:'Estádio do Egito' }]
         },
         H: { teams: [
-            { id:'ESP', n:'Espanha',       f:'🇪🇸' }, { id:'CPV', n:'Cabo Verde',     f:'🇨🇻' },
-            { id:'KSA', n:'Arábia Saudita',f:'🇸🇦' }, { id:'URU', n:'Uruguai',        f:'🇺🇾' }],
-            matches:[
-            { id:'H1', h:'ESP', a:'URU', rd:1, dt:'15/jun 20h00', stadium:'Estádio da Espanha' },
-            { id:'H2', h:'CPV', a:'KSA', rd:1, dt:'15/jun 17h00', stadium:'Estádio de Cabo Verde' },
-            { id:'H3', h:'ESP', a:'CPV', rd:2, dt:'22/jun 14h00', stadium:'Estádio da Espanha' },
-            { id:'H4', h:'KSA', a:'URU', rd:2, dt:'22/jun 17h00', stadium:'Estádio da Arábia Saudita' },
-            { id:'H5', h:'ESP', a:'KSA', rd:3, dt:'26/jun 20h00', stadium:'Estádio da Espanha' },
-            { id:'H6', h:'CPV', a:'URU', rd:3, dt:'26/jun 17h00', stadium:'Estádio de Cabo Verde' }]
+            { id:'ESP', n:'Espanha',       f:'🇪🇸' },
+    { id:'CPV', n:'Cabo Verde',    f:'🇨🇻' },
+    { id:'KSA', n:'Arábia Saudita',f:'🇸🇦' },
+    { id:'URU', n:'Uruguai',       f:'🇺🇾' }
+  ],
+  matches: [
+    { id:'H1', h:'ESP', a:'CPV', rd:1, dt:'15/jun 13h00', stadium:'Estádio da Espanha' },   // ✅ 15/06 13h
+    { id:'H2', h:'KSA', a:'URU', rd:1, dt:'15/jun 19h00', stadium:'Estádio da Arábia Saudita' }, // ✅ 15/06 19h
+    { id:'H3', h:'ESP', a:'URU', rd:2, dt:'21/jun 13h00', stadium:'Estádio da Espanha' },
+    { id:'H4', h:'CPV', a:'KSA', rd:2, dt:'21/jun 19h00', stadium:'Estádio de Cabo Verde' },
+    { id:'H5', h:'ESP', a:'KSA', rd:3, dt:'26/jun 21h00', stadium:'Estádio da Espanha' },   // ✅ 26/06 21h
+    { id:'H6', h:'CPV', a:'URU', rd:3, dt:'26/jun 19h00', stadium:'Estádio de Cabo Verde' }]
         },
         I: { teams: [
             { id:'FRA', n:'França',  f:'🇫🇷' }, { id:'SEN', n:'Senegal', f:'🇸🇳' },
