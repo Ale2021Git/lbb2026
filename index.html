@@ -73,27 +73,10 @@
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
-        /* ========== TELA DE SAUDAÇÃO PERSONALIZADA ========== */
-        .greeting-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 2900; display: none; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            transition: 0.5s; color: white;
-        }
-        .greeting-screen.work    { background: var(--accent); }
-        .greeting-screen.off     { background: var(--primary); }
-        .greeting-screen.holiday { background: #7030A0; }
-        .greeting-screen.hide    { opacity: 0; pointer-events: none; }
-        .greeting-icon     { font-size: 80px; margin-bottom: 20px; }
-        .greeting-text-main   { font-size: 1.5em; font-weight: 300; margin-bottom: 10px; }
-        .greeting-text-status { font-size: 2.2em; font-weight: 800; text-transform: uppercase; line-height: 1.1; }
-        .btn-comecar {
-            background: white; color: var(--primary); border: none; padding: 15px 40px;
-            border-radius: 30px; font-weight: 800; font-size: 1.1em; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-top: 20px;
-        }
+        /* ========== TELA DE SAUDAÇÃO (REMOVIDA) ========== */
+        .greeting-screen { display: none !important; }
 
-        /* ========== SPLASH SCREEN COPA 2026 ========== */
+        /* ========== SPLASH COPA 2026 ========== */
         #copaSplashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); z-index: 5000; display: none;
@@ -250,9 +233,37 @@
         .brand-container {
             display: flex;
             align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .brand-logo-svg { height: 35px; width: auto; }
         .st-logo-path { fill: #FFFFFF; transition: fill 0.3s; }
+
+        /* BADGE DA TURMA NO CABEÇALHO */
+        .turma-badge {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .turma-badge:active {
+            background: rgba(255,255,255,0.35);
+            transform: scale(0.96);
+        }
+        .turma-badge .material-symbols-outlined {
+            font-size: 16px;
+        }
+
         .status-panel {
             background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 0px 15px 0px 15px;
             border: 1px solid var(--border); text-align: center; box-shadow: 0 8px 16px rgba(0,0,0,0.05);
@@ -272,7 +283,7 @@
             display: flex; 
             flex-direction: column; 
             padding-top: 0px;
-            scroll-margin-top: 110px; /* Ajuda no alinhamento manual */
+            scroll-margin-top: 110px;
         }
         #calendario-box > .mes-container:first-child { margin-top: 0px; }
         
@@ -506,7 +517,6 @@
         .copa-group-pill.brasil-pill { border: 1.5px solid #ffdf00; }
         .copa-panel-body { flex: 1; overflow-y: auto; padding: 14px; }
         
-        /* Estilos aprimorados da Copa para igualar a imagem */
         .copa-standings {
             background: var(--card); border-radius: 18px; overflow: hidden;
             border: 1px solid var(--border); margin-bottom: 14px;
@@ -649,12 +659,8 @@
     <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.3 / 2026 / 2027</div>
 </div>
 
-<!-- TELA DE SAUDAÇÃO PERSONALIZADA -->
-<div id="greetingScreen" class="greeting-screen">
-    <div class="greeting-icon" id="greet-icon">🚀</div>
-    <div class="greeting-text-main" id="greet-main">Carregando...</div>
-    <div class="greeting-text-status" id="greet-status"></div>
-</div>
+<!-- TELA DE SAUDAÇÃO (REMOVIDA) -->
+<div id="greetingScreen" class="greeting-screen" style="display:none !important;"></div>
 
 <div id="copaSplashScreen">
     <div class="cs-logo-wrap">
@@ -691,7 +697,6 @@
     <div class="cs-trophy-wrap">
       <img src="logo-cup.png" alt="Logo da Copa">
     </div>
-    <!-- NOVO CONTEÚDO DA TAGLINE CONFORME SOLICITADO -->
     <div class="cs-tagline">
         <div style="text-align: center; margin-top: 20px;">
             <p style="font-size: 1.5rem; font-weight: bold; margin: 0; text-transform: uppercase; color: #ffffff;">NA COPA,</p>
@@ -706,7 +711,7 @@
 
 <header>
     <div class="brand-container">
-        <!-- LOGO B|BRAUN OFICIAL (SVG) -->
+        <!-- LOGO -->
         <svg version="1.1" viewBox="0 0 172 42" class="brand-logo-svg" role="img" aria-label="B|BRAUN Logo">
             <title>B|BRAUN Logo Oficial</title>
             <g fill="#FFFFFF">
@@ -737,6 +742,12 @@
                 <polygon points="166.9,31.6 166.9,41.8 172,41.8 172,40.9 168.1,40.9 168.1,37 171.7,37 171.7,36 168.1,36 168.1,32.6 171.9,32.6 171.9,31.6"/>
             </g>
         </svg>
+
+        <!-- BADGE DA TURMA (CLICÁVEL) -->
+        <span class="turma-badge" id="turmaBadge" onclick="openMeuPerfil()">
+            <span class="material-symbols-outlined">groups</span>
+            <span id="turmaBadgeText">Turma A</span>
+        </span>
     </div>
     <div style="display:flex; gap:10px; align-items:center;">
         <button class="hamburger-btn" onclick="openHamburger()" aria-label="Menu principal" aria-expanded="false" id="menuButton">
@@ -1339,145 +1350,24 @@
         }
     })();
 
-    // ==================== FUNÇÃO DE SAUDAÇÃO PERSONALIZADA ====================
+    // ==================== FUNÇÃO DE SAUDAÇÃO (REMOVIDA) ====================
     function goToGreeting() {
         const welcome = document.getElementById('welcomeScreen');
-        const greeting = document.getElementById('greetingScreen');
-        const minimalMode = getStorageValue('braun_minimal_greeting') === 'true';
-
-        const now = new Date();
-        const hour = now.getHours();
-
-        const nomeCompleto = getStorageValue('braun_nome_completo') || '';
-        const nome = nomeCompleto.split(' ')[0];
-        const genero = detectarGenero(nome);
-
-        const ano = now.getFullYear();
-        const mes = String(now.getMonth() + 1).padStart(2, '0');
-        const dia = String(now.getDate()).padStart(2, '0');
-        const isoS = `${mes}-${dia}`;
-        const feriados = getFeriados(ano);
-        const isFeriado = feriados[isoS] !== undefined;
-
-        let saudacao = 'Bom dia';
-        if (hour >= 12 && hour < 18) saudacao = 'Boa tarde';
-        else if (hour >= 18 || hour < 5) saudacao = 'Boa noite';
-
-        let saudacaoCompleta = nome ? `${saudacao}, ${nome}!` : `${saudacao}!`;
-
-        const mensagens = {
-            trabalho: {
-                feriado: {
-                    masculino: ['Bora trabalhar, guerreiro! É feriado, mas temos missão! 💪','Feriado trabalhado, dobro de força! Vamos nessa! 🔥','Mesmo no feriado, você não para! Que garra! ⚡','Bora vencer, guerreiro! O trabalho não espera! 🚀','Foco total! Feriado é só mais um dia de vitória! 🌟'],
-                    feminino: ['Bora trabalhar, guerreira! É feriado, mas temos missão! 💪','Feriado trabalhado, dobro de força! Vamos nessa! 🔥','Mesmo no feriado, você não para! Que garra! ⚡','Bora vencer, guerreira! O trabalho não espera! 🚀','Foco total! Feriado é só mais um dia de vitória! 🌟'],
-                    neutro: ['Bora trabalhar! É feriado, mas temos missão! 💪','Feriado trabalhado, dobro de força! Vamos nessa! 🔥','Mesmo no feriado, você não para! Que garra! ⚡','Bora vencer! O trabalho não espera! 🚀','Foco total! Feriado é só mais um dia de vitória! 🌟']
-                },
-                normal: {
-                    masculino: ['Bora trabalhar, guerreiro! Vamos vencer hoje! 💪','Mais um dia de luta, você consegue! 🔥','Que a força esteja com você! Vamos nessa! ⚡','Foco e determinação, guerreiro! 🚀','O sucesso começa com a sua atitude! 🌟'],
-                    feminino: ['Bora trabalhar, guerreira! Vamos vencer hoje! 💪','Mais um dia de luta, você consegue! 🔥','Que a força esteja com você! Vamos nessa! ⚡','Foco e determinação, guerreira! 🚀','O sucesso começa com a sua atitude! 🌟'],
-                    neutro: ['Bora trabalhar! Vamos vencer hoje! 💪','Mais um dia de luta, você consegue! 🔥','Que a força esteja com você! Vamos nessa! ⚡','Foco e determinação! 🚀','O sucesso começa com a sua atitude! 🌟']
-                }
-            },
-            folga: {
-                feriado: {
-                    masculino: ['Excelente dia de feriado, guerreiro! Aproveite! 🎉','Feriado é sagrado! Curta cada momento! 🌴','O melhor do feriado é você descansar! Aproveite! 🏀','Feriado merecido! Seja feliz e descanse! 😊','Hoje é seu dia! Aproveite o feriado! 🌟'],
-                    feminino: ['Excelente dia de feriado, guerreira! Aproveite! 🎉','Feriado é sagrado! Curta cada momento! 🌴','O melhor do feriado é você descansar! Aproveite! ⚾️','Feriado merecido! Seja feliz e descanse! 😊','Hoje é seu dia! Aproveite o feriado! 🌟'],
-                    neutro: ['Excelente dia de feriado! Aproveite! 🎉','Feriado é sagrado! Curta cada momento! 🌴','O melhor do feriado é você descansar! Aproveite! ⚽️','Feriado merecido! Seja feliz e descanse! 😊','Hoje é seu dia! Aproveite o feriado! 🌟']
-                },
-                normal: {
-                    masculino: ['Descanse, guerreiro! Você merece! 😌','A vida é boa quando a gente descansa! 😊','Hoje é seu dia, faça o que quiser! ⚽️','Curta sua folga, você trabalhou duro! 🌴','Renove as energias, você merece descanso! 🔋'],
-                    feminino: ['Descanse, guerreira! Você merece! 😌','A vida é boa quando a gente descansa! 😊','Hoje é seu dia, faça o que quiser! ⚽️','Curta sua folga, você trabalhou duro! 🌴','Renove as energias, você merece descanso! 🔋'],
-                    neutro: ['Descanse! Você merece! 😌','A vida é boa quando a gente descanso! 😊','Hoje é seu dia, faça o que quiser! ⚽️','Curta sua folga, você trabalhou duro! 🌴','Renove as energias, você merece descanso! 🔋']
-                }
-            },
-            ferias: {
-                mensagens: {
-                    masculino: ['Aproveite suas férias, guerreiro! O mundo espera por você! ✈️','Descanse, viaje e seja feliz! 🌴','Férias merecidas, curta muito! 🎉','Desconecte-se e renove as energias! 🔋','Você trabalhou duro, agora é hora de curtir! 🌍'],
-                    feminino: ['Aproveite suas férias, guerreira! O mundo espera por você! ✈️','Descanse, viaje e seja feliz! 🌴','Férias merecidas, curta muito! 🎉','Desconecte-se e renove as energias! 🔋','Você trabalhou duro, agora é hora de curtir! 🌍'],
-                    neutro: ['Aproveite suas férias! O mundo espera por você! ✈️','Descanse, viaje e seja feliz! 🌴','Férias merecidas, curta muito! 🎉','Desconecte-se e renove as energias! 🔋','Você trabalhou duro, agora é hora de curtir! 🌍']
-                }
-            },
-            minimal: {
-                mensagens: ['Você já está no app, isso é o que importa! 😊','Sorria, você está aqui! 🌟','Que bom te ver por aqui! 👋','O app está feliz com a sua presença! 🎉','Você é bem-vindo sempre! ❤️']
-            }
-        };
-
-        function escolherMensagem(lista, genero) {
-            const listaGenero = lista[genero] || lista['neutro'];
-            const index = Math.floor(Math.random() * listaGenero.length);
-            return listaGenero[index];
-        }
-
-        let mensagemStatus = '';
-        let icon = '';
-        greeting.classList.remove('work', 'off', 'holiday');
-
-        if (isFerias(now)) {
-            greeting.classList.add('holiday');
-            mensagemStatus = escolherMensagem(mensagens.ferias.mensagens, genero);
-            icon = 'flight';
-        } else if (minimalMode) {
-            greeting.classList.add('off');
-            mensagemStatus = mensagens.minimal.mensagens[Math.floor(Math.random() * mensagens.minimal.mensagens.length)];
-            icon = 'mood';
-        } else {
-            const isTrab = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
-            if (isTrab) {
-                greeting.classList.add('work');
-                if (isFeriado) {
-                    mensagemStatus = escolherMensagem(mensagens.trabalho.feriado, genero);
-                } else {
-                    mensagemStatus = escolherMensagem(mensagens.trabalho.normal, genero);
-                }
-                icon = (currentRegion === 'BR') ? 'factory' : 'engineering';
-            } else {
-                greeting.classList.add('off');
-                if (isFeriado) {
-                    mensagemStatus = escolherMensagem(mensagens.folga.feriado, genero);
-                } else {
-                    mensagemStatus = escolherMensagem(mensagens.folga.normal, genero);
-                }
-                icon = (currentRegion === 'BR') ? 'home' : 'chair';
-            }
-        }
-
-        document.getElementById('greet-main').innerText = saudacaoCompleta;
-        document.getElementById('greet-status').innerHTML = mensagemStatus;
-        document.getElementById('greet-icon').innerText = icon;
-
         welcome.classList.add('hide');
         setTimeout(() => {
             welcome.style.display = 'none';
-            greeting.style.display = 'flex';
-            setTimeout(() => {
-                greeting.classList.add('hide');
-                setStorageValue('braun_visited', 'true');
-                setTimeout(() => {
-                    greeting.style.display = 'none';
-                    scrollToToday();
-                }, 500);
-            }, 2500);
+            setStorageValue('braun_visited', 'true');
+            scrollToToday();
         }, 500);
     }
 
-    // ==================== FUNÇÃO PARA DETECTAR GÊNERO ====================
-    function detectarGenero(nome) {
-        if (!nome) return 'neutro';
-        const terminaisFemininos = ['a', 'ia', 'na', 'ra', 'la', 'sa', 'ta'];
-        const terminaisMasculinos = ['o', 'io', 'no', 'ro', 'lo', 'so', 'to'];
-        const ultimaLetra = nome.toLowerCase().slice(-1);
-        const duasUltimas = nome.toLowerCase().slice(-2);
-        const femininosEspeciais = ['Daniele', 'Gabriele', 'Rafaele', 'Simone', 'Michele', 'Dany'];
-        const masculinosEspeciais = ['Lucas', 'André', 'Andrey', 'Matheus', 'Pedro', 'Junior'];
-        if (femininosEspeciais.some(n => nome.toLowerCase() === n.toLowerCase())) return 'feminino';
-        if (masculinosEspeciais.some(n => nome.toLowerCase() === n.toLowerCase())) return 'masculino';
-        if (terminaisFemininos.includes(ultimaLetra)) return 'feminino';
-        if (terminaisMasculinos.includes(ultimaLetra)) return 'masculino';
-        if (ultimaLetra === 'e') {
-            if (duasUltimas === 'le' || duasUltimas === 'ne') return 'feminino';
-            if (duasUltimas === 're' || duasUltimas === 'se') return 'masculino';
+    // ==================== ATUALIZA O BADGE DA TURMA NO CABEÇALHO ====================
+    function atualizarBadgeTurma() {
+        const turmaLetra = getStorageValue('braun_turma_perfil') || 'A';
+        const badgeText = document.getElementById('turmaBadgeText');
+        if (badgeText) {
+            badgeText.innerText = `Turma ${turmaLetra}`;
         }
-        return 'neutro';
     }
 
     // ==================== FUNÇÕES DA ESCALA ====================
@@ -1548,7 +1438,8 @@
         const lang = translations[currentRegion];
         const hojeStr = new Date().toDateString();
 
-        const turmaIndividual = getStorageValue('braun_turma_perfil') || 'A';
+        // Atualiza o badge do cabeçalho
+        atualizarBadgeTurma();
 
         for (let m = 0; m < 12; m++) {
             const dtM   = new Date(ano, m, 1);
@@ -1606,13 +1497,6 @@
                     cls += (mnt.trab ? 'TRABALHO ' : 'FOLGA ');
                 }
 
-                let turnoLabel = '';
-                if (currentRegion === 'BR') {
-                    turnoLabel = (turmaIndividual === 'C' || turmaIndividual === 'D') ? ' (N)' : ' (M)';
-                } else {
-                    turnoLabel = (turmaIndividual === 'G' || turmaIndividual === 'H') ? ' (N)' : ' (M)';
-                }
-
                 const isBrazilGame = (ano === 2026 && BRAZIL_GAMES_2026.includes(isoF));
                 if (isBrazilGame) {
                     const trabGameStatus = (currentRegion === 'BR') ? checkBR(at, t).trab : checkMnt(at, t).trab;
@@ -1635,7 +1519,8 @@
                     hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`;
                 }
 
-                hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')"${titleAttr}>${d}<span style="font-size:0.5em;opacity:0.5;display:block;">${turnoLabel}</span></div>`;
+                // AGORA SEM A LETRA DA TURMA DENTRO DO DIA
+                hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')"${titleAttr}>${d}</div>`;
                 colAtual++;
             }
 
@@ -1812,8 +1697,8 @@
         { id:'E3', h:'GER', a:'CIV', rd:2, dt:'20/jun 17h', stadium:'Estádio 27' },
         { id:'E4', h:'CUW', a:'ECU', rd:2, dt:'20/jun 21h', stadium:'Estádio 28' },
         { id:'E5', h:'ECU', a:'GER', rd:3, dt:'25/jun 17h', stadium:'Estádio 29' },
-        { id:'E6', h:'CIV', a:'CUW', rd:3, dt:'25/jun 17h', stadium:'Estádio 30' }
-    ]},
+        { id:'E6', h:'CIV', a:'CUW', rd:3, dt:'25/jun 17h', stadium:'Estádio 30' }]
+    },
     F: { teams: [
         { id:'NED', n:'Holanda', f:'🇳🇱' }, 
         { id:'JPN', n:'Japão',   f:'🇯🇵' },
@@ -2317,7 +2202,7 @@
         setStorageValue('braun_last_region', region);
         setStorageValue(`braun_turma_${region}`, grupo);
         
-        // Re-renderiza o calendário
+        // Re-renderiza o calendário e atualiza o badge
         _escalaCache.clear();
         gerarCalendario();
         tick();
@@ -2437,31 +2322,27 @@
             const hoje = document.querySelector('.hoje');
             if (!hoje) return;
             
-            // Encontra o container do mês que contém o dia atual
             const container = hoje.closest('.mes-container');
             if (!container) return;
             
-            // Aguarda o layout final (evita problemas com reflow)
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     const header = document.querySelector('header');
                     const statusPanel = document.querySelector('.status-panel');
                     const headerHeight = header ? header.offsetHeight : 0;
                     const statusHeight = statusPanel ? statusPanel.offsetHeight : 0;
-                    const gap = 15; // margem visual extra abaixo do painel
+                    const gap = 15;
                     
-                    // Calcula a posição top do container em relação ao documento
                     const rect = container.getBoundingClientRect();
                     const scrollTarget = window.scrollY + rect.top - (headerHeight + statusHeight + gap);
                     
-                    // Aplica o scroll suave
                     window.scrollTo({
                         top: Math.max(0, scrollTarget),
                         behavior: 'smooth'
                     });
                 });
             });
-        }, 300); // O timeout garante que o DOM já está renderizado
+        }, 300);
     }
 
     // ==================== INICIALIZAÇÃO FINAL ====================
@@ -2470,6 +2351,8 @@
         if (getStorageValue('braun_dark_mode') === 'true') {
             document.body.classList.add('dark-mode');
         }
+        // Atualiza o badge com a turma salva
+        atualizarBadgeTurma();
         gerarCalendario();
         startClock();
         tick();
