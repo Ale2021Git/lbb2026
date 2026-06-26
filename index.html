@@ -1519,7 +1519,6 @@
                     hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`;
                 }
 
-                // AGORA SEM A LETRA DA TURMA DENTRO DO DIA
                 hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')"${titleAttr}>${d}</div>`;
                 colAtual++;
             }
@@ -1872,6 +1871,34 @@
         });
     }
 
+    // ========== NOVAS FUNÇÕES PARA CLASSIFICADOS ==========
+    function getTeamById(id) {
+        if (!id) return null;
+        for (const g of Object.keys(COPA_GROUPS)) {
+            const found = COPA_GROUPS[g].teams.find(t => t.id === id);
+            if (found) return found;
+        }
+        return null;
+    }
+
+    function getClassificadosMap() {
+        const map = {};
+        const grupos = Object.keys(COPA_GROUPS);
+        for (const g of grupos) {
+            const standings = calcStandings(g);
+            if (standings.length >= 2) {
+                map[`1${g}`] = standings[0].id;
+                map[`2${g}`] = standings[1].id;
+            } else {
+                map[`1${g}`] = null;
+                map[`2${g}`] = null;
+            }
+        }
+        return map;
+    }
+
+    // ========== FUNÇÕES DE RENDERIZAÇÃO DA COPA ==========
+
     function openCopaPanel() {
         renderCopaPills();
         if (copaFaseAtiva === 'eliminatorias') {
@@ -1980,31 +2007,109 @@
 
     function renderCopaKnockout() {
         const sc = getScores();
-        let html = '';
-        const phases = [
-            { label: 'Oitavas de Final', key: 'oitavas' },
-            { label: 'Quartas de Final', key: 'quartas' },
-            { label: 'Semifinais', key: 'semis' },
-            { label: 'Disputa de 3º Lugar', key: 'terceiro' },
-            { label: 'Final', key: 'final' }
-        ];
+        const classificados = getClassificadosMap();
 
-        phases.forEach(phase => {
-            html += `<div class="copa-round-label">${phase.label}</div>`;
-            COPA_KNOCKOUT[phase.key].forEach(m => {
-                const s = sc[m.id];
-                html += `
-                <div class="copa-match-card ${s ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
-                    <div class="copa-match-team home">${m.home}</div>
-                    <div class="copa-score-box ${s ? 'live' : ''}">
-                        <span class="copa-score-num">${s ? s.h : '–'}</span>
-                        <span class="copa-score-sep">×</span>
-                        <span class="copa-score-num">${s ? s.a : '–'}</span>
-                    </div>
-                    <div class="copa-match-team away">${m.away}</div>
-                    <div style="font-size:0.6em;opacity:0.5;margin-top:5px;">${m.dt || ''}</div>
-                </div>`;
-            });
+        let html = '';
+
+        // Oitavas de Final
+        html += `<div class="copa-round-label">Oitavas de Final</div>`;
+        COPA_KNOCKOUT.oitavas.forEach(m => {
+            // Resolve os times reais a partir dos códigos
+            const homeId = classificados[m.home] || m.home;
+            const awayId = classificados[m.away] || m.away;
+            const homeTeam = getTeamById(homeId);
+            const awayTeam = getTeamById(awayId);
+            const s = sc[m.id];
+            const hasScore = !!s;
+            html += `
+            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
+                <div class="copa-match-team home">
+                    <div class="copa-match-flag">${homeTeam ? homeTeam.f : '?'}</div>
+                    <div class="copa-match-name">${homeTeam ? homeTeam.n : (homeId || '?')}</div>
+                </div>
+                <div class="copa-score-box ${hasScore ? 'live' : ''}">
+                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
+                    <span class="copa-score-sep">×</span>
+                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
+                </div>
+                <div class="copa-match-team away">
+                    <div class="copa-match-flag">${awayTeam ? awayTeam.f : '?'}</div>
+                    <div class="copa-match-name">${awayTeam ? awayTeam.n : (awayId || '?')}</div>
+                </div>
+                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
+            </div>`;
+        });
+
+        // Quartas de Final (mantém placeholders, mas pode-se evoluir)
+        html += `<div class="copa-round-label">Quartas de Final</div>`;
+        COPA_KNOCKOUT.quartas.forEach(m => {
+            const s = sc[m.id];
+            const hasScore = !!s;
+            html += `
+            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
+                <div class="copa-match-team home">${m.home}</div>
+                <div class="copa-score-box ${hasScore ? 'live' : ''}">
+                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
+                    <span class="copa-score-sep">×</span>
+                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
+                </div>
+                <div class="copa-match-team away">${m.away}</div>
+                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
+            </div>`;
+        });
+
+        // Semifinais
+        html += `<div class="copa-round-label">Semifinais</div>`;
+        COPA_KNOCKOUT.semis.forEach(m => {
+            const s = sc[m.id];
+            const hasScore = !!s;
+            html += `
+            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
+                <div class="copa-match-team home">${m.home}</div>
+                <div class="copa-score-box ${hasScore ? 'live' : ''}">
+                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
+                    <span class="copa-score-sep">×</span>
+                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
+                </div>
+                <div class="copa-match-team away">${m.away}</div>
+                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
+            </div>`;
+        });
+
+        // Disputa de 3º Lugar
+        html += `<div class="copa-round-label">Disputa de 3º Lugar</div>`;
+        COPA_KNOCKOUT.terceiro.forEach(m => {
+            const s = sc[m.id];
+            const hasScore = !!s;
+            html += `
+            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
+                <div class="copa-match-team home">${m.home}</div>
+                <div class="copa-score-box ${hasScore ? 'live' : ''}">
+                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
+                    <span class="copa-score-sep">×</span>
+                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
+                </div>
+                <div class="copa-match-team away">${m.away}</div>
+                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
+            </div>`;
+        });
+
+        // Final
+        html += `<div class="copa-round-label">Final</div>`;
+        COPA_KNOCKOUT.final.forEach(m => {
+            const s = sc[m.id];
+            const hasScore = !!s;
+            html += `
+            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
+                <div class="copa-match-team home">${m.home}</div>
+                <div class="copa-score-box ${hasScore ? 'live' : ''}">
+                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
+                    <span class="copa-score-sep">×</span>
+                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
+                </div>
+                <div class="copa-match-team away">${m.away}</div>
+                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
+            </div>`;
         });
 
         document.getElementById('copa-panel-body').innerHTML = html;
@@ -2174,7 +2279,6 @@
 
     // ==================== FUNÇÕES AUSENTES (IMPLEMENTADAS) ====================
 
-    // Salvar dados do perfil (chamado no modal "Meu Perfil")
     function salvarDadosPerfil() {
         const nome = document.getElementById('nomePerfil').value;
         const matricula = document.getElementById('matriculaPerfil').value;
@@ -2188,7 +2292,6 @@
         setStorageValue('braun_ano', ano);
         setStorageValue('braun_setor', setor);
         
-        // Atualiza região e turma atual com base na turma selecionada
         let region, grupo;
         if (['A','B','C','D'].includes(turma)) {
             region = 'BR';
@@ -2202,16 +2305,13 @@
         setStorageValue('braun_last_region', region);
         setStorageValue(`braun_turma_${region}`, grupo);
         
-        // Re-renderiza o calendário e atualiza o badge
         _escalaCache.clear();
         gerarCalendario();
         tick();
         
-        // Atualiza dados nos modais de votação e pedidos
         preencherDadosModais();
     }
 
-    // Preenche dados nos modais de votação e pedidos
     function preencherDadosModais() {
         const nome = getStorageValue('braun_nome_completo') || '---';
         const matricula = getStorageValue('braun_matricula') || '---';
@@ -2228,7 +2328,6 @@
         document.getElementById('pedidoAno').innerText = ano;
     }
 
-    // Abrir formulário de votação (Colaborador do Mês)
     function abrirFormularioVotacao() {
         const nome = getStorageValue('braun_nome_completo') || 'Não informado';
         const matricula = getStorageValue('braun_matricula') || 'Não informado';
@@ -2237,7 +2336,6 @@
         window.open(link, '_blank');
     }
 
-    // Enviar pedido por e-mail (Meus Pedidos)
     function enviarPedidoEmail() {
         const nome = document.getElementById('pedidoNome').innerText;
         const matricula = document.getElementById('pedidoMatricula').innerText;
@@ -2261,7 +2359,6 @@
         window.open(mailto, '_blank');
     }
 
-    // Abrir modal Meu Perfil
     function openMeuPerfil() {
         closeHamburger();
         document.getElementById('nomePerfil').value = getStorageValue('braun_nome_completo') || '';
@@ -2273,7 +2370,6 @@
         document.getElementById('meuPerfilCard').classList.add('show');
     }
 
-    // Abrir modal Colaborador do Mês
     function openColaboradorDoMes() {
         closeHamburger();
         preencherDadosModais();
@@ -2281,7 +2377,6 @@
         document.getElementById('colaboradorDoMesCard').classList.add('show');
     }
 
-    // Abrir modal Meus Pedidos
     function openMeusPedidos() {
         closeHamburger();
         preencherDadosModais();
@@ -2289,7 +2384,6 @@
         document.getElementById('meusPedidosCard').classList.add('show');
     }
 
-    // Salvar nota do dia
     function saveNota() {
         const log = document.getElementById('noteInput').value;
         const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
@@ -2303,20 +2397,17 @@
         gerarCalendario();
     }
 
-    // Fechar todos os modais
     function closeAllModals() {
         document.getElementById('overlay').style.display = 'none';
         document.querySelectorAll('.bottom-modal').forEach(el => el.classList.remove('show'));
         closeScoreModal();
     }
 
-    // Alternar modo escuro
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
         setStorageValue('braun_dark_mode', document.body.classList.contains('dark-mode'));
     }
 
-    // Rolagem para o dia atual - CORRIGIDA PROFISSIONALMENTE
     function scrollToToday() {
         setTimeout(() => {
             const hoje = document.querySelector('.hoje');
@@ -2351,7 +2442,6 @@
         if (getStorageValue('braun_dark_mode') === 'true') {
             document.body.classList.add('dark-mode');
         }
-        // Atualiza o badge com a turma salva
         atualizarBadgeTurma();
         gerarCalendario();
         startClock();
