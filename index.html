@@ -62,7 +62,6 @@
             -webkit-touch-callout: none;
         }
         
-        /* ========== SPLASH SCREEN ORIGINAL ========== */
         .welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); color: white; z-index: 3000;
@@ -73,10 +72,6 @@
         .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateY(-20px); }
         .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         
-        /* ========== TELA DE SAUDAÇÃO (REMOVIDA) ========== */
-        .greeting-screen { display: none !important; }
-
-        /* ========== SPLASH COPA 2026 ========== */
         #copaSplashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary); z-index: 5000; display: none;
@@ -139,18 +134,6 @@
             50%  { transform: scale(1.15); box-shadow: 0 0 20px var(--accent); }
             100% { transform: scale(1.05); box-shadow: 0 0 5px var(--accent); }
         }
-        @keyframes plane-fly {
-            0%   { transform: translate(0,0) rotate(0deg); opacity: 0.8; }
-            50%  { transform: translate(2px,-2px) rotate(-5deg); opacity: 1; }
-            100% { transform: translate(0,0) rotate(0deg); opacity: 0.8; }
-        }
-        @keyframes ballMove {
-            0%   { transform: translate(0, 0) rotate(0deg); }
-            25%  { transform: translate(2px, -2px) rotate(15deg); }
-            50%  { transform: translate(0, -4px) rotate(0deg); }
-            75%  { transform: translate(-2px, -2px) rotate(-15deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
         .FERIAS {
             position: relative;
             border: 2px dashed var(--ferias) !important;
@@ -163,69 +146,6 @@
             z-index: 5; animation: plane-fly 2s infinite ease-in-out;
             font-variation-settings: 'FILL' 1;
         }
-        .brasil-game-work::after,
-        .brasil-game-off::after {
-            content: '⚽';
-            position: absolute;
-            bottom: 0px;
-            right: 2px;
-            font-size: 1em;
-            animation: ballMove 1s infinite ease-in-out;
-            pointer-events: none;
-            font-weight: bold;
-            text-shadow: 0 0 2px white;
-        }
-        .brasil-game-work::after { color: #ff4d4d; }
-        .brasil-game-off::after  { color: #4caf50; }
-        body.dark-mode .brasil-game-work::after,
-        body.dark-mode .brasil-game-off::after {
-            text-shadow: 0 0 2px black;
-        }
-        .game-brasil-block {
-            background: linear-gradient(135deg, #005c2b, #003d1c);
-            border-radius: 18px;
-            padding: 14px 12px;
-            margin-bottom: 20px;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .game-brasil-icon {
-            font-size: 2.4em;
-            background: rgba(255,255,255,0.2);
-            width: 50px;
-            height: 50px;
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .game-brasil-info {
-            flex: 1;
-        }
-        .game-brasil-adversario {
-            font-weight: 900;
-            font-size: 1.2em;
-            letter-spacing: 0.5px;
-        }
-        .game-brasil-horario {
-            font-size: 0.7em;
-            opacity: 0.8;
-            margin-top: 4px;
-        }
-        .game-brasil-status {
-            font-weight: 800;
-            font-size: 0.7rem;
-            background: rgba(0,0,0,0.35);
-            padding: 4px 10px;
-            border-radius: 40px;
-            display: inline-block;
-            margin-top: 6px;
-        }
-        .game-brasil-status.work { background: var(--accent); color: white; }
-        .game-brasil-status.off  { background: var(--primary); color: white; }
         header {
             background: var(--primary); padding: 45px 18px 20px 18px; color: white; display: flex;
             justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
@@ -239,7 +159,6 @@
         .brand-logo-svg { height: 35px; width: auto; }
         .st-logo-path { fill: #FFFFFF; transition: fill 0.3s; }
 
-        /* BADGE DA TURMA NO CABEÇALHO */
         .turma-badge {
             background: rgba(255,255,255,0.2);
             border: 2px solid rgba(255,255,255,0.4);
@@ -485,12 +404,15 @@
         body.dark-mode .qr-img {
             filter: invert(1);
         }
+        
+        /* ===== NOVO ESTILO DO CHAVEAMENTO DA COPA ===== */
         #copaPanel {
             position: fixed; top: 0; right: -100%; width: 100%; height: 100%;
             background: var(--bg); z-index: 3700; transition: right 0.4s cubic-bezier(0.4,0,0.2,1);
             display: flex; flex-direction: column; overflow: hidden;
         }
         #copaPanel.open { right: 0; }
+        
         .copa-panel-header {
             background: linear-gradient(135deg, #005c2b, #003d1c);
             padding: 48px 16px 14px 16px; flex-shrink: 0; color: white;
@@ -503,117 +425,304 @@
         }
         .copa-panel-title { font-size: 1.15em; font-weight: 800; }
         .copa-panel-subtitle { font-size: 0.75em; opacity: 0.75; }
-        .copa-pills-row {
-            display: flex; gap: 6px; overflow-x: auto; padding: 0 0 2px 0;
-            scrollbar-width: none;
-        }
-        .copa-pills-row::-webkit-scrollbar { display: none; }
-        .copa-group-pill {
-            background: rgba(255,255,255,0.15); color: white; border: none;
-            border-radius: 20px; padding: 6px 14px; font-weight: 800; font-size: 0.8em;
-            cursor: pointer; flex-shrink: 0; transition: background 0.15s;
-        }
-        .copa-group-pill.active { background: white; color: #005c2b; }
-        .copa-group-pill.brasil-pill { border: 1.5px solid #ffdf00; }
-        .copa-panel-body { flex: 1; overflow-y: auto; padding: 14px; }
         
-        .copa-standings {
-            background: var(--card); border-radius: 18px; overflow: hidden;
-            border: 1px solid var(--border); margin-bottom: 14px;
+        .copa-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 12px;
         }
-        .copa-standings-header {
-            display: grid; grid-template-columns: 20px 1fr 28px 28px 28px 28px 28px 34px;
-            gap: 2px; padding: 8px 12px; background: var(--primary); color: white;
-            font-size: 0.65em; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;
+        
+        /* Chaveamento estilo eliminatórias */
+        .bracket-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 20px;
+            min-height: 100%;
         }
-        .copa-standings-row {
-            display: grid; grid-template-columns: 20px 1fr 28px 28px 28px 28px 28px 34px;
-            gap: 2px; padding: 10px 12px; border-bottom: 1px solid var(--border);
-            align-items: center; transition: background 0.1s;
+        
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .copa-standings-row:last-child { border-bottom: none; }
-        .copa-standings-row.classified { background: rgba(0,169,122,0.06); }
-        .copa-standings-row.brasil-row { background: rgba(0,156,59,0.1); font-weight: 800; }
-        .copa-pos { font-size: 0.72em; font-weight: 800; opacity: 0.5; text-align: center; }
-        .copa-pos.q1, .copa-pos.q2 { color: var(--primary); opacity: 1; }
-        .copa-team-cell { display: flex; align-items: center; gap: 6px; font-size: 0.82em; font-weight: 700; }
-        .copa-cell { text-align: center; font-size: 0.78em; font-weight: 700; }
-        .copa-pts { text-align: center; font-size: 0.88em; font-weight: 900; color: var(--primary); }
-        .copa-classified-bar { height: 2px; background: var(--primary); opacity: 0.3; margin: 0; }
-        .copa-round-label {
-            font-size: 0.68em; font-weight: 900; text-transform: uppercase;
-            letter-spacing: 1px; color: var(--primary); margin: 14px 0 6px 0;
+        
+        .bracket-round-label {
+            font-size: 0.75em;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            padding: 6px 0 4px 0;
+            border-bottom: 2px solid var(--primary);
+            opacity: 0.7;
         }
-        .copa-match-card {
-            background: var(--card); border-radius: 16px; padding: 12px 14px;
-            border: 1.5px solid var(--border); margin-bottom: 8px;
-            display: flex; align-items: center; gap: 8px;
-            cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+        
+        .bracket-match {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--card);
+            border-radius: 14px;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
             position: relative;
+            min-height: 60px;
         }
-        .copa-match-card:active { transform: scale(0.98); }
-        .copa-match-card.has-score { border-color: var(--primary); }
-        .copa-match-team { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-        .copa-match-team.home { align-items: flex-end; }
-        .copa-match-team.away { align-items: flex-start; }
-        .copa-match-flag { font-size: 1.5em; line-height: 1; }
-        .copa-match-name { font-size: 0.7em; font-weight: 700; text-align: center; opacity: 0.75; }
-        .copa-score-box {
-            display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-            background: var(--bg); border-radius: 12px; padding: 6px 10px;
-            border: 1.5px solid var(--border); min-width: 70px; justify-content: center;
+        
+        .bracket-match:active {
+            transform: scale(0.98);
         }
-        .copa-score-box.live { border-color: var(--primary); background: rgba(0,169,122,0.08); }
-        .copa-score-num { font-family: 'JetBrains Mono', monospace; font-size: 1.2em; font-weight: 900; }
-        .copa-score-sep { font-size: 0.9em; font-weight: 700; opacity: 0.4; }
-        .copa-edit-hint {
-            position: absolute; bottom: 5px; right: 8px;
-            font-size: 0.6em; font-weight: 800; opacity: 0.35;
-            display: flex; align-items: center; gap: 3px;
+        
+        .bracket-match.has-score {
+            border-color: var(--primary);
         }
-        #scoreModal {
+        
+        .bracket-match-placeholder {
+            border-color: #ff9800;
+            border-style: dashed;
+            background: rgba(255,152,0,0.05);
+        }
+        
+        .bracket-match-team {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            min-width: 0;
+        }
+        
+        .bracket-match-team.home {
+            align-items: flex-end;
+            flex: 1.2;
+        }
+        
+        .bracket-match-team.away {
+            align-items: flex-start;
+            flex: 1.2;
+        }
+        
+        .bracket-match-flag {
+            font-size: 1.6em;
+            line-height: 1.2;
+            min-height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bracket-match-flag.empty {
+            opacity: 0.3;
+            font-size: 1.2em;
+        }
+        
+        .bracket-match-name {
+            font-size: 0.7em;
+            font-weight: 700;
+            text-align: center;
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80px;
+        }
+        
+        .bracket-match-name.empty {
+            opacity: 0.3;
+            font-style: italic;
+        }
+        
+        .bracket-score-box {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 4px 8px;
+            border: 1.5px solid var(--border);
+            min-width: 56px;
+            justify-content: center;
+        }
+        
+        .bracket-score-box.live {
+            border-color: var(--primary);
+            background: rgba(0,169,122,0.08);
+        }
+        
+        .bracket-score-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 900;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .bracket-score-sep {
+            font-size: 0.8em;
+            font-weight: 700;
+            opacity: 0.3;
+        }
+        
+        .bracket-edit-hint {
+            position: absolute;
+            bottom: 2px;
+            right: 6px;
+            font-size: 0.5em;
+            font-weight: 800;
+            opacity: 0.3;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .bracket-edit-hint .material-symbols-outlined {
+            font-size: 12px;
+        }
+        
+        .bracket-empty-hint {
+            font-size: 0.6em;
+            opacity: 0.4;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        
+        /* Ajustes para tela pequena */
+        @media (max-width: 480px) {
+            .bracket-match {
+                padding: 8px 10px;
+                min-height: 50px;
+                gap: 4px;
+            }
+            .bracket-match-flag {
+                font-size: 1.3em;
+                min-height: 24px;
+            }
+            .bracket-match-name {
+                font-size: 0.6em;
+                max-width: 60px;
+            }
+            .bracket-score-box {
+                min-width: 44px;
+                padding: 2px 6px;
+            }
+            .bracket-score-num {
+                font-size: 0.95em;
+                min-width: 12px;
+            }
+        }
+        
+        /* ===== MODAL DE EDIÇÃO DO TIME ===== */
+        #teamModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 4000; display: none;
             align-items: center; justify-content: center; backdrop-filter: blur(6px);
         }
-        #scoreModal.show { display: flex; }
-        .score-modal-box {
+        #teamModal.show { display: flex; }
+        
+        .team-modal-box {
             background: var(--card); border-radius: 28px; padding: 28px 24px;
-            width: calc(100% - 48px); max-width: 340px;
+            width: calc(100% - 48px); max-width: 380px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: modalPop 0.25s cubic-bezier(0.34,1.56,0.64,1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
-        .score-modal-title { font-weight: 800; font-size: 0.95em; opacity: 0.6; text-align: center; margin-bottom: 4px; }
-        .score-modal-teams { text-align: center; font-weight: 900; font-size: 1.1em; margin-bottom: 20px; }
-        .score-inputs-row {
-            display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;
+        
+        .team-modal-title {
+            font-weight: 800;
+            font-size: 0.95em;
+            opacity: 0.6;
+            text-align: center;
+            margin-bottom: 4px;
         }
-        .score-input-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .score-input-flag { font-size: 2em; }
-        .score-num-input {
-            font-family: 'JetBrains Mono', monospace; font-size: 2.5em; font-weight: 900;
-            width: 80px; text-align: center; background: var(--bg); color: var(--text);
-            border: 2.5px solid var(--primary); border-radius: 18px; padding: 8px 0;
-            outline: none; appearance: textfield;
+        
+        .team-modal-subtitle {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85em;
+            margin-bottom: 16px;
+            opacity: 0.8;
         }
-        .score-num-input::-webkit-inner-spin-button,
-        .score-num-input::-webkit-outer-spin-button { -webkit-appearance: none; }
-        .score-vs-sep { font-size: 1.5em; font-weight: 900; opacity: 0.3; margin-top: 28px; }
-        .score-btns { display: flex; gap: 10px; }
-        .score-save-btn {
+        
+        .team-modal-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        
+        .team-modal-label {
+            font-weight: 700;
+            font-size: 0.8em;
+            opacity: 0.6;
+            min-width: 50px;
+        }
+        
+        .team-modal-flag-input {
+            font-size: 2em;
+            width: 50px;
+            text-align: center;
+            background: var(--bg);
+            border: 2.5px solid var(--border);
+            border-radius: 12px;
+            padding: 4px 0;
+            outline: none;
+        }
+        
+        .team-modal-name-input {
+            flex: 1;
+            font-weight: 700;
+            font-size: 1em;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 2.5px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+        }
+        
+        .team-modal-name-input:focus,
+        .team-modal-flag-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .team-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        
+        .team-save-btn {
             flex: 1; background: var(--primary); color: white; border: none;
             padding: 15px; border-radius: 16px; font-weight: 800; font-size: 1em; cursor: pointer;
         }
-        .score-save-btn:active { opacity: 0.85; }
-        .score-cancel-btn {
+        .team-save-btn:active { opacity: 0.85; }
+        .team-cancel-btn {
             background: var(--bg); color: var(--text); border: 1px solid var(--border);
             padding: 15px 18px; border-radius: 16px; font-weight: 800; font-size: 0.9em; cursor: pointer;
         }
-        .score-clear-btn {
+        .team-clear-btn {
             background: #ffefef; color: #ff6b6b; border: 1px solid #ff6b6b;
             padding: 15px 14px; border-radius: 16px; font-weight: 800; font-size: 0.85em; cursor: pointer;
         }
-
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
         .skip-link {
             position: absolute;
             top: -9999px;
@@ -634,7 +743,6 @@
             border-radius: 8px;
         }
         
-        /* Correções iOS */
         @supports (-webkit-touch-callout: none) {
             .mes-inner {
                 transform-style: preserve-3d;
@@ -658,9 +766,6 @@
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
     <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.3 / 2026 / 2027</div>
 </div>
-
-<!-- TELA DE SAUDAÇÃO (REMOVIDA) -->
-<div id="greetingScreen" class="greeting-screen" style="display:none !important;"></div>
 
 <div id="copaSplashScreen">
     <div class="cs-logo-wrap">
@@ -711,7 +816,6 @@
 
 <header>
     <div class="brand-container">
-        <!-- LOGO -->
         <svg version="1.1" viewBox="0 0 172 42" class="brand-logo-svg" role="img" aria-label="B|BRAUN Logo">
             <title>B|BRAUN Logo Oficial</title>
             <g fill="#FFFFFF">
@@ -743,7 +847,6 @@
             </g>
         </svg>
 
-        <!-- BADGE DA TURMA (CLICÁVEL) -->
         <span class="turma-badge" id="turmaBadge" onclick="openMeuPerfil()">
             <span class="material-symbols-outlined">groups</span>
             <span id="turmaBadgeText">Turma A</span>
@@ -791,7 +894,7 @@
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">⚽</div>
             <div>
                 <div class="drawer-item-label">Copa do Mundo 2026</div>
-                <div class="drawer-item-sub">Grupos · Partidas · Placar</div>
+                <div class="drawer-item-sub">Chaveamento · Placar</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
@@ -871,7 +974,8 @@
     <div class="drawer-footer">© 2026 Braun OnLine · Todos os direitos reservados</div>
 </div>
 
-<div id="copaPanel" role="dialog" aria-label="Copa do Mundo 2026" aria-modal="true">
+<!-- ===== PANEL DA COPA - CHAVEAMENTO ===== -->
+<div id="copaPanel" role="dialog" aria-label="Copa do Mundo 2026 - Chaveamento" aria-modal="true">
     <div class="copa-panel-header">
         <div class="copa-panel-nav">
             <button class="copa-back-btn" onclick="closeCopaPanel()" aria-label="Voltar ao calendário">
@@ -879,37 +983,44 @@
             </button>
             <div>
                 <div class="copa-panel-title">⚽ Copa do Mundo 2026</div>
-                <div class="copa-panel-subtitle">48 seleções · 104 jogos · 11/06 – 19/07</div>
+                <div class="copa-panel-subtitle">Chaveamento · 11/06 – 19/07</div>
             </div>
         </div>
-        <div class="copa-pills-row" id="copa-pills-row" role="tablist" aria-label="Grupos da Copa"></div>
     </div>
     <div class="copa-panel-body" id="copa-panel-body"></div>
 </div>
 
-<div id="scoreModal" role="dialog" aria-label="Editar placar do jogo" aria-modal="true">
-    <div class="score-modal-box">
-        <div class="score-modal-title">EDITAR PLACAR</div>
-        <div class="score-modal-teams" id="score-modal-teams">Brasil vs Marrocos</div>
-        <div class="score-inputs-row">
-            <div class="score-input-wrap">
-                <div class="score-input-flag" id="score-flag-home" aria-hidden="true">🇧🇷</div>
-                <label for="score-home" class="sr-only" id="home-team-label">Placar time da casa</label>
-                <input type="number" id="score-home" class="score-num-input" min="0" max="99" value="0" aria-labelledby="home-team-label">
-            </div>
-            <div class="score-vs-sep" aria-hidden="true">×</div>
-            <div class="score-input-wrap">
-                <div class="score-input-flag" id="score-flag-away" aria-hidden="true">🇲🇦</div>
-                <label for="score-away" class="sr-only" id="away-team-label">Placar time visitante</label>
-                <input type="number" id="score-away" class="score-num-input" min="0" max="99" value="0" aria-labelledby="away-team-label">
-            </div>
+<!-- ===== MODAL DE EDIÇÃO DO TIME ===== -->
+<div id="teamModal" role="dialog" aria-label="Editar time da partida" aria-modal="true">
+    <div class="team-modal-box">
+        <div class="team-modal-title">⚽ EDITAR TIME</div>
+        <div class="team-modal-subtitle" id="team-modal-match">Partida</div>
+        
+        <div class="team-modal-row">
+            <span class="team-modal-label">Casa</span>
+            <input type="text" id="team-flag-home" class="team-modal-flag-input" maxlength="2" placeholder="🇧🇷">
+            <input type="text" id="team-name-home" class="team-modal-name-input" placeholder="Nome do time">
         </div>
-        <div class="score-btns">
-            <button class="score-clear-btn" onclick="clearScore()" aria-label="Limpar placar">
+        
+        <div class="team-modal-row">
+            <span class="team-modal-label">Fora</span>
+            <input type="text" id="team-flag-away" class="team-modal-flag-input" maxlength="2" placeholder="🇦🇷">
+            <input type="text" id="team-name-away" class="team-modal-name-input" placeholder="Nome do time">
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-top:4px; margin-bottom:12px;">
+            <span class="team-modal-label" style="min-width:50px;">Placar</span>
+            <input type="number" id="team-score-home" class="team-modal-flag-input" style="width:45px;font-size:1.2em;" min="0" max="99" value="0">
+            <span style="font-weight:900;opacity:0.3;display:flex;align-items:center;">×</span>
+            <input type="number" id="team-score-away" class="team-modal-flag-input" style="width:45px;font-size:1.2em;" min="0" max="99" value="0">
+        </div>
+        
+        <div class="team-btns">
+            <button class="team-clear-btn" onclick="clearTeam()" aria-label="Limpar times e placar">
                 <span class="material-symbols-outlined" aria-hidden="true" style="font-size:16px;vertical-align:middle">delete</span>
             </button>
-            <button class="score-cancel-btn" onclick="closeScoreModal()">Cancelar</button>
-            <button class="score-save-btn" onclick="saveScore()">✓ Salvar</button>
+            <button class="team-cancel-btn" onclick="closeTeamModal()">Cancelar</button>
+            <button class="team-save-btn" onclick="saveTeam()">✓ Salvar</button>
         </div>
     </div>
 </div>
@@ -923,7 +1034,6 @@
 
 <div id="infoCard" class="bottom-modal" role="dialog" aria-label="Informações do dia" aria-modal="true">
     <div id="card-data" style="font-weight:800;color:var(--primary);font-size:1.3em;margin-bottom:10px;"></div>
-    <div id="game-brasil-container" style="margin-bottom:15px;"></div>
     <div class="lote-box">
         <span class="lote-label">Lote Sugerido (YYWWD)</span>
         <div id="lote-display" class="lote-value">------</div>
@@ -1024,7 +1134,6 @@
     <button onclick="closeAllModals()" style="background:var(--primary);color:white;border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">ENTENDI</button>
 </div>
 
-<!-- ==================== MODAL MEU PERFIL ==================== -->
 <div id="meuPerfilCard" class="bottom-modal" role="dialog" aria-label="Meu Perfil" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Meu Perfil</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
@@ -1064,7 +1173,6 @@
     <button onclick="salvarDadosPerfil(); closeAllModals();" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;">SALVAR E FECHAR</button>
 </div>
 
-<!-- ==================== MODAL COLABORADOR DO MÊS ==================== -->
 <div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏆 Colaborador do Mês</h2>
     <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
@@ -1082,7 +1190,6 @@
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;">FECHAR</button>
 </div>
 
-<!-- ==================== MODAL MEUS PEDIDOS ==================== -->
 <div id="meusPedidosCard" class="bottom-modal" role="dialog" aria-label="Meus Pedidos" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">📦 Meus Pedidos</h2>
     
@@ -1118,73 +1225,41 @@
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;">FECHAR</button>
 </div>
 
-<style>
-    .sr-only {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border-width: 0;
-    }
-</style>
-
 <script>
     // ==============================================================
-    // TODAS AS FUNÇÕES DO APP (CORRIGIDAS E UNIFICADAS)
+    // TODAS AS FUNÇÕES DO APP - VERSÃO COM CHAVEAMENTO
+    // CONFRONTOS CORRIGIDOS
     // ==============================================================
 
-    // ==================== STORAGE COMPATÍVEL ====================
+    // ==================== STORAGE ====================
     function getStorageValue(key) {
-        try {
-            return localStorage.getItem(key);
-        } catch (e) {
-            try {
-                return sessionStorage.getItem(key);
-            } catch (f) {
-                return null;
-            }
+        try { return localStorage.getItem(key); } catch (e) {
+            try { return sessionStorage.getItem(key); } catch (f) { return null; }
         }
     }
-
     function setStorageValue(key, value) {
-        try {
-            localStorage.setItem(key, value);
-        } catch (e) {
-            try {
-                sessionStorage.setItem(key, value);
-            } catch (f) {
-                // Não salva
-            }
+        try { localStorage.setItem(key, value); } catch (e) {
+            try { sessionStorage.setItem(key, value); } catch (f) {}
         }
     }
-
     function removeStorageValue(key) {
-        try {
-            localStorage.removeItem(key);
-        } catch (e) {
-            try {
-                sessionStorage.removeItem(key);
-            } catch (f) {}
+        try { localStorage.removeItem(key); } catch (e) {
+            try { sessionStorage.removeItem(key); } catch (f) {}
         }
     }
 
-    // ==================== LÓGICA DA SPLASH DA COPA ====================
+    // ==================== SPLASH ====================
     function showCopaSplash() {
         closeHamburger();
         const splash = document.getElementById('copaSplashScreen');
         splash.style.display = 'flex';
-        
         setTimeout(() => {
             splash.style.display = 'none';
             openCopaPanel();
         }, 3500);
     }
 
-    // ==================== OTIMIZAÇÕES DE PERFORMANCE ====================
+    // ==================== OTIMIZAÇÕES ====================
     let cachedFerias = null;
     function getFeriasRange() {
         if (cachedFerias) return cachedFerias;
@@ -1193,15 +1268,10 @@
         cachedFerias = { inicio, fim };
         return cachedFerias;
     }
-    
-    function clearFeriasCache() {
-        cachedFerias = null;
-    }
+    function clearFeriasCache() { cachedFerias = null; }
     
     let cachedStats = {};
-    function clearStatsCache() {
-        cachedStats = {};
-    }
+    function clearStatsCache() { cachedStats = {}; }
     
     let feriadosCache = {};
     function getFeriados(ano) {
@@ -1225,7 +1295,6 @@
         weekNumberCache.set(key, result);
         return result;
     }
-    
     function getWeekNumber(d) {
         d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
         d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
@@ -1237,26 +1306,20 @@
     function startClock() {
         if (clockInterval) clearInterval(clockInterval);
         clockInterval = setInterval(() => {
-            if (document.visibilityState === 'visible') {
-                tick();
-            }
+            if (document.visibilityState === 'visible') { tick(); }
         }, 1000);
     }
-    
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') {
             if (clockInterval) clearInterval(clockInterval);
         } else {
-            startClock();
-            tick();
+            startClock(); tick();
         }
     });
-    
-    // ==================== FIM DAS OTIMIZAÇÕES ====================
-    
+
+    // ==================== PWA ====================
     let deferredPrompt;
     const installBtn = document.getElementById('install-button');
-
     if ('serviceWorker' in navigator) {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (!isIOS) {
@@ -1276,22 +1339,19 @@
             });
         }
     }
-
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'SW_UPDATED') {
-          console.log('Nova versão detectada. Atualizando...');
-          window.location.reload();
-        }
-      });
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'SW_UPDATED') {
+                console.log('Nova versão detectada. Atualizando...');
+                window.location.reload();
+            }
+        });
     }
-
     window.addEventListener('beforeinstallprompt', e => {
         e.preventDefault();
         deferredPrompt = e;
         installBtn.style.display = 'flex';
     });
-
     async function installPWA() {
         if (deferredPrompt) {
             deferredPrompt.prompt();
@@ -1300,7 +1360,7 @@
         }
     }
 
-    // ==================== INICIALIZAÇÃO CORRETA DA TURMA ====================
+    // ==================== INICIALIZAÇÃO ====================
     let currentRegion = getStorageValue('braun_last_region') || 'BR';
     let dataAtiva = '';
     const _escalaCache = new Map();
@@ -1310,17 +1370,9 @@
         MNT: { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA MNT', days: ['S','T','Q','Q','S','S','D'] }
     };
 
-    const BRAZIL_GAMES_2026_DETAILS = {
-        '2026-06-13': { adversary: 'Marrocos', hour: '19:00' },
-        '2026-06-19': { adversary: 'Haiti',    hour: '21:30' },
-        '2026-06-24': { adversary: 'Escócia',  hour: '19:00' }
-    };
-    const BRAZIL_GAMES_2026 = Object.keys(BRAZIL_GAMES_2026_DETAILS);
-
     let currentAno = getStorageValue('braun_ano') || '2026';
     let currentTurma = getStorageValue(`braun_turma_${currentRegion}`) || 'AC';
 
-    // ============ INICIALIZAÇÃO CORRETA DA TURMA ============
     (function init() {
         const savedTurma = getStorageValue('braun_turma_perfil');
         if (savedTurma) {
@@ -1341,16 +1393,11 @@
             currentRegion = savedRegion;
             currentTurma = getStorageValue(`braun_turma_${savedRegion}`) || (savedRegion === 'BR' ? 'AC' : 'EG');
         }
-        
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         const activeTab = document.getElementById(`tab-${currentRegion}`);
-        if (activeTab) {
-            activeTab.classList.add('active');
-            activeTab.setAttribute('aria-selected', 'true');
-        }
+        if (activeTab) { activeTab.classList.add('active'); activeTab.setAttribute('aria-selected', 'true'); }
     })();
 
-    // ==================== FUNÇÃO DE SAUDAÇÃO (REMOVIDA) ====================
     function goToGreeting() {
         const welcome = document.getElementById('welcomeScreen');
         welcome.classList.add('hide');
@@ -1361,16 +1408,13 @@
         }, 500);
     }
 
-    // ==================== ATUALIZA O BADGE DA TURMA NO CABEÇALHO ====================
     function atualizarBadgeTurma() {
         const turmaLetra = getStorageValue('braun_turma_perfil') || 'A';
         const badgeText = document.getElementById('turmaBadgeText');
-        if (badgeText) {
-            badgeText.innerText = `Turma ${turmaLetra}`;
-        }
+        if (badgeText) { badgeText.innerText = `Turma ${turmaLetra}`; }
     }
 
-    // ==================== FUNÇÕES DA ESCALA ====================
+    // ==================== ESCALA ====================
     function setRegion(r) {
         currentRegion = r;
         setStorageValue('braun_last_region', r);
@@ -1383,11 +1427,8 @@
         activeTab.setAttribute('aria-selected', 'true');
 
         const savedTurma = getStorageValue(`braun_turma_${r}`);
-        if (savedTurma) {
-            currentTurma = savedTurma;
-        } else {
-            currentTurma = r === 'BR' ? 'AC' : 'EG';
-        }
+        if (savedTurma) { currentTurma = savedTurma; }
+        else { currentTurma = r === 'BR' ? 'AC' : 'EG'; }
         
         _escalaCache.clear();
         gerarCalendario();
@@ -1398,9 +1439,9 @@
         const key = `BR_${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_${t}`;
         if (_escalaCache.has(key)) return _escalaCache.get(key);
         const baseDate = new Date(2026, 0, 18);
-        const diff     = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
-        const isA      = (((diff % 4) + 4) % 4) < 2;
-        const result   = { isA, trab: (t === 'AC' && isA) || (t === 'BD' && !isA) };
+        const diff = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
+        const isA = (((diff % 4) + 4) % 4) < 2;
+        const result = { isA, trab: (t === 'AC' && isA) || (t === 'BD' && !isA) };
         _escalaCache.set(key, result);
         return result;
     }
@@ -1409,10 +1450,10 @@
         const key = `MNT_${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_${t}`;
         if (_escalaCache.has(key)) return _escalaCache.get(key);
         const baseDate = new Date(2026, 2, 6);
-        const diff     = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
-        const ciclo    = ((diff % 4) + 4) % 4;
-        const isEG     = ciclo < 2;
-        const result   = { isEG, trab: (t === 'EG' ? isEG : !isEG) };
+        const diff = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
+        const ciclo = ((diff % 4) + 4) % 4;
+        const isEG = ciclo < 2;
+        const result = { isEG, trab: (t === 'EG' ? isEG : !isEG) };
         _escalaCache.set(key, result);
         return result;
     }
@@ -1429,20 +1470,19 @@
     }
 
     function gerarCalendario() {
-        const box  = document.getElementById('calendario-box');
+        const box = document.getElementById('calendario-box');
         const frag = document.createDocumentFragment();
         const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
-        const ano  = parseInt(currentAno);
-        const t    = currentTurma;
-        const fer  = getFeriados(ano);
+        const ano = parseInt(currentAno);
+        const t = currentTurma;
+        const fer = getFeriados(ano);
         const lang = translations[currentRegion];
         const hojeStr = new Date().toDateString();
 
-        // Atualiza o badge do cabeçalho
         atualizarBadgeTurma();
 
         for (let m = 0; m < 12; m++) {
-            const dtM   = new Date(ano, m, 1);
+            const dtM = new Date(ano, m, 1);
             const nomeM = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(dtM);
             const container = document.createElement('div');
             container.className = 'mes-container';
@@ -1474,11 +1514,11 @@
             let colAtual = esp;
 
             for (let d = 1; d <= diasNoMes; d++) {
-                const at   = new Date(ano, m, d);
+                const at = new Date(ano, m, d);
                 const isoS = `${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const isoF = `${ano}-${isoS}`;
-                const f    = fer[isoS];
-                const nt   = logs[isoF];
+                const f = fer[isoS];
+                const nt = logs[isoF];
 
                 if (colAtual === 7) {
                     colAtual = 0;
@@ -1497,29 +1537,16 @@
                     cls += (mnt.trab ? 'TRABALHO ' : 'FOLGA ');
                 }
 
-                const isBrazilGame = (ano === 2026 && BRAZIL_GAMES_2026.includes(isoF));
-                if (isBrazilGame) {
-                    const trabGameStatus = (currentRegion === 'BR') ? checkBR(at, t).trab : checkMnt(at, t).trab;
-                    cls += ` brasil-game-${trabGameStatus ? 'work' : 'off'} `;
-                }
-
                 if (hojeStr === at.toDateString()) cls += 'hoje ';
                 if (nt) cls += 'HAS_NOTE ';
                 if (isFerias(at)) cls += 'FERIAS ';
-
-                let titleAttr = '';
-                if (isBrazilGame) {
-                    const trabGameStatus = (currentRegion === 'BR') ? checkBR(at, t).trab : checkMnt(at, t).trab;
-                    const statusMsg = trabGameStatus ? 'Você TRABALHA neste dia' : 'Você está de FOLGA neste dia';
-                    titleAttr = ` title="🇧🇷 Jogo do Brasil! ${statusMsg}"`;
-                }
 
                 if (f || nt) {
                     hasEv = true;
                     hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`;
                 }
 
-                hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')"${titleAttr}>${d}</div>`;
+                hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')">${d}</div>`;
                 colAtual++;
             }
 
@@ -1535,7 +1562,7 @@
     }
 
     function tick() {
-        const now      = new Date();
+        const now = new Date();
         const bigClock = document.getElementById('big-clock');
         if (bigClock) bigClock.innerText = now.toLocaleTimeString('pt-BR');
 
@@ -1543,11 +1570,11 @@
         if (!msg) return;
 
         if (isFerias(now)) {
-            msg.innerText   = 'EM FÉRIAS ✈️';
+            msg.innerText = 'EM FÉRIAS ✈️';
             msg.style.color = '#7030A0';
         } else {
-            const trab      = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
-            msg.innerText   = trab ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
+            const trab = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
+            msg.innerText = trab ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
             msg.style.color = trab ? 'var(--accent)' : 'var(--primary)';
         }
     }
@@ -1570,38 +1597,18 @@
     function openCard(iso) {
         dataAtiva = iso;
         const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
-        const d    = iso.split('-');
-        document.getElementById('card-data').innerText  = `${d[2]}/${d[1]}/${d[0]}`;
-        document.getElementById('noteInput').value       = logs[iso] || '';
+        const d = iso.split('-');
+        document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`;
+        document.getElementById('noteInput').value = logs[iso] || '';
 
-        const dtSel  = new Date(d[0], d[1] - 1, d[2]);
-        const yy     = dtSel.getFullYear().toString().slice(-2);
-        const ww     = String(getWeekNumberCached(dtSel)).padStart(2, '0');
-        let diaSem   = dtSel.getDay();
-        diaSem       = (diaSem === 0) ? 7 : diaSem;
+        const dtSel = new Date(d[0], d[1] - 1, d[2]);
+        const yy = dtSel.getFullYear().toString().slice(-2);
+        const ww = String(getWeekNumberCached(dtSel)).padStart(2, '0');
+        let diaSem = dtSel.getDay();
+        diaSem = (diaSem === 0) ? 7 : diaSem;
         document.getElementById('lote-display').innerText = `${yy}${ww}${diaSem}`;
 
-        const gameContainer = document.getElementById('game-brasil-container');
-        const anoNum = parseInt(d[0]);
-        if (anoNum === 2026 && BRAZIL_GAMES_2026_DETAILS[iso]) {
-            const game = BRAZIL_GAMES_2026_DETAILS[iso];
-            const isTrab = (currentRegion === 'BR') ? checkBR(dtSel, currentTurma).trab : checkMnt(dtSel, currentTurma).trab;
-            const statusText = isTrab ? 'TRABALHA' : 'FOLGA';
-            const statusClass = isTrab ? 'work' : 'off';
-            gameContainer.innerHTML = `
-                <div class="game-brasil-block">
-                    <div class="game-brasil-icon">⚽</div>
-                    <div class="game-brasil-info">
-                        <div class="game-brasil-adversario">🇧🇷 Brasil × ${game.adversary}</div>
-                        <div class="game-brasil-horario">${game.hour}</div>
-                        <div class="game-brasil-status ${statusClass}">${statusText}</div>
-                    </div>
-                </div>`;
-        } else {
-            gameContainer.innerHTML = '';
-        }
-
-        document.getElementById('overlay').style.display  = 'block';
+        document.getElementById('overlay').style.display = 'block';
         document.getElementById('infoCard').classList.add('show');
     }
 
@@ -1614,13 +1621,22 @@
         setTimeout(() => { disp.innerText = orig; }, 1000);
     }
 
+    function saveNota() {
+        const log = document.getElementById('noteInput').value;
+        const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
+        if (log.trim() === '') { delete logs[dataAtiva]; }
+        else { logs[dataAtiva] = log.trim(); }
+        setStorageValue('logs_v26', JSON.stringify(logs));
+        closeAllModals();
+        gerarCalendario();
+    }
+
     function openHamburger() {
         document.getElementById('hamburgerDrawer').classList.add('open');
         document.getElementById('drawerOverlay').classList.add('show');
         const menuBtn = document.getElementById('menuButton');
         if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
     }
-    
     function closeHamburger() {
         document.getElementById('hamburgerDrawer').classList.remove('open');
         document.getElementById('drawerOverlay').classList.remove('show');
@@ -1629,283 +1645,177 @@
     }
 
     // ==============================================================
-    // COPA 2026 - TABELA COMPLETA (GRUPOS E ELIMINATÓRIAS)
+    // COPA 2026 - CHAVEAMENTO COMPLETO (SEM FASE DE GRUPOS)
+    // CONFRONTOS CORRIGIDOS:
+    //   - México × Equador (antes México × Escócia)
+    //   - Inglaterra × Senegal (antes Inglaterra × Equador)
+    //   - Argentina × Cabo Verde (antes Argentina × Uruguai)
+    //   - Brasil × Japão em 29/06 14h (já corrigido)
     // ==============================================================
 
-    const COPA_GROUPS = {
-    A: { teams: [
-        { id:'MEX', n:'México',        f:'🇲🇽' }, 
-        { id:'RSA', n:'África do Sul', f:'🇿🇦' }, 
-        { id:'KOR', n:'Coreia do Sul', f:'🇰🇷' }, 
-        { id:'CZE', n:'R. Tcheca',     f:'🇨🇿' }],
-        matches:[
-        { id:'A1', h:'MEX', a:'RSA', rd:1, dt:'11/jun 16h', stadium:'Estádio 1' },
-        { id:'A2', h:'KOR', a:'CZE', rd:1, dt:'11/jun 23h', stadium:'Estádio 2' },
-        { id:'A3', h:'CZE', a:'RSA', rd:2, dt:'18/jun 13h', stadium:'Estádio 3' },
-        { id:'A4', h:'MEX', a:'KOR', rd:2, dt:'18/jun 22h', stadium:'Estádio 4' },
-        { id:'A5', h:'CZE', a:'MEX', rd:3, dt:'24/jun 22h', stadium:'Estádio 5' },
-        { id:'A6', h:'RSA', a:'KOR', rd:3, dt:'24/jun 22h', stadium:'Estádio 6' }]
-    },
-    B: { teams: [
-        { id:'CAN', n:'Canadá',  f:'🇨🇦' }, 
-        { id:'BIH', n:'Bósnia',  f:'🇧🇦' },
-        { id:'QAT', n:'Qatar',   f:'🇶🇦' }, 
-        { id:'SUI', n:'Suíça',   f:'🇨🇭' }],
-        matches:[
-        { id:'B1', h:'CAN', a:'BIH', rd:1, dt:'12/jun 16h', stadium:'Estádio 7' },
-        { id:'B2', h:'QAT', a:'SUI', rd:1, dt:'13/jun 16h', stadium:'Estádio 8' },
-        { id:'B3', h:'SUI', a:'BIH', rd:2, dt:'18/jun 16h', stadium:'Estádio 9' },
-        { id:'B4', h:'CAN', a:'QAT', rd:2, dt:'18/jun 19h', stadium:'Estádio 10' },
-        { id:'B5', h:'SUI', a:'CAN', rd:3, dt:'24/jun 16h', stadium:'Estádio 11' },
-        { id:'B6', h:'BIH', a:'QAT', rd:3, dt:'24/jun 16h', stadium:'Estádio 12' }]
-    },
-    C: { teams: [
-        { id:'BRA', n:'Brasil',  f:'🇧🇷' }, 
-        { id:'MAR', n:'Marrocos', f:'🇲🇦' },
-        { id:'HAI', n:'Haiti',   f:'🇭🇹' }, 
-        { id:'SCO', n:'Escócia',  f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿' }],
-        matches:[
-        { id:'C1', h:'BRA', a:'MAR', rd:1, dt:'13/jun 19h', stadium:'Estádio 13' },
-        { id:'C2', h:'HAI', a:'SCO', rd:1, dt:'13/jun 22h', stadium:'Estádio 14' },
-        { id:'C3', h:'SCO', a:'MAR', rd:2, dt:'19/jun 19h', stadium:'Estádio 15' },
-        { id:'C4', h:'BRA', a:'HAI', rd:2, dt:'19/jun 21h30', stadium:'Estádio 16' },
-        { id:'C5', h:'SCO', a:'BRA', rd:3, dt:'24/jun 19h', stadium:'Estádio 17' },
-        { id:'C6', h:'MAR', a:'HAI', rd:3, dt:'24/jun 19h', stadium:'Estádio 18' }]
-    },
-    D: { teams: [
-        { id:'USA', n:'EUA',      f:'🇺🇸' }, 
-        { id:'PAR', n:'Paraguai', f:'🇵🇾' },
-        { id:'AUS', n:'Austrália',f:'🇦🇺' }, 
-        { id:'TUR', n:'Turquia',  f:'🇹🇷' }],
-        matches:[
-        { id:'D1', h:'USA', a:'PAR', rd:1, dt:'12/jun 22h', stadium:'Estádio 19' },
-        { id:'D2', h:'AUS', a:'TUR', rd:1, dt:'14/jun 1h', stadium:'Estádio 20' },
-        { id:'D3', h:'TUR', a:'PAR', rd:2, dt:'20/jun 00h', stadium:'Estádio 21' },
-        { id:'D4', h:'USA', a:'AUS', rd:2, dt:'19/jun 16h', stadium:'Estádio 22' },
-        { id:'D5', h:'TUR', a:'USA', rd:3, dt:'25/jun 23h', stadium:'Estádio 23' },
-        { id:'D6', h:'PAR', a:'AUS', rd:3, dt:'25/jun 23h', stadium:'Estádio 24' }]
-    },
-    E: { teams: [
-        { id:'GER', n:'Alemanha', f:'🇩🇪' },
-        { id:'CUW', n:'Curaçao', f:'🇨🇼' },
-        { id:'CIV', n:'C. do Marfim', f:'🇨🇮' },
-        { id:'ECU', n:'Equador', f:'🇪🇨' }
-    ], matches:[
-        { id:'E1', h:'GER', a:'CUW', rd:1, dt:'14/jun 14h', stadium:'Estádio 25' },
-        { id:'E2', h:'CIV', a:'ECU', rd:1, dt:'14/jun 20h', stadium:'Estádio 26' },
-        { id:'E3', h:'GER', a:'CIV', rd:2, dt:'20/jun 17h', stadium:'Estádio 27' },
-        { id:'E4', h:'CUW', a:'ECU', rd:2, dt:'20/jun 21h', stadium:'Estádio 28' },
-        { id:'E5', h:'ECU', a:'GER', rd:3, dt:'25/jun 17h', stadium:'Estádio 29' },
-        { id:'E6', h:'CIV', a:'CUW', rd:3, dt:'25/jun 17h', stadium:'Estádio 30' }]
-    },
-    F: { teams: [
-        { id:'NED', n:'Holanda', f:'🇳🇱' }, 
-        { id:'JPN', n:'Japão',   f:'🇯🇵' },
-        { id:'SWE', n:'Suécia',  f:'🇸🇪' }, 
-        { id:'TUN', n:'Tunísia', f:'🇹🇳' }],
-        matches:[
-        { id:'F1', h:'NED', a:'JPN', rd:1, dt:'14/jun 17h', stadium:'Estádio 31' },
-        { id:'F2', h:'SWE', a:'TUN', rd:1, dt:'14/jun 23h', stadium:'Estádio 32' },
-        { id:'F3', h:'NED', a:'SWE', rd:2, dt:'20/jun 14h', stadium:'Estádio 33' },
-        { id:'F4', h:'JPN', a:'TUN', rd:2, dt:'20/jun 23h', stadium:'Estádio 34' },
-        { id:'F5', h:'NED', a:'TUN', rd:3, dt:'25/jun 20h', stadium:'Estádio 35' },
-        { id:'F6', h:'JPN', a:'SWE', rd:3, dt:'25/jun 20h', stadium:'Estádio 36' }]
-    },
-    G: { teams: [
-        { id:'BEL', n:'Bélgica',       f:'🇧🇪' }, 
-        { id:'EGY', n:'Egito',         f:'🇪🇬' },
-        { id:'IRN', n:'Irã',            f:'🇮🇷' }, 
-        { id:'NZL', n:'N. Zelândia',    f:'🇳🇿' }],
-        matches:[
-        { id:'G1', h:'BEL', a:'EGY', rd:1, dt:'15/jun 16h', stadium:'Estádio 37' },
-        { id:'G2', h:'IRN', a:'NZL', rd:1, dt:'15/jun 22h', stadium:'Estádio 38' },
-        { id:'G3', h:'BEL', a:'IRN', rd:2, dt:'21/jun 16h', stadium:'Estádio 39' },
-        { id:'G4', h:'NZL', a:'EGY', rd:2, dt:'21/jun 22h', stadium:'Estádio 40' },
-        { id:'G5', h:'BEL', a:'NZL', rd:3, dt:'27/jun 00h', stadium:'Estádio 41' },
-        { id:'G6', h:'EGY', a:'IRN', rd:3, dt:'27/jun 00h', stadium:'Estádio 42' }]
-    },
-    H: { teams: [
-        { id:'ESP', n:'Espanha',       f:'🇪🇸' },
-        { id:'CAB', n:'Cabo Verde',    f:'🇨🇻' },
-        { id:'ARS', n:'A. Saudita',    f:'🇸🇦' },
-        { id:'URU', n:'Uruguai',       f:'🇺🇾' }
-    ], matches: [
-        { id:'H1', h:'ESP', a:'CAB', rd:1, dt:'15/jun 13h', stadium:'Estádio 43' },
-        { id:'H2', h:'ARS', a:'URU', rd:1, dt:'15/jun 19h', stadium:'Estádio 44' },
-        { id:'H3', h:'ESP', a:'ARS', rd:2, dt:'21/jun 13h', stadium:'Estádio 45' },
-        { id:'H4', h:'URU', a:'CAB', rd:2, dt:'21/jun 19h', stadium:'Estádio 46' },
-        { id:'H5', h:'URU', a:'ESP', rd:3, dt:'26/jun 21h', stadium:'Estádio 47' },
-        { id:'H6', h:'CAB', a:'ARS', rd:3, dt:'26/jun 21h', stadium:'Estádio 48' }]
-    },
-    I: { teams: [
-        { id:'FRA', n:'França',  f:'🇫🇷' }, 
-        { id:'SEN', n:'Senegal', f:'🇸🇳' },
-        { id:'IRQ', n:'Iraque',  f:'🇮🇶' }, 
-        { id:'NOR', n:'Noruega', f:'🇳🇴' }],
-        matches:[
-        { id:'I1', h:'FRA', a:'SEN', rd:1, dt:'16/jun 16h', stadium:'Estádio 49' },
-        { id:'I2', h:'IRQ', a:'NOR', rd:1, dt:'16/jun 19h', stadium:'Estádio 50' },
-        { id:'I3', h:'FRA', a:'IRQ', rd:2, dt:'22/jun 18h', stadium:'Estádio 51' },
-        { id:'I4', h:'NOR', a:'SEN', rd:2, dt:'22/jun 21h', stadium:'Estádio 52' },
-        { id:'I5', h:'FRA', a:'NOR', rd:3, dt:'26/jun 16h', stadium:'Estádio 53' },
-        { id:'I6', h:'SEN', a:'IRQ', rd:3, dt:'26/jun 16h', stadium:'Estádio 54' }]
-    },
-    J: { teams: [
-        { id:'ARG', n:'Argentina', f:'🇦🇷' }, 
-        { id:'AGL', n:'Argélia',  f:'🇩🇿' },
-        { id:'AUT', n:'Áustria',   f:'🇦🇹' }, 
-        { id:'JOR', n:'Jordânia', f:'🇯🇴' }],
-        matches:[
-        { id:'J1', h:'ARG', a:'AGL', rd:1, dt:'16/jun 22h', stadium:'Estádio 55' },
-        { id:'J2', h:'AUT', a:'JOR', rd:1, dt:'17/jun 1h', stadium:'Estádio 56' },
-        { id:'J3', h:'ARG', a:'AUT', rd:2, dt:'22/jun 14h', stadium:'Estádio 57' },
-        { id:'J4', h:'JOR', a:'AGL', rd:2, dt:'23/jun 00h', stadium:'Estádio 58' },
-        { id:'J5', h:'JOR', a:'ARG', rd:3, dt:'27/jun 23h', stadium:'Estádio 59' },
-        { id:'J6', h:'AGL', a:'AUT', rd:3, dt:'27/jun 23h', stadium:'Estádio 60' }]
-    },
-    K: { teams: [
-        { id:'POR', n:'Portugal',    f:'🇵🇹' }, 
-        { id:'RDC', n:'RD Congo',    f:'🇨🇩' },
-        { id:'UZB', n:'Uzbequistão', f:'🇺🇿' }, 
-        { id:'COL', n:'Colômbia',    f:'🇨🇴' }],
-        matches:[
-        { id:'K1', h:'POR', a:'RDC', rd:1, dt:'17/jun 16h', stadium:'Estádio 61' },
-        { id:'K2', h:'UZB', a:'COL', rd:1, dt:'17/jun 23h', stadium:'Estádio 62' },
-        { id:'K3', h:'POR', a:'UZB', rd:2, dt:'23/jun 16h', stadium:'Estádio 63' },
-        { id:'K4', h:'COL', a:'RDC', rd:2, dt:'23/jun 23h', stadium:'Estádio 64' },
-        { id:'K5', h:'COL', a:'POR', rd:3, dt:'27/jun 20h30', stadium:'Estádio 65' },
-        { id:'K6', h:'RDC', a:'UZB', rd:3, dt:'27/jun 20h30', stadium:'Estádio 66' }]
-    },
-    L: { teams: [
-        { id:'ENG', n:'Inglaterra', f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' }, 
-        { id:'CRO', n:'Croácia', f:'🇭🇷' },
-        { id:'GHA', n:'Gana',       f:'🇬🇭' }, 
-        { id:'PAN', n:'Panamá',  f:'🇵🇦' }],
-        matches:[
-        { id:'L1', h:'ENG', a:'CRO', rd:1, dt:'17/jun 17h', stadium:'Estádio 67' },
-        { id:'L2', h:'GHA', a:'PAN', rd:1, dt:'17/jun 20h', stadium:'Estádio 68' },
-        { id:'L3', h:'ENG', a:'GHA', rd:2, dt:'23/jun 17h', stadium:'Estádio 69' },
-        { id:'L4', h:'PAN', a:'CRO', rd:2, dt:'23/jun 20h', stadium:'Estádio 70' },
-        { id:'L5', h:'PAN', a:'ENG', rd:3, dt:'27/jun 18h', stadium:'Estádio 71' },
-        { id:'L6', h:'CRO', a:'GHA', rd:3, dt:'27/jun 18h', stadium:'Estádio 72' }]
-    }
-};
-
-    const COPA_KNOCKOUT = {
-        oitavas: [
-            { id:'O1', home:'1A', away:'2B', dt:'28/jun 13h00', stadium:'Estádio A' },
-            { id:'O2', home:'1C', away:'2D', dt:'28/jun 17h00', stadium:'Estádio B' },
-            { id:'O3', home:'1E', away:'2F', dt:'29/jun 13h00', stadium:'Estádio C' },
-            { id:'O4', home:'1G', away:'2H', dt:'29/jun 17h00', stadium:'Estádio D' },
-            { id:'O5', home:'1I', away:'2J', dt:'30/jun 13h00', stadium:'Estádio E' },
-            { id:'O6', home:'1K', away:'2L', dt:'30/jun 17h00', stadium:'Estádio F' },
-            { id:'O7', home:'1B', away:'2A', dt:'01/jul 13h00', stadium:'Estádio G' },
-            { id:'O8', home:'1D', away:'2C', dt:'01/jul 17h00', stadium:'Estádio H' },
-            { id:'O9', home:'1F', away:'2E', dt:'02/jul 13h00', stadium:'Estádio I' },
-            { id:'O10', home:'1H', away:'2G', dt:'02/jul 17h00', stadium:'Estádio J' },
-            { id:'O11', home:'1J', away:'2I', dt:'03/jul 13h00', stadium:'Estádio K' },
-            { id:'O12', home:'1L', away:'2K', dt:'03/jul 17h00', stadium:'Estádio L' },
-            { id:'O13', home:'1M', away:'2N', dt:'04/jul 13h00', stadium:'Estádio M' },
-            { id:'O14', home:'1O', away:'2P', dt:'04/jul 17h00', stadium:'Estádio N' },
-            { id:'O15', home:'1Q', away:'2R', dt:'05/jul 13h00', stadium:'Estádio O' },
-            { id:'O16', home:'1S', away:'2T', dt:'05/jul 17h00', stadium:'Estádio P' }
-        ],
-        quartas: [
-            { id:'Q1', home:'V1', away:'V2', dt:'07/jul 13h00' },
-            { id:'Q2', home:'V3', away:'V4', dt:'07/jul 17h00' },
-            { id:'Q3', home:'V5', away:'V6', dt:'08/jul 13h00' },
-            { id:'Q4', home:'V7', away:'V8', dt:'08/jul 17h00' },
-            { id:'Q5', home:'V9', away:'V10', dt:'09/jul 13h00' },
-            { id:'Q6', home:'V11', away:'V12', dt:'09/jul 17h00' },
-            { id:'Q7', home:'V13', away:'V14', dt:'10/jul 13h00' },
-            { id:'Q8', home:'V15', away:'V16', dt:'10/jul 17h00' }
-        ],
-        semis: [
-            { id:'S1', home:'VQ1', away:'VQ2', dt:'13/jul 15h00' },
-            { id:'S2', home:'VQ3', away:'VQ4', dt:'13/jul 19h00' },
-            { id:'S3', home:'VQ5', away:'VQ6', dt:'14/jul 15h00' },
-            { id:'S4', home:'VQ7', away:'VQ8', dt:'14/jul 19h00' }
-        ],
-        terceiro: [
-            { id:'T1', home:'P1', away:'P2', dt:'17/jul 15h00', stadium:'Estádio da Disputa' }
-        ],
-        final: [
-            { id:'F1', home:'V1', away:'V2', dt:'19/jul 16h00', stadium:'Estádio da Final' }
-        ]
+    // Definição das 32 seleções
+    const COPA_TEAMS = {
+        'MEX': { id:'MEX', n:'México', f:'🇲🇽' },
+        'RSA': { id:'RSA', n:'África do Sul', f:'🇿🇦' },
+        'KOR': { id:'KOR', n:'Coreia do Sul', f:'🇰🇷' },
+        'CZE': { id:'CZE', n:'R. Tcheca', f:'🇨🇿' },
+        'CAN': { id:'CAN', n:'Canadá', f:'🇨🇦' },
+        'BIH': { id:'BIH', n:'Bósnia', f:'🇧🇦' },
+        'QAT': { id:'QAT', n:'Qatar', f:'🇶🇦' },
+        'SUI': { id:'SUI', n:'Suíça', f:'🇨🇭' },
+        'BRA': { id:'BRA', n:'Brasil', f:'🇧🇷' },
+        'MAR': { id:'MAR', n:'Marrocos', f:'🇲🇦' },
+        'HAI': { id:'HAI', n:'Haiti', f:'🇭🇹' },
+        'SCO': { id:'SCO', n:'Escócia', f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿' },
+        'USA': { id:'USA', n:'EUA', f:'🇺🇸' },
+        'PAR': { id:'PAR', n:'Paraguai', f:'🇵🇾' },
+        'AUS': { id:'AUS', n:'Austrália', f:'🇦🇺' },
+        'TUR': { id:'TUR', n:'Turquia', f:'🇹🇷' },
+        'GER': { id:'GER', n:'Alemanha', f:'🇩🇪' },
+        'CUW': { id:'CUW', n:'Curaçao', f:'🇨🇼' },
+        'CIV': { id:'CIV', n:'C. do Marfim', f:'🇨🇮' },
+        'ECU': { id:'ECU', n:'Equador', f:'🇪🇨' },
+        'NED': { id:'NED', n:'Holanda', f:'🇳🇱' },
+        'JPN': { id:'JPN', n:'Japão', f:'🇯🇵' },
+        'SWE': { id:'SWE', n:'Suécia', f:'🇸🇪' },
+        'TUN': { id:'TUN', n:'Tunísia', f:'🇹🇳' },
+        'BEL': { id:'BEL', n:'Bélgica', f:'🇧🇪' },
+        'EGY': { id:'EGY', n:'Egito', f:'🇪🇬' },
+        'IRN': { id:'IRN', n:'Irã', f:'🇮🇷' },
+        'NZL': { id:'NZL', n:'N. Zelândia', f:'🇳🇿' },
+        'ESP': { id:'ESP', n:'Espanha', f:'🇪🇸' },
+        'CAB': { id:'CAB', n:'Cabo Verde', f:'🇨🇻' },
+        'ARS': { id:'ARS', n:'A. Saudita', f:'🇸🇦' },
+        'URU': { id:'URU', n:'Uruguai', f:'🇺🇾' },
+        'FRA': { id:'FRA', n:'França', f:'🇫🇷' },
+        'SEN': { id:'SEN', n:'Senegal', f:'🇸🇳' },
+        'IRQ': { id:'IRQ', n:'Iraque', f:'🇮🇶' },
+        'NOR': { id:'NOR', n:'Noruega', f:'🇳🇴' },
+        'ARG': { id:'ARG', n:'Argentina', f:'🇦🇷' },
+        'AGL': { id:'AGL', n:'Argélia', f:'🇩🇿' },
+        'AUT': { id:'AUT', n:'Áustria', f:'🇦🇹' },
+        'JOR': { id:'JOR', n:'Jordânia', f:'🇯🇴' },
+        'POR': { id:'POR', n:'Portugal', f:'🇵🇹' },
+        'RDC': { id:'RDC', n:'RD Congo', f:'🇨🇩' },
+        'UZB': { id:'UZB', n:'Uzbequistão', f:'🇺🇿' },
+        'COL': { id:'COL', n:'Colômbia', f:'🇨🇴' },
+        'ENG': { id:'ENG', n:'Inglaterra', f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+        'CRO': { id:'CRO', n:'Croácia', f:'🇭🇷' },
+        'GHA': { id:'GHA', n:'Gana', f:'🇬🇭' },
+        'PAN': { id:'PAN', n:'Panamá', f:'🇵🇦' }
     };
 
-    let copaGrupoAtivo = 'A';
-    let copaFaseAtiva = 'grupos'; // 'grupos' ou 'eliminatorias'
-    let scoreEditMatchId = null;
+    // Chaveamento das Oitavas (16 jogos) - CONFRONTOS CORRIGIDOS
+    const OITAVAS = [
+        { id: 'O1',  home: 'GER', away: 'PAR', dt: '28/jun 13h', stage: 'Oitavas' },
+        { id: 'O2',  home: 'FRA', away: 'SWE', dt: '28/jun 17h', stage: 'Oitavas' },
+        { id: 'O3',  home: 'RSA', away: 'CAN', dt: '29/jun 13h', stage: 'Oitavas' },
+        { id: 'O4',  home: 'NED', away: 'MAR', dt: '29/jun 17h', stage: 'Oitavas' },
+        { id: 'O5',  home: 'POR', away: 'GHA', dt: '30/jun 13h', stage: 'Oitavas' },
+        { id: 'O6',  home: 'ESP', away: 'AUT', dt: '30/jun 17h', stage: 'Oitavas' },
+        { id: 'O7',  home: 'USA', away: 'BIH', dt: '01/jul 13h', stage: 'Oitavas' },
+        { id: 'O8',  home: 'EGY', away: 'KOR', dt: '01/jul 17h', stage: 'Oitavas' },
+        // Brasil × Japão - 29/06 14h (CORRIGIDO)
+        { id: 'O9',  home: 'BRA', away: 'JPN', dt: '29/jun 14h', stage: 'Oitavas' },
+        { id: 'O10', home: 'CIV', away: 'NOR', dt: '02/jul 17h', stage: 'Oitavas' },
+        // México × Equador (CORRIGIDO - antes México × Escócia)
+        { id: 'O11', home: 'MEX', away: 'ECU', dt: '03/jul 13h', stage: 'Oitavas' },
+        // Inglaterra × Senegal (CORRIGIDO - antes Inglaterra × Equador)
+        { id: 'O12', home: 'ENG', away: 'SEN', dt: '03/jul 17h', stage: 'Oitavas' },
+        // Argentina × Cabo Verde (CORRIGIDO - antes Argentina × Uruguai)
+        { id: 'O13', home: 'ARG', away: 'CAB', dt: '04/jul 13h', stage: 'Oitavas' },
+        { id: 'O14', home: 'AUS', away: 'IRN', dt: '04/jul 17h', stage: 'Oitavas' },
+        { id: 'O15', home: 'SUI', away: 'AGL', dt: '05/jul 13h', stage: 'Oitavas' },
+        { id: 'O16', home: 'COL', away: 'CRO', dt: '05/jul 17h', stage: 'Oitavas' }
+    ];
 
-    function copaTeam(groupKey, id) {
-        if (!COPA_GROUPS[groupKey]) return { f: '?', n: id };
-        const found = COPA_GROUPS[groupKey].teams.find(t => t.id === id);
-        if (found) return found;
-        return { f: '?', n: id };
+    // Quartas (8 jogos)
+    const QUARTAS = [
+        { id: 'Q1', home: 'V1', away: 'V2', dt: '07/jul 13h', stage: 'Quartas' },
+        { id: 'Q2', home: 'V3', away: 'V4', dt: '07/jul 17h', stage: 'Quartas' },
+        { id: 'Q3', home: 'V5', away: 'V6', dt: '08/jul 13h', stage: 'Quartas' },
+        { id: 'Q4', home: 'V7', away: 'V8', dt: '08/jul 17h', stage: 'Quartas' },
+        { id: 'Q5', home: 'V9', away: 'V10', dt: '09/jul 13h', stage: 'Quartas' },
+        { id: 'Q6', home: 'V11', away: 'V12', dt: '09/jul 17h', stage: 'Quartas' },
+        { id: 'Q7', home: 'V13', away: 'V14', dt: '10/jul 13h', stage: 'Quartas' },
+        { id: 'Q8', home: 'V15', away: 'V16', dt: '10/jul 17h', stage: 'Quartas' }
+    ];
+
+    // Semifinais (4 jogos)
+    const SEMIS = [
+        { id: 'S1', home: 'VQ1', away: 'VQ2', dt: '13/jul 15h', stage: 'Semifinais' },
+        { id: 'S2', home: 'VQ3', away: 'VQ4', dt: '13/jul 19h', stage: 'Semifinais' },
+        { id: 'S3', home: 'VQ5', away: 'VQ6', dt: '14/jul 15h', stage: 'Semifinais' },
+        { id: 'S4', home: 'VQ7', away: 'VQ8', dt: '14/jul 19h', stage: 'Semifinais' }
+    ];
+
+    // Disputa de 3º lugar
+    const TERCEIRO = [
+        { id: 'T1', home: 'P1', away: 'P2', dt: '17/jul 15h', stage: '3º Lugar' }
+    ];
+
+    // Final
+    const FINAL = [
+        { id: 'F1', home: 'V1', away: 'V2', dt: '19/jul 16h', stage: 'Final' }
+    ];
+
+    // ==================== FUNÇÕES DA COPA ====================
+
+    function getCopaScores() {
+        return JSON.parse(getStorageValue('copa2026_bracket_scores') || '{}');
     }
 
-    function getScores() { return JSON.parse(getStorageValue('copa2026_scores') || '{}'); }
-    function setScores(s) { setStorageValue('copa2026_scores', JSON.stringify(s)); }
-
-    function calcStandings(groupKey) {
-        const g = COPA_GROUPS[groupKey];
-        const sc = getScores();
-        const st = {};
-        g.teams.forEach(t => { st[t.id] = { id:t.id, j:0, v:0, e:0, d:0, gp:0, gc:0, pts:0 }; });
-        g.matches.forEach(m => {
-            const s = sc[m.id];
-            if (!s) return;
-            st[m.h].j++; st[m.a].j++;
-            st[m.h].gp += s.h; st[m.h].gc += s.a;
-            st[m.a].gp += s.a; st[m.a].gc += s.h;
-            if (s.h > s.a) { st[m.h].v++; st[m.h].pts += 3; st[m.a].d++; }
-            else if (s.h < s.a) { st[m.a].v++; st[m.a].pts += 3; st[m.h].d++; }
-            else { st[m.h].e++; st[m.h].pts++; st[m.a].e++; st[m.a].pts++; }
-        });
-        return Object.values(st).sort((a,b) => {
-            if (b.pts !== a.pts) return b.pts - a.pts;
-            const sa = a.gp - a.gc, sb = b.gp - b.gc;
-            if (sb !== sa) return sb - sa;
-            return b.gp - a.gp;
-        });
+    function setCopaScores(s) {
+        setStorageValue('copa2026_bracket_scores', JSON.stringify(s));
     }
 
-    // ========== NOVAS FUNÇÕES PARA CLASSIFICADOS ==========
-    function getTeamById(id) {
-        if (!id) return null;
-        for (const g of Object.keys(COPA_GROUPS)) {
-            const found = COPA_GROUPS[g].teams.find(t => t.id === id);
-            if (found) return found;
+    function getCopaTeams() {
+        return JSON.parse(getStorageValue('copa2026_bracket_teams') || '{}');
+    }
+
+    function setCopaTeams(t) {
+        setStorageValue('copa2026_bracket_teams', JSON.stringify(t));
+    }
+
+    function getTeamData(id) {
+        const custom = getCopaTeams();
+        if (custom[id]) return custom[id];
+        return COPA_TEAMS[id] || { id: id, n: id, f: '❓' };
+    }
+
+    function getMatchScore(matchId) {
+        const scores = getCopaScores();
+        return scores[matchId] || null;
+    }
+
+    function setMatchScore(matchId, homeScore, awayScore) {
+        const scores = getCopaScores();
+        if (homeScore === null || awayScore === null) {
+            delete scores[matchId];
+        } else {
+            scores[matchId] = { h: homeScore, a: awayScore };
         }
-        return null;
+        setCopaScores(scores);
     }
 
-    function getClassificadosMap() {
-        const map = {};
-        const grupos = Object.keys(COPA_GROUPS);
-        for (const g of grupos) {
-            const standings = calcStandings(g);
-            if (standings.length >= 2) {
-                map[`1${g}`] = standings[0].id;
-                map[`2${g}`] = standings[1].id;
-            } else {
-                map[`1${g}`] = null;
-                map[`2${g}`] = null;
-            }
+    function setMatchTeam(matchId, side, teamId, flag, name) {
+        const teams = getCopaTeams();
+        if (teamId && flag && name) {
+            teams[teamId] = { id: teamId, n: name, f: flag };
+        } else if (teamId && teams[teamId]) {
+            // mantém o existente
+        } else if (teamId) {
+            teams[teamId] = { id: teamId, n: teamId, f: '❓' };
         }
-        return map;
+        setCopaTeams(teams);
     }
 
-    // ========== FUNÇÕES DE RENDERIZAÇÃO DA COPA ==========
+    function isPlaceholderId(id) {
+        return id && id.startsWith('V');
+    }
 
     function openCopaPanel() {
-        renderCopaPills();
-        if (copaFaseAtiva === 'eliminatorias') {
-            renderCopaKnockout();
-        } else {
-            renderCopaGroup(copaGrupoAtivo);
-        }
+        renderBracket();
         document.getElementById('copaPanel').classList.add('open');
     }
 
@@ -1913,272 +1823,256 @@
         document.getElementById('copaPanel').classList.remove('open');
     }
 
-    function renderCopaPills() {
-        const row = document.getElementById('copa-pills-row');
-        row.innerHTML = `
-            ${Object.keys(COPA_GROUPS).map(k => {
-                const isBr = k === 'C';
-                const active = (copaFaseAtiva === 'grupos' && k === copaGrupoAtivo) ? 'active' : '';
-                const br = isBr ? 'brasil-pill' : '';
-                return `<button class="copa-group-pill ${active} ${br}" onclick="selectCopaGroup('${k}')" role="tab" aria-selected="${active === 'active'}">${isBr ? '🇧🇷 ' : ''}Grupo ${k}</button>`;
-            }).join('')}
-            <button class="copa-group-pill ${copaFaseAtiva === 'eliminatorias' ? 'active' : ''}" onclick="selectCopaFase('eliminatorias')" role="tab" aria-selected="${copaFaseAtiva === 'eliminatorias'}">🏆 Eliminatórias</button>
-        `;
-    }
-
-    function selectCopaGroup(k) {
-        copaGrupoAtivo = k;
-        copaFaseAtiva = 'grupos';
-        renderCopaPills();
-        renderCopaGroup(k);
-    }
-
-    function selectCopaFase(fase) {
-        if (fase === 'eliminatorias') {
-            copaFaseAtiva = 'eliminatorias';
-            renderCopaPills();
-            renderCopaKnockout();
-        } else {
-            copaFaseAtiva = 'grupos';
-            renderCopaPills();
-            renderCopaGroup(copaGrupoAtivo);
-        }
-    }
-
-    function renderCopaGroup(groupKey) {
-        const g  = COPA_GROUPS[groupKey];
-        const sc = getScores();
-        const st = calcStandings(groupKey);
-        let html = `
-        <div class="copa-standings">
-            <div class="copa-standings-header">
-                <div>#</div><div style="text-align:left">Seleção</div>
-                <div>J</div><div>V</div><div>E</div><div>D</div><div>SG</div><div>Pts</div>
-            </div>`;
-        st.forEach((row, i) => {
-            const team = copaTeam(groupKey, row.id);
-            const isBr = row.id === 'BRA';
-            const cls  = isBr ? 'brasil-row' : (i < 2 ? 'classified' : '');
-            const posCls = i === 0 ? 'q1' : (i === 1 ? 'q2' : '');
+    function renderBracket() {
+        const body = document.getElementById('copa-panel-body');
+        const scores = getCopaScores();
+        
+        let html = `<div class="bracket-container">`;
+        
+        // === OITAVAS ===
+        html += `<div class="bracket-round">
+            <div class="bracket-round-label">⚽ Oitavas de Final</div>`;
+        OITAVAS.forEach(m => {
+            const homeTeam = getTeamData(m.home);
+            const awayTeam = getTeamData(m.away);
+            const score = scores[m.id];
+            const hasScore = !!score;
+            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
+            
             html += `
-            <div class="copa-standings-row ${cls}">
-                <div class="copa-pos ${posCls}">${i+1}</div>
-                <div class="copa-team-cell">${team.f} ${team.n}</div>
-                <div class="copa-cell">${row.j}</div>
-                <div class="copa-cell">${row.v}</div>
-                <div class="copa-cell">${row.e}</div>
-                <div class="copa-cell">${row.d}</div>
-                <div class="copa-cell">${row.gp - row.gc}</div>
-                <div class="copa-pts">${row.pts}</div>
+            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
+                <div class="bracket-match-team home">
+                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Time 1'}</div>
+                </div>
+                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
+                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
+                    <span class="bracket-score-sep">×</span>
+                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
+                </div>
+                <div class="bracket-match-team away">
+                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Time 2'}</div>
+                </div>
+                <div class="bracket-edit-hint">
+                    <span class="material-symbols-outlined">edit</span> ${m.dt}
+                </div>
             </div>`;
-            if (i === 1) html += `<div class="copa-classified-bar"></div>`;
         });
         html += `</div>`;
-        const byRound = {};
-        g.matches.forEach(m => { (byRound[m.rd] = byRound[m.rd] || []).push(m); });
-        Object.entries(byRound).forEach(([rd, matches]) => {
-            html += `<div class="copa-round-label">Rodada ${rd}</div>`;
-            matches.forEach(m => {
-                const ht = copaTeam(groupKey, m.h);
-                const at = copaTeam(groupKey, m.a);
-                const s  = sc[m.id];
-                const hasScore = !!s;
-                html += `
-                <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('${groupKey}','${m.id}')">
-                    <div class="copa-match-team home">
-                        <div class="copa-match-flag">${ht.f}</div>
-                        <div class="copa-match-name">${ht.n}</div>
-                    </div>
-                    <div class="copa-score-box ${hasScore ? 'live' : ''}">
-                        <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
-                        <span class="copa-score-sep">×</span>
-                        <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
-                    </div>
-                    <div class="copa-match-team away">
-                        <div class="copa-match-flag">${at.f}</div>
-                        <div class="copa-match-name">${at.n}</div>
-                    </div>
-                    <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt}</div>
-                </div>`;
-            });
+
+        // === QUARTAS ===
+        html += `<div class="bracket-round">
+            <div class="bracket-round-label">🏆 Quartas de Final</div>`;
+        QUARTAS.forEach(m => {
+            const homeTeam = getTeamData(m.home);
+            const awayTeam = getTeamData(m.away);
+            const score = scores[m.id];
+            const hasScore = !!score;
+            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
+            
+            html += `
+            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
+                <div class="bracket-match-team home">
+                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Vencedor'}</div>
+                </div>
+                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
+                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
+                    <span class="bracket-score-sep">×</span>
+                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
+                </div>
+                <div class="bracket-match-team away">
+                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Vencedor'}</div>
+                </div>
+                <div class="bracket-edit-hint">
+                    <span class="material-symbols-outlined">edit</span> ${m.dt}
+                </div>
+            </div>`;
         });
-        document.getElementById('copa-panel-body').innerHTML = html;
+        html += `</div>`;
+
+        // === SEMIFINAIS ===
+        html += `<div class="bracket-round">
+            <div class="bracket-round-label">🏆 Semifinais</div>`;
+        SEMIS.forEach(m => {
+            const homeTeam = getTeamData(m.home);
+            const awayTeam = getTeamData(m.away);
+            const score = scores[m.id];
+            const hasScore = !!score;
+            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
+            
+            html += `
+            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
+                <div class="bracket-match-team home">
+                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Vencedor'}</div>
+                </div>
+                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
+                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
+                    <span class="bracket-score-sep">×</span>
+                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
+                </div>
+                <div class="bracket-match-team away">
+                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Vencedor'}</div>
+                </div>
+                <div class="bracket-edit-hint">
+                    <span class="material-symbols-outlined">edit</span> ${m.dt}
+                </div>
+            </div>`;
+        });
+        html += `</div>`;
+
+        // === 3º LUGAR ===
+        html += `<div class="bracket-round">
+            <div class="bracket-round-label">🥉 Disputa de 3º Lugar</div>`;
+        TERCEIRO.forEach(m => {
+            const homeTeam = getTeamData(m.home);
+            const awayTeam = getTeamData(m.away);
+            const score = scores[m.id];
+            const hasScore = !!score;
+            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
+            
+            html += `
+            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
+                <div class="bracket-match-team home">
+                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Perdedor SF1'}</div>
+                </div>
+                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
+                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
+                    <span class="bracket-score-sep">×</span>
+                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
+                </div>
+                <div class="bracket-match-team away">
+                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Perdedor SF2'}</div>
+                </div>
+                <div class="bracket-edit-hint">
+                    <span class="material-symbols-outlined">edit</span> ${m.dt}
+                </div>
+            </div>`;
+        });
+        html += `</div>`;
+
+        // === FINAL ===
+        html += `<div class="bracket-round">
+            <div class="bracket-round-label">🏆 Final</div>`;
+        FINAL.forEach(m => {
+            const homeTeam = getTeamData(m.home);
+            const awayTeam = getTeamData(m.away);
+            const score = scores[m.id];
+            const hasScore = !!score;
+            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
+            
+            html += `
+            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')" style="border-color: #FFD700; border-width: 3px;">
+                <div class="bracket-match-team home">
+                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Finalista 1'}</div>
+                </div>
+                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
+                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
+                    <span class="bracket-score-sep">×</span>
+                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
+                </div>
+                <div class="bracket-match-team away">
+                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
+                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Finalista 2'}</div>
+                </div>
+                <div class="bracket-edit-hint">
+                    <span class="material-symbols-outlined">edit</span> ${m.dt}
+                </div>
+            </div>`;
+        });
+        html += `</div>`;
+
+        html += `</div>`;
+        body.innerHTML = html;
     }
 
-    function renderCopaKnockout() {
-        const sc = getScores();
-        const classificados = getClassificadosMap();
+    // ==================== MODAL DE EDIÇÃO DE TIME ====================
 
-        let html = '';
+    let currentEditMatchId = null;
 
-        // Oitavas de Final
-        html += `<div class="copa-round-label">Oitavas de Final</div>`;
-        COPA_KNOCKOUT.oitavas.forEach(m => {
-            // Resolve os times reais a partir dos códigos
-            const homeId = classificados[m.home] || m.home;
-            const awayId = classificados[m.away] || m.away;
-            const homeTeam = getTeamById(homeId);
-            const awayTeam = getTeamById(awayId);
-            const s = sc[m.id];
-            const hasScore = !!s;
-            html += `
-            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
-                <div class="copa-match-team home">
-                    <div class="copa-match-flag">${homeTeam ? homeTeam.f : '?'}</div>
-                    <div class="copa-match-name">${homeTeam ? homeTeam.n : (homeId || '?')}</div>
-                </div>
-                <div class="copa-score-box ${hasScore ? 'live' : ''}">
-                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
-                    <span class="copa-score-sep">×</span>
-                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
-                </div>
-                <div class="copa-match-team away">
-                    <div class="copa-match-flag">${awayTeam ? awayTeam.f : '?'}</div>
-                    <div class="copa-match-name">${awayTeam ? awayTeam.n : (awayId || '?')}</div>
-                </div>
-                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
-            </div>`;
-        });
-
-        // Quartas de Final (mantém placeholders, mas pode-se evoluir)
-        html += `<div class="copa-round-label">Quartas de Final</div>`;
-        COPA_KNOCKOUT.quartas.forEach(m => {
-            const s = sc[m.id];
-            const hasScore = !!s;
-            html += `
-            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
-                <div class="copa-match-team home">${m.home}</div>
-                <div class="copa-score-box ${hasScore ? 'live' : ''}">
-                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
-                    <span class="copa-score-sep">×</span>
-                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
-                </div>
-                <div class="copa-match-team away">${m.away}</div>
-                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
-            </div>`;
-        });
-
-        // Semifinais
-        html += `<div class="copa-round-label">Semifinais</div>`;
-        COPA_KNOCKOUT.semis.forEach(m => {
-            const s = sc[m.id];
-            const hasScore = !!s;
-            html += `
-            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
-                <div class="copa-match-team home">${m.home}</div>
-                <div class="copa-score-box ${hasScore ? 'live' : ''}">
-                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
-                    <span class="copa-score-sep">×</span>
-                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
-                </div>
-                <div class="copa-match-team away">${m.away}</div>
-                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
-            </div>`;
-        });
-
-        // Disputa de 3º Lugar
-        html += `<div class="copa-round-label">Disputa de 3º Lugar</div>`;
-        COPA_KNOCKOUT.terceiro.forEach(m => {
-            const s = sc[m.id];
-            const hasScore = !!s;
-            html += `
-            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
-                <div class="copa-match-team home">${m.home}</div>
-                <div class="copa-score-box ${hasScore ? 'live' : ''}">
-                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
-                    <span class="copa-score-sep">×</span>
-                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
-                </div>
-                <div class="copa-match-team away">${m.away}</div>
-                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
-            </div>`;
-        });
-
-        // Final
-        html += `<div class="copa-round-label">Final</div>`;
-        COPA_KNOCKOUT.final.forEach(m => {
-            const s = sc[m.id];
-            const hasScore = !!s;
-            html += `
-            <div class="copa-match-card ${hasScore ? 'has-score' : ''}" onclick="openScoreModal('eliminatorias','${m.id}')">
-                <div class="copa-match-team home">${m.home}</div>
-                <div class="copa-score-box ${hasScore ? 'live' : ''}">
-                    <span class="copa-score-num">${hasScore ? s.h : '–'}</span>
-                    <span class="copa-score-sep">×</span>
-                    <span class="copa-score-num">${hasScore ? s.a : '–'}</span>
-                </div>
-                <div class="copa-match-team away">${m.away}</div>
-                <div class="copa-edit-hint"><span class="material-symbols-outlined" style="font-size:11px">edit</span>${m.dt || ''}</div>
-            </div>`;
-        });
-
-        document.getElementById('copa-panel-body').innerHTML = html;
+    function openTeamModal(matchId) {
+        currentEditMatchId = matchId;
+        
+        const allMatches = [...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
+        const match = allMatches.find(m => m.id === matchId);
+        if (!match) return;
+        
+        const scores = getCopaScores();
+        const score = scores[matchId];
+        
+        const homeTeam = getTeamData(match.home);
+        const awayTeam = getTeamData(match.away);
+        
+        document.getElementById('team-modal-match').textContent = `${match.stage} • ${match.dt}`;
+        document.getElementById('team-flag-home').value = homeTeam.f || '';
+        document.getElementById('team-name-home').value = homeTeam.n || '';
+        document.getElementById('team-flag-away').value = awayTeam.f || '';
+        document.getElementById('team-name-away').value = awayTeam.n || '';
+        document.getElementById('team-score-home').value = score ? score.h : 0;
+        document.getElementById('team-score-away').value = score ? score.a : 0;
+        
+        document.getElementById('teamModal').classList.add('show');
+        setTimeout(() => document.getElementById('team-name-home').focus(), 100);
     }
 
-    function openScoreModal(groupKey, matchId) {
-        let ht = { f: '?', n: 'Casa' };
-        let at = { f: '?', n: 'Visitante' };
-        if (groupKey === 'eliminatorias') {
-            const allMatches = [...COPA_KNOCKOUT.oitavas, ...COPA_KNOCKOUT.quartas, ...COPA_KNOCKOUT.semis, ...COPA_KNOCKOUT.terceiro, ...COPA_KNOCKOUT.final];
-            const m = allMatches.find(x => x.id === matchId);
-            if (m) {
-                ht = { f: '?', n: m.home };
-                at = { f: '?', n: m.away };
-            }
-        } else {
-            const g = COPA_GROUPS[groupKey];
-            const m = g.matches.find(x => x.id === matchId);
-            if (m) {
-                ht = copaTeam(groupKey, m.h);
-                at = copaTeam(groupKey, m.a);
-            }
+    function closeTeamModal() {
+        document.getElementById('teamModal').classList.remove('show');
+        currentEditMatchId = null;
+    }
+
+    function saveTeam() {
+        if (!currentEditMatchId) return;
+        
+        const flagHome = document.getElementById('team-flag-home').value.trim();
+        const nameHome = document.getElementById('team-name-home').value.trim();
+        const flagAway = document.getElementById('team-flag-away').value.trim();
+        const nameAway = document.getElementById('team-name-away').value.trim();
+        const scoreHome = parseInt(document.getElementById('team-score-home').value) || 0;
+        const scoreAway = parseInt(document.getElementById('team-score-away').value) || 0;
+        
+        const allMatches = [...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
+        const match = allMatches.find(m => m.id === currentEditMatchId);
+        if (!match) return;
+        
+        if (flagHome && nameHome) {
+            setMatchTeam(currentEditMatchId, 'home', match.home, flagHome, nameHome);
         }
-        const sc = getScores();
-        const s  = sc[matchId];
-        scoreEditMatchId = matchId;
-        document.getElementById('score-modal-teams').textContent  = `${ht.f} ${ht.n}  ×  ${at.f} ${at.n}`;
-        document.getElementById('score-flag-home').textContent    = ht.f;
-        document.getElementById('score-flag-away').textContent    = at.f;
-        document.getElementById('score-home').value               = s ? s.h : 0;
-        document.getElementById('score-away').value               = s ? s.a : 0;
-        document.getElementById('scoreModal').classList.add('show');
-        setTimeout(() => document.getElementById('score-home').focus(), 100);
-    }
-
-    function closeScoreModal() {
-        document.getElementById('scoreModal').classList.remove('show');
-        scoreEditMatchId = null;
-    }
-
-    function saveScore() {
-        if (!scoreEditMatchId) return;
-        const h = parseInt(document.getElementById('score-home').value) || 0;
-        const a = parseInt(document.getElementById('score-away').value) || 0;
-        const sc = getScores();
-        sc[scoreEditMatchId] = { h, a };
-        setScores(sc);
-        closeScoreModal();
-        if (copaFaseAtiva === 'eliminatorias') {
-            renderCopaKnockout();
-        } else {
-            renderCopaGroup(copaGrupoAtivo);
+        if (flagAway && nameAway) {
+            setMatchTeam(currentEditMatchId, 'away', match.away, flagAway, nameAway);
         }
+        
+        setMatchScore(currentEditMatchId, scoreHome, scoreAway);
+        
+        closeTeamModal();
+        renderBracket();
     }
 
-    function clearScore() {
-        if (!scoreEditMatchId) return;
-        const sc = getScores();
-        delete sc[scoreEditMatchId];
-        setScores(sc);
-        closeScoreModal();
-        if (copaFaseAtiva === 'eliminatorias') {
-            renderCopaKnockout();
-        } else {
-            renderCopaGroup(copaGrupoAtivo);
+    function clearTeam() {
+        if (!currentEditMatchId) return;
+        
+        setMatchScore(currentEditMatchId, null, null);
+        
+        const allMatches = [...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
+        const match = allMatches.find(m => m.id === currentEditMatchId);
+        if (match) {
+            const teams = getCopaTeams();
+            delete teams[match.home];
+            delete teams[match.away];
+            setCopaTeams(teams);
         }
+        
+        closeTeamModal();
+        renderBracket();
     }
 
-    // ==================== FUNÇÕES DOS MODAIS ====================
+    // ==================== MODAIS EXISTENTES ====================
 
     function openRamais() {
         document.getElementById('overlay').style.display = 'block';
@@ -2192,7 +2086,7 @@
 
     function openFerias() {
         document.getElementById('feriasInicio').value = getStorageValue('braun_ferias_inicio') || '';
-        document.getElementById('feriasFim').value    = getStorageValue('braun_ferias_fim')    || '';
+        document.getElementById('feriasFim').value = getStorageValue('braun_ferias_fim') || '';
         document.getElementById('configCard').classList.remove('show');
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('feriasCard').classList.add('show');
@@ -2202,7 +2096,7 @@
         const ini = document.getElementById('feriasInicio').value;
         const fim = document.getElementById('feriasFim').value;
         if (!ini || !fim) { alert('Preencha as duas datas.'); return; }
-        if (ini > fim)    { alert('A data de início não pode ser após o término.'); return; }
+        if (ini > fim) { alert('A data de início não pode ser após o término.'); return; }
         setStorageValue('braun_ferias_inicio', ini);
         setStorageValue('braun_ferias_fim', fim);
         clearFeriasCache();
@@ -2227,8 +2121,8 @@
     }
 
     function openStats() {
-        const ano      = parseInt(currentAno);
-        const turma    = currentTurma;
+        const ano = parseInt(currentAno);
+        const turma = currentTurma;
         const cacheKey = `${ano}_${turma}_${currentRegion}`;
         
         if (cachedStats[cacheKey]) {
@@ -2245,7 +2139,7 @@
             for (let d = 1; d <= new Date(ano, m + 1, 0).getDate(); d++) {
                 const dataTeste = new Date(ano, m, d);
                 const isoS = `${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const res  = (currentRegion === 'BR') ? checkBR(dataTeste, turma).trab : checkMnt(dataTeste, turma).trab;
+                const res = (currentRegion === 'BR') ? checkBR(dataTeste, turma).trab : checkMnt(dataTeste, turma).trab;
                 if (res) diasTrabalho++; else diasFolga++;
                 if (feriados[isoS]) {
                     if (res) feriadosTrab++; else feriadosFolga++;
@@ -2276,8 +2170,6 @@
         document.getElementById('configCard').classList.remove('show');
         document.getElementById('statsCard').classList.add('show');
     }
-
-    // ==================== FUNÇÕES AUSENTES (IMPLEMENTADAS) ====================
 
     function salvarDadosPerfil() {
         const nome = document.getElementById('nomePerfil').value;
@@ -2384,23 +2276,10 @@
         document.getElementById('meusPedidosCard').classList.add('show');
     }
 
-    function saveNota() {
-        const log = document.getElementById('noteInput').value;
-        const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
-        if (log.trim() === '') {
-            delete logs[dataAtiva];
-        } else {
-            logs[dataAtiva] = log.trim();
-        }
-        setStorageValue('logs_v26', JSON.stringify(logs));
-        closeAllModals();
-        gerarCalendario();
-    }
-
     function closeAllModals() {
         document.getElementById('overlay').style.display = 'none';
         document.querySelectorAll('.bottom-modal').forEach(el => el.classList.remove('show'));
-        closeScoreModal();
+        closeTeamModal();
     }
 
     function toggleDarkMode() {
@@ -2436,7 +2315,7 @@
         }, 300);
     }
 
-    // ==================== INICIALIZAÇÃO FINAL ====================
+    // ==================== INICIALIZAÇÃO ====================
 
     document.addEventListener('DOMContentLoaded', function() {
         if (getStorageValue('braun_dark_mode') === 'true') {
@@ -2452,7 +2331,6 @@
             document.getElementById('welcomeScreen').style.display = 'flex';
         } else {
             document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('greetingScreen').style.display = 'none';
             scrollToToday();
         }
     });
