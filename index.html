@@ -6,13 +6,11 @@
   if ('serviceWorker' in navigator) {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
-    if (!isIOS) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=20260702')
-      .then(reg => console.log('PWA pronto para instalação no Android!', reg.scope))
-      .catch(err => console.error('Erro no instalador:', err));
-  });
-}
+    if (isIOS) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
       });
     } else {
       window.addEventListener('load', () => {
@@ -1752,7 +1750,7 @@
             id: `O${i+1}`,
             home: '',
             away: '',
-            dt: `${String(28 + i).padStart(2,'0')}/06 17:00`,
+            dt: `${String(28 + i).padStart(2,'0')}/06 16:00`,
             stage: 'Oitavas'
         });
     }
