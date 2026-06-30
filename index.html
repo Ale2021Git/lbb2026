@@ -8,7 +8,7 @@
     
     if (!isIOS) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=20260702')
+    navigator.serviceWorker.register('./sw.js?v=20260603')
       .then(reg => console.log('PWA pronto para instalação no Android!', reg.scope))
       .catch(err => console.error('Erro no instalador:', err));
   });
