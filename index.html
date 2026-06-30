@@ -6,11 +6,13 @@
   if ('serviceWorker' in navigator) {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
-    if (isIOS) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for (let registration of registrations) {
-          registration.unregister();
-        }
+    if (!isIOS) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js?v=20260702')
+      .then(reg => console.log('PWA pronto para instalação no Android!', reg.scope))
+      .catch(err => console.error('Erro no instalador:', err));
+  });
+}
       });
     } else {
       window.addEventListener('load', () => {
@@ -1227,11 +1229,10 @@
 
 <script>
     // ==============================================================
-    // TODAS AS FUNÇÕES DO APP - VERSÃO COM CHAVEAMENTO
-    // CONFRONTOS CORRIGIDOS
+    // CONTROLE DE VERSÃO - FORÇA ATUALIZAÇÃO
     // ==============================================================
+    const APP_VERSION = '2026.07.01'; // Altere este número a cada atualização
 
-    // ==================== STORAGE ====================
     function getStorageValue(key) {
         try { return localStorage.getItem(key); } catch (e) {
             try { return sessionStorage.getItem(key); } catch (f) { return null; }
@@ -1247,6 +1248,30 @@
             try { sessionStorage.removeItem(key); } catch (f) {}
         }
     }
+
+    // Verifica se a versão mudou
+    const storedVersion = getStorageValue('braun_app_version');
+    if (storedVersion !== APP_VERSION) {
+        console.log('🔄 Nova versão detectada. Atualizando...');
+        // Limpa o cache do Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                for (let reg of registrations) {
+                    reg.unregister();
+                    console.log('✅ Service Worker desregistrado.');
+                }
+            });
+        }
+        // Salva a nova versão
+        setStorageValue('braun_app_version', APP_VERSION);
+        // Recarrega a página forçadamente (ignorando cache)
+        window.location.reload(true);
+    }
+
+    // ==============================================================
+    // TODAS AS FUNÇÕES DO APP - VERSÃO COM CHAVEAMENTO
+    // FASE DE 16 AVOS + PROPAGAÇÃO AUTOMÁTICA
+    // ==============================================================
 
     // ==================== SPLASH ====================
     function showCopaSplash() {
@@ -1645,11 +1670,10 @@
     }
 
     // ==============================================================
-    // COPA 2026 - CHAVEAMENTO COMPLETO (SEM FASE DE GRUPOS)
-    // CONFRONTOS CORRIGIDOS SEGUNDO OS PRINTS DO USUÁRIO
+    // COPA 2026 - CHAVEAMENTO COMPLETO (COM 16 AVOS)
     // ==============================================================
 
-    // Definição das 32 seleções
+    // Definição das 48 seleções (já existentes, mantidas)
     const COPA_TEAMS = {
         'MEX': { id:'MEX', n:'México', f:'🇲🇽' },
         'RSA': { id:'RSA', n:'África do Sul', f:'🇿🇦' },
@@ -1671,7 +1695,7 @@
         'CUW': { id:'CUW', n:'Curaçao', f:'🇨🇼' },
         'CIV': { id:'CIV', n:'Costa do Marfim', f:'🇨🇮' },
         'ECU': { id:'ECU', n:'Equador', f:'🇪🇨' },
-        'NED': { id:'NED', n:'Países Baixos', f:'🇳🇱' }, // Corrigido de "Holanda" para "Países Baixos" conforme print
+        'NED': { id:'NED', n:'Países Baixos', f:'🇳🇱' },
         'JPN': { id:'JPN', n:'Japão', f:'🇯🇵' },
         'SWE': { id:'SWE', n:'Suécia', f:'🇸🇪' },
         'TUN': { id:'TUN', n:'Tunísia', f:'🇹🇳' },
@@ -1701,55 +1725,106 @@
         'PAN': { id:'PAN', n:'Panamá', f:'🇵🇦' }
     };
 
-    // Chaveamento das Oitavas (16 jogos) - CONFRONTOS, DATAS E HORÁRIOS CORRIGIDOS
-    const OITAVAS = [
-        { id: 'O1',  home: 'GER', away: 'PAR', dt: 'Amanhã, 17:30', stage: 'Oitavas' },
-        { id: 'O2',  home: 'FRA', away: 'SWE', dt: 'Ter., 30/06, 18:00', stage: 'Oitavas' },
-        { id: 'O3',  home: 'RSA', away: 'CAN', dt: 'Hoje, 16:00', stage: 'Oitavas' },
-        { id: 'O4',  home: 'NED', away: 'MAR', dt: 'Amanhã, 22:00', stage: 'Oitavas' },
-        { id: 'O5',  home: 'POR', away: 'CRO', dt: 'Qui., 02/07, 20:00', stage: 'Oitavas' },
-        { id: 'O6',  home: 'ESP', away: 'AUT', dt: 'Qui., 02/07, 16:00', stage: 'Oitavas' },
-        { id: 'O7',  home: 'USA', away: 'BIH', dt: 'Qua., 01/07, 21:00', stage: 'Oitavas' },
-        { id: 'O8',  home: 'BEL', away: 'SEN', dt: 'Qua., 01/07, 17:00', stage: 'Oitavas' },
-        { id: 'O9',  home: 'BRA', away: 'JPN', dt: 'Amanhã, 14:00', stage: 'Oitavas' },
-        { id: 'O10', home: 'CIV', away: 'NOR', dt: 'Ter., 30/06, 14:00', stage: 'Oitavas' },
-        { id: 'O11', home: 'MEX', away: 'ECU', dt: 'Ter., 30/06, 22:00', stage: 'Oitavas' },
-        { id: 'O12', home: 'ENG', away: 'RDC', dt: 'Qua., 01/07, 13:00', stage: 'Oitavas' },
-        { id: 'O13', home: 'ARG', away: 'CAB', dt: 'Sex., 03/07, 19:00', stage: 'Oitavas' },
-        { id: 'O14', home: 'AUS', away: 'EGY', dt: 'Sex., 03/07, 15:00', stage: 'Oitavas' },
-        { id: 'O15', home: 'SUI', away: 'AGL', dt: 'Sex., 03/07, 00:00', stage: 'Oitavas' },
-        { id: 'O16', home: 'COL', away: 'GHA', dt: 'Sex., 03/07, 22:30', stage: 'Oitavas' }
+    // ===== FASE 16 AVOS (Rodada de 32) =====
+    const R32 = [
+        { id: 'R32_1', home: 'GER', away: 'PAR', dt: 'Amanhã, 17:30', stage: '16 Avos' },
+        { id: 'R32_2', home: 'FRA', away: 'SWE', dt: 'Ter., 30/06, 18:00', stage: '16 Avos' },
+        { id: 'R32_3', home: 'RSA', away: 'CAN', dt: 'Hoje, 16:00', stage: '16 Avos' },
+        { id: 'R32_4', home: 'NED', away: 'MAR', dt: 'Amanhã, 22:00', stage: '16 Avos' },
+        { id: 'R32_5', home: 'POR', away: 'CRO', dt: 'Qui., 02/07, 20:00', stage: '16 Avos' },
+        { id: 'R32_6', home: 'ESP', away: 'AUT', dt: 'Qui., 02/07, 16:00', stage: '16 Avos' },
+        { id: 'R32_7', home: 'USA', away: 'BIH', dt: 'Qua., 01/07, 21:00', stage: '16 Avos' },
+        { id: 'R32_8', home: 'BEL', away: 'SEN', dt: 'Qua., 01/07, 17:00', stage: '16 Avos' },
+        { id: 'R32_9', home: 'BRA', away: 'JPN', dt: 'Amanhã, 14:00', stage: '16 Avos' },
+        { id: 'R32_10', home: 'CIV', away: 'NOR', dt: 'Ter., 30/06, 14:00', stage: '16 Avos' },
+        { id: 'R32_11', home: 'MEX', away: 'ECU', dt: 'Ter., 30/06, 22:00', stage: '16 Avos' },
+        { id: 'R32_12', home: 'ENG', away: 'RDC', dt: 'Qua., 01/07, 13:00', stage: '16 Avos' },
+        { id: 'R32_13', home: 'ARG', away: 'CAB', dt: 'Sex., 03/07, 19:00', stage: '16 Avos' },
+        { id: 'R32_14', home: 'AUS', away: 'EGY', dt: 'Sex., 03/07, 15:00', stage: '16 Avos' },
+        { id: 'R32_15', home: 'SUI', away: 'AGL', dt: 'Sex., 03/07, 00:00', stage: '16 Avos' },
+        { id: 'R32_16', home: 'COL', away: 'GHA', dt: 'Sex., 03/07, 22:30', stage: '16 Avos' }
     ];
 
-    // Quartas (8 jogos)
-    const QUARTAS = [
-        { id: 'Q1', home: 'V1', away: 'V2', dt: '07/jul 13h', stage: 'Quartas' },
-        { id: 'Q2', home: 'V3', away: 'V4', dt: '07/jul 17h', stage: 'Quartas' },
-        { id: 'Q3', home: 'V5', away: 'V6', dt: '08/jul 13h', stage: 'Quartas' },
-        { id: 'Q4', home: 'V7', away: 'V8', dt: '08/jul 17h', stage: 'Quartas' },
-        { id: 'Q5', home: 'V9', away: 'V10', dt: '09/jul 13h', stage: 'Quartas' },
-        { id: 'Q6', home: 'V11', away: 'V12', dt: '09/jul 17h', stage: 'Quartas' },
-        { id: 'Q7', home: 'V13', away: 'V14', dt: '10/jul 13h', stage: 'Quartas' },
-        { id: 'Q8', home: 'V15', away: 'V16', dt: '10/jul 17h', stage: 'Quartas' }
-    ];
+    // ===== OITAVAS =====
+    const OITAVAS = [];
+    for (let i = 0; i < 8; i++) {
+        OITAVAS.push({
+            id: `O${i+1}`,
+            home: '',
+            away: '',
+            dt: `${String(28 + i).padStart(2,'0')}/06 16:00`,
+            stage: 'Oitavas'
+        });
+    }
 
-    // Semifinais (4 jogos)
+    // ===== QUARTAS =====
+    const QUARTAS = [];
+    for (let i = 0; i < 4; i++) {
+        QUARTAS.push({
+            id: `Q${i+1}`,
+            home: '',
+            away: '',
+            dt: `05/07 16:00`,
+            stage: 'Quartas'
+        });
+    }
+
+    // ===== SEMIFINAIS =====
     const SEMIS = [
-        { id: 'S1', home: 'VQ1', away: 'VQ2', dt: '13/jul 15h', stage: 'Semifinais' },
-        { id: 'S2', home: 'VQ3', away: 'VQ4', dt: '13/jul 19h', stage: 'Semifinais' },
-        { id: 'S3', home: 'VQ5', away: 'VQ6', dt: '14/jul 15h', stage: 'Semifinais' },
-        { id: 'S4', home: 'VQ7', away: 'VQ8', dt: '14/jul 19h', stage: 'Semifinais' }
+        { id: 'S1', home: '', away: '', dt: '10/07 16:00', stage: 'Semifinais' },
+        { id: 'S2', home: '', away: '', dt: '11/07 16:00', stage: 'Semifinais' }
     ];
 
-    // Disputa de 3º lugar
+    // ===== 3º LUGAR =====
     const TERCEIRO = [
-        { id: 'T1', home: 'P1', away: 'P2', dt: '17/jul 15h', stage: '3º Lugar' }
+        { id: 'T1', home: '', away: '', dt: '17/07 15:00', stage: '3º Lugar' }
     ];
 
-    // Final
+    // ===== FINAL =====
     const FINAL = [
-        { id: 'F1', home: 'V1', away: 'V2', dt: '19/jul 16h', stage: 'Final' }
+        { id: 'F1', home: '', away: '', dt: '19/07 16:00', stage: 'Final' }
     ];
+
+    // Mapeamento de dependências: de qual jogo sai o vencedor e para qual jogo da fase seguinte (e qual lado)
+    const DEPENDENCIAS = {
+        // 16 avos -> Oitavas
+        'R32_1': { next: 'O1', side: 'home' },
+        'R32_2': { next: 'O1', side: 'away' },
+        'R32_3': { next: 'O2', side: 'home' },
+        'R32_4': { next: 'O2', side: 'away' },
+        'R32_5': { next: 'O3', side: 'home' },
+        'R32_6': { next: 'O3', side: 'away' },
+        'R32_7': { next: 'O4', side: 'home' },
+        'R32_8': { next: 'O4', side: 'away' },
+        'R32_9': { next: 'O5', side: 'home' },
+        'R32_10': { next: 'O5', side: 'away' },
+        'R32_11': { next: 'O6', side: 'home' },
+        'R32_12': { next: 'O6', side: 'away' },
+        'R32_13': { next: 'O7', side: 'home' },
+        'R32_14': { next: 'O7', side: 'away' },
+        'R32_15': { next: 'O8', side: 'home' },
+        'R32_16': { next: 'O8', side: 'away' },
+        // Oitavas -> Quartas
+        'O1': { next: 'Q1', side: 'home' },
+        'O2': { next: 'Q1', side: 'away' },
+        'O3': { next: 'Q2', side: 'home' },
+        'O4': { next: 'Q2', side: 'away' },
+        'O5': { next: 'Q3', side: 'home' },
+        'O6': { next: 'Q3', side: 'away' },
+        'O7': { next: 'Q4', side: 'home' },
+        'O8': { next: 'Q4', side: 'away' },
+        // Quartas -> Semifinais
+        'Q1': { next: 'S1', side: 'home' },
+        'Q2': { next: 'S1', side: 'away' },
+        'Q3': { next: 'S2', side: 'home' },
+        'Q4': { next: 'S2', side: 'away' },
+        // Semifinais -> Final
+        'S1': { next: 'F1', side: 'home' },
+        'S2': { next: 'F1', side: 'away' },
+        // Semifinais -> 3º lugar (perdedores)
+        'S1': { next: 'T1', side: 'home' },
+        'S2': { next: 'T1', side: 'away' }
+    };
 
     // ==================== FUNÇÕES DA COPA ====================
 
@@ -1770,6 +1845,7 @@
     }
 
     function getTeamData(id) {
+        if (!id || id === '') return { id: '', n: '—', f: '⚪' };
         const custom = getCopaTeams();
         if (custom[id]) return custom[id];
         return COPA_TEAMS[id] || { id: id, n: id, f: '❓' };
@@ -1790,209 +1866,153 @@
         setCopaScores(scores);
     }
 
-    function setMatchTeam(matchId, side, teamId, flag, name) {
+    function setMatchTeam(matchId, side, teamId) {
         const teams = getCopaTeams();
-        if (teamId && flag && name) {
-            teams[teamId] = { id: teamId, n: name, f: flag };
-        } else if (teamId && teams[teamId]) {
-            // mantém o existente
-        } else if (teamId) {
+        if (teamId && !teams[teamId]) {
             teams[teamId] = { id: teamId, n: teamId, f: '❓' };
         }
         setCopaTeams(teams);
     }
 
-    function isPlaceholderId(id) {
-        return id && id.startsWith('V');
+    function getWinner(matchId) {
+        const score = getMatchScore(matchId);
+        if (!score) return null;
+        const allMatches = getAllMatches();
+        const match = allMatches.find(m => m.id === matchId);
+        if (!match) return null;
+        const home = match.home;
+        const away = match.away;
+        if (score.h > score.a) return home;
+        if (score.a > score.h) return away;
+        return null;
     }
 
-    function openCopaPanel() {
-        renderBracket();
-        document.getElementById('copaPanel').classList.add('open');
+    function getAllMatches() {
+        return [...R32, ...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
     }
 
-    function closeCopaPanel() {
-        document.getElementById('copaPanel').classList.remove('open');
+    function propagateWinners() {
+        const allMatches = getAllMatches();
+        for (const match of allMatches) {
+            const winner = getWinner(match.id);
+            const dep = DEPENDENCIAS[match.id];
+            if (dep) {
+                const nextMatch = allMatches.find(m => m.id === dep.next);
+                if (nextMatch) {
+                    if (winner) {
+                        if (dep.side === 'home') {
+                            nextMatch.home = winner;
+                        } else {
+                            nextMatch.away = winner;
+                        }
+                        const teams = getCopaTeams();
+                        if (!teams[winner]) {
+                            const base = COPA_TEAMS[winner];
+                            if (base) {
+                                teams[winner] = { id: winner, n: base.n, f: base.f };
+                            } else {
+                                teams[winner] = { id: winner, n: winner, f: '❓' };
+                            }
+                            setCopaTeams(teams);
+                        }
+                    } else {
+                        if (dep.side === 'home') {
+                            nextMatch.home = '';
+                        } else {
+                            nextMatch.away = '';
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    function saveBracketState() {
+        const state = { R32, OITAVAS, QUARTAS, SEMIS, TERCEIRO, FINAL };
+        setStorageValue('copa2026_bracket_state', JSON.stringify(state));
+    }
+
+    function loadBracketState() {
+        const saved = getStorageValue('copa2026_bracket_state');
+        if (saved) {
+            try {
+                const state = JSON.parse(saved);
+                R32.length = 0; R32.push(...state.R32);
+                OITAVAS.length = 0; OITAVAS.push(...state.OITAVAS);
+                QUARTAS.length = 0; QUARTAS.push(...state.QUARTAS);
+                SEMIS.length = 0; SEMIS.push(...state.SEMIS);
+                TERCEIRO.length = 0; TERCEIRO.push(...state.TERCEIRO);
+                FINAL.length = 0; FINAL.push(...state.FINAL);
+                return true;
+            } catch(e) {}
+        }
+        return false;
+    }
+
+    // ==================== RENDERIZAÇÃO DO BRACKET ====================
 
     function renderBracket() {
+        loadBracketState();
+        propagateWinners();
+        saveBracketState();
+
         const body = document.getElementById('copa-panel-body');
         const scores = getCopaScores();
         
         let html = `<div class="bracket-container">`;
         
-        // === OITAVAS ===
-        html += `<div class="bracket-round">
-            <div class="bracket-round-label">⚽ Oitavas de Final</div>`;
-        OITAVAS.forEach(m => {
-            const homeTeam = getTeamData(m.home);
-            const awayTeam = getTeamData(m.away);
-            const score = scores[m.id];
-            const hasScore = !!score;
-            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
-            
-            html += `
-            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
-                <div class="bracket-match-team home">
-                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Time 1'}</div>
-                </div>
-                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
-                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
-                    <span class="bracket-score-sep">×</span>
-                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
-                </div>
-                <div class="bracket-match-team away">
-                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Time 2'}</div>
-                </div>
-                <div class="bracket-edit-hint">
-                    <span class="material-symbols-outlined">edit</span> ${m.dt}
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
+        function renderRound(matches, label) {
+            html += `<div class="bracket-round">
+                <div class="bracket-round-label">${label}</div>`;
+            matches.forEach(m => {
+                const homeTeam = getTeamData(m.home);
+                const awayTeam = getTeamData(m.away);
+                const score = scores[m.id];
+                const hasScore = !!score;
+                const isPlaceholder = !m.home || !m.away;
+                
+                html += `
+                <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
+                    <div class="bracket-match-team home">
+                        <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
+                        <div class="bracket-match-name ${!m.home ? 'empty' : ''}">${m.home ? homeTeam.n : '—'}</div>
+                    </div>
+                    <div class="bracket-score-box ${hasScore ? 'live' : ''}">
+                        <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
+                        <span class="bracket-score-sep">×</span>
+                        <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
+                    </div>
+                    <div class="bracket-match-team away">
+                        <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
+                        <div class="bracket-match-name ${!m.away ? 'empty' : ''}">${m.away ? awayTeam.n : '—'}</div>
+                    </div>
+                    <div class="bracket-edit-hint">
+                        <span class="material-symbols-outlined">edit</span> ${m.dt}
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+        }
 
-        // === QUARTAS ===
-        html += `<div class="bracket-round">
-            <div class="bracket-round-label">🏆 Quartas de Final</div>`;
-        QUARTAS.forEach(m => {
-            const homeTeam = getTeamData(m.home);
-            const awayTeam = getTeamData(m.away);
-            const score = scores[m.id];
-            const hasScore = !!score;
-            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
-            
-            html += `
-            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
-                <div class="bracket-match-team home">
-                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Vencedor'}</div>
-                </div>
-                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
-                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
-                    <span class="bracket-score-sep">×</span>
-                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
-                </div>
-                <div class="bracket-match-team away">
-                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Vencedor'}</div>
-                </div>
-                <div class="bracket-edit-hint">
-                    <span class="material-symbols-outlined">edit</span> ${m.dt}
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
-
-        // === SEMIFINAIS ===
-        html += `<div class="bracket-round">
-            <div class="bracket-round-label">🏆 Semifinais</div>`;
-        SEMIS.forEach(m => {
-            const homeTeam = getTeamData(m.home);
-            const awayTeam = getTeamData(m.away);
-            const score = scores[m.id];
-            const hasScore = !!score;
-            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
-            
-            html += `
-            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
-                <div class="bracket-match-team home">
-                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Vencedor'}</div>
-                </div>
-                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
-                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
-                    <span class="bracket-score-sep">×</span>
-                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
-                </div>
-                <div class="bracket-match-team away">
-                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Vencedor'}</div>
-                </div>
-                <div class="bracket-edit-hint">
-                    <span class="material-symbols-outlined">edit</span> ${m.dt}
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
-
-        // === 3º LUGAR ===
-        html += `<div class="bracket-round">
-            <div class="bracket-round-label">🥉 Disputa de 3º Lugar</div>`;
-        TERCEIRO.forEach(m => {
-            const homeTeam = getTeamData(m.home);
-            const awayTeam = getTeamData(m.away);
-            const score = scores[m.id];
-            const hasScore = !!score;
-            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
-            
-            html += `
-            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')">
-                <div class="bracket-match-team home">
-                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Perdedor SF1'}</div>
-                </div>
-                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
-                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
-                    <span class="bracket-score-sep">×</span>
-                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
-                </div>
-                <div class="bracket-match-team away">
-                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Perdedor SF2'}</div>
-                </div>
-                <div class="bracket-edit-hint">
-                    <span class="material-symbols-outlined">edit</span> ${m.dt}
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
-
-        // === FINAL ===
-        html += `<div class="bracket-round">
-            <div class="bracket-round-label">🏆 Final</div>`;
-        FINAL.forEach(m => {
-            const homeTeam = getTeamData(m.home);
-            const awayTeam = getTeamData(m.away);
-            const score = scores[m.id];
-            const hasScore = !!score;
-            const isPlaceholder = isPlaceholderId(m.home) || isPlaceholderId(m.away);
-            
-            html += `
-            <div class="bracket-match ${hasScore ? 'has-score' : ''} ${isPlaceholder ? 'bracket-match-placeholder' : ''}" onclick="openTeamModal('${m.id}')" style="border-color: #FFD700; border-width: 3px;">
-                <div class="bracket-match-team home">
-                    <div class="bracket-match-flag ${!homeTeam.f || homeTeam.f === '❓' ? 'empty' : ''}">${homeTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!homeTeam.n || homeTeam.n === m.home ? 'empty' : ''}">${homeTeam.n || 'Finalista 1'}</div>
-                </div>
-                <div class="bracket-score-box ${hasScore ? 'live' : ''}">
-                    <span class="bracket-score-num">${hasScore ? score.h : '–'}</span>
-                    <span class="bracket-score-sep">×</span>
-                    <span class="bracket-score-num">${hasScore ? score.a : '–'}</span>
-                </div>
-                <div class="bracket-match-team away">
-                    <div class="bracket-match-flag ${!awayTeam.f || awayTeam.f === '❓' ? 'empty' : ''}">${awayTeam.f || '⚪'}</div>
-                    <div class="bracket-match-name ${!awayTeam.n || awayTeam.n === m.away ? 'empty' : ''}">${awayTeam.n || 'Finalista 2'}</div>
-                </div>
-                <div class="bracket-edit-hint">
-                    <span class="material-symbols-outlined">edit</span> ${m.dt}
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
+        renderRound(R32, '⚽ 16 Avos de Final (Rodada de 32)');
+        renderRound(OITAVAS, '🏆 Oitavas de Final');
+        renderRound(QUARTAS, '🏆 Quartas de Final');
+        renderRound(SEMIS, '🏆 Semifinais');
+        renderRound(TERCEIRO, '🥉 Disputa de 3º Lugar');
+        renderRound(FINAL, '🏆 Final');
 
         html += `</div>`;
         body.innerHTML = html;
     }
 
-    // ==================== MODAL DE EDIÇÃO DE TIME ====================
+    // ==================== MODAL DE EDIÇÃO ====================
 
     let currentEditMatchId = null;
 
     function openTeamModal(matchId) {
         currentEditMatchId = matchId;
         
-        const allMatches = [...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
+        const allMatches = getAllMatches();
         const match = allMatches.find(m => m.id === matchId);
         if (!match) return;
         
@@ -2029,18 +2049,24 @@
         const scoreHome = parseInt(document.getElementById('team-score-home').value) || 0;
         const scoreAway = parseInt(document.getElementById('team-score-away').value) || 0;
         
-        const allMatches = [...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
+        const allMatches = getAllMatches();
         const match = allMatches.find(m => m.id === currentEditMatchId);
         if (!match) return;
         
         if (flagHome && nameHome) {
-            setMatchTeam(currentEditMatchId, 'home', match.home, flagHome, nameHome);
+            const teams = getCopaTeams();
+            teams[match.home] = { id: match.home, n: nameHome, f: flagHome };
+            setCopaTeams(teams);
         }
         if (flagAway && nameAway) {
-            setMatchTeam(currentEditMatchId, 'away', match.away, flagAway, nameAway);
+            const teams = getCopaTeams();
+            teams[match.away] = { id: match.away, n: nameAway, f: flagAway };
+            setCopaTeams(teams);
         }
         
         setMatchScore(currentEditMatchId, scoreHome, scoreAway);
+        propagateWinners();
+        saveBracketState();
         
         closeTeamModal();
         renderBracket();
@@ -2048,23 +2074,25 @@
 
     function clearTeam() {
         if (!currentEditMatchId) return;
-        
         setMatchScore(currentEditMatchId, null, null);
-        
-        const allMatches = [...OITAVAS, ...QUARTAS, ...SEMIS, ...TERCEIRO, ...FINAL];
-        const match = allMatches.find(m => m.id === currentEditMatchId);
-        if (match) {
-            const teams = getCopaTeams();
-            delete teams[match.home];
-            delete teams[match.away];
-            setCopaTeams(teams);
-        }
-        
+        propagateWinners();
+        saveBracketState();
         closeTeamModal();
         renderBracket();
     }
 
-    // ==================== MODAIS EXISTENTES ====================
+    // ==================== ABRIR/FECHAR PAINEL COPA ====================
+
+    function openCopaPanel() {
+        renderBracket();
+        document.getElementById('copaPanel').classList.add('open');
+    }
+
+    function closeCopaPanel() {
+        document.getElementById('copaPanel').classList.remove('open');
+    }
+
+    // ==================== MODAIS EXISTENTES (não alterados) ====================
 
     function openRamais() {
         document.getElementById('overlay').style.display = 'block';
