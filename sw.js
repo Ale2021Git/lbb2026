@@ -17,7 +17,6 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('PWA: Cacheando arquivos essenciais...');
-      // Usamos return para garantir que a instalação só termine após o cache
       return cache.addAll(assets);
     })
   );
@@ -43,13 +42,11 @@ self.addEventListener('activate', (event) => {
 
 // 3. Interceptação (Fetch): Estratégia Stale-While-Revalidate melhorada
 self.addEventListener('fetch', (event) => {
-  // Ignora requisições que não sejam HTTP ou HTTPS (evita erro com extensões do Chrome)
   if (!(event.request.url.indexOf('http') === 0)) return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       const fetchPromise = fetch(event.request).then((networkResponse) => {
-        // Verifica se a resposta é válida e do tipo "basic" (mesma origem) antes de salvar
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -58,7 +55,6 @@ self.addEventListener('fetch', (event) => {
         }
         return networkResponse;
       }).catch(() => {
-        // Opcional: retornar uma página de erro offline específica aqui
         return cachedResponse;
       });
 
@@ -66,4 +62,3 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-
