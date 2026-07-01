@@ -1554,12 +1554,16 @@
 
             let colAtual = esp;
 
+            // ===== JOGOS DA COPA =====
+            const jogosCopa = getJogosCopa();
+
             for (let d = 1; d <= diasNoMes; d++) {
                 const at = new Date(ano, m, d);
                 const isoS = `${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 const isoF = `${ano}-${isoS}`;
                 const f = fer[isoS];
                 const nt = logs[isoF];
+                const jogo = jogosCopa[isoF];
 
                 if (colAtual === 7) {
                     colAtual = 0;
@@ -1582,12 +1586,16 @@
                 if (nt) cls += 'HAS_NOTE ';
                 if (isFerias(at)) cls += 'FERIAS ';
 
-                if (f || nt) {
+                if (f || nt || jogo) {
                     hasEv = true;
-                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`;
+                    let evText = '';
+                    if (f) evText += `${f}`;
+                    if (jogo) evText += (evText ? ' · ' : '') + `${jogo}`;
+                    if (nt) evText += (evText ? ' · ' : '') + `📝 ${nt}`;
+                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${evText}</div>`;
                 }
 
-                // ===== LINHA CORRIGIDA COM A BOLA ANIMADA =====
+                // ===== BOLA ANIMADA NO DIA DO JOGO =====
                 let extraHTML = '';
                 if (at.getFullYear() === 2026 && at.getMonth() === 6 && at.getDate() === 5) {
                     extraHTML = '<span class="match-day-indicator">⚽</span>';
@@ -1606,6 +1614,13 @@
 
         box.innerHTML = '';
         box.appendChild(frag);
+    }
+
+    // ===== JOGOS DA COPA 2026 =====
+    function getJogosCopa() {
+        return {
+            '2026-07-05': '⚽ 🇧🇷 Brasil x Noruega 🇳🇴 · 17:00'
+        };
     }
 
     function tick() {
@@ -1645,7 +1660,17 @@
         dataAtiva = iso;
         const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
         const d = iso.split('-');
-        document.getElementById('card-data').innerText = `${d[2]}/${d[1]}/${d[0]}`;
+        
+        // ===== EXIBIR JOGO DA COPA NO MODAL =====
+        const jogos = getJogosCopa();
+        const jogo = jogos[iso];
+        const cardData = document.getElementById('card-data');
+        if (jogo) {
+            cardData.innerHTML = `${d[2]}/${d[1]}/${d[0]}<br><span style="font-size:0.65em;background:var(--bg);color:var(--text);padding:5px 12px;border-radius:20px;border:1px solid var(--primary);display:inline-block;margin-top:6px;">${jogo}</span>`;
+        } else {
+            cardData.innerText = `${d[2]}/${d[1]}/${d[0]}`;
+        }
+
         document.getElementById('noteInput').value = logs[iso] || '';
 
         const dtSel = new Date(d[0], d[1] - 1, d[2]);
