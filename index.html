@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- CORREÇÃO APLICADA AQUI: Adicionei os domínios do Google na diretiva connect-src -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://www.google.com https://analytics.google.com;">
 <script>
   // ========== CORREÇÃO DO SERVICE WORKER ==========
@@ -773,7 +772,7 @@
     // ==============================================================
     // CONTROLE DE VERSÃO - FORÇA ATUALIZAÇÃO
     // ==============================================================
-    const APP_VERSION = '2026.07.01'; // Altere este número a cada atualização
+    const APP_VERSION = '2026.07.02'; // Força atualização do Service Worker
 
     function getStorageValue(key) {
         try { return localStorage.getItem(key); } catch (e) {
@@ -806,7 +805,7 @@
         }
         // Salva a nova versão
         setStorageValue('braun_app_version', APP_VERSION);
-        // Recarrega a página forçadamente (argumento obsoleto 'true' removido)
+        // Recarrega a página forçadamente
         window.location.reload();
     }
 
@@ -929,7 +928,7 @@
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (!isIOS) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
+                navigator.serviceWorker.register('./sw.js?v=' + APP_VERSION)
                     .then(reg => {
                         reg.onupdatefound = () => {
                             const iw = reg.installing;
@@ -1074,7 +1073,7 @@
         return d >= new Date(range.inicio + 'T00:00:00').getTime() && d <= new Date(range.fim + 'T00:00:00').getTime();
     }
 
-    // ================= FUNÇÃO OTIMIZADA DE CALENDÁRIO =================
+    // ================= FUNÇÃO ULTRA-OTIMIZADA (RequestAnimationFrame) =================
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
         box.innerHTML = ''; // Limpa o container
@@ -1083,12 +1082,11 @@
 
         function construirProximoMes() {
             if (currentMonth >= totalMonths) {
-                // Calendário 100% carregado. Agora podemos fazer a animação suave!
-                setTimeout(() => scrollToToday('smooth'), 100);
+                // Calendário 100% carregado. Rola suavemente apenas se o usuário não mexer na tela antes
+                setTimeout(() => scrollToToday('smooth'), 300);
                 return;
             }
 
-            // Puxa as variáveis apenas uma vez a cada mês
             const m = currentMonth;
             const ano = parseInt(currentAno);
             const t = currentTurma;
@@ -1162,8 +1160,8 @@
             box.appendChild(container);
             currentMonth++;
             
-            // CRUCIAL: Aguarda 15ms para o navegador respirar antes de desenhar o próximo mês
-            setTimeout(construirProximoMes, 15);
+            // CRUCIAL: requestAnimationFrame sincroniza com o ciclo de pintura do navegador
+            requestAnimationFrame(() => setTimeout(construirProximoMes, 0));
         }
 
         construirProximoMes();
@@ -1486,7 +1484,6 @@
     }
 
     // ================== FUNÇÃO DE ROLAGEM REVISADA ==================
-    // Agora aceita 'smooth' ou 'auto' como parâmetro
     function scrollToToday(behavior = 'auto') {
         setTimeout(() => {
             const hoje = document.querySelector('.hoje');
@@ -1495,24 +1492,23 @@
             const container = hoje.closest('.mes-container');
             if (!container) return;
             
+            // Previne Forced Reflow ao executar o cálculo no próximo ciclo de renderização
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    const header = document.querySelector('header');
-                    const statusPanel = document.querySelector('.status-panel');
-                    const headerHeight = header ? header.offsetHeight : 0;
-                    const statusHeight = statusPanel ? statusPanel.offsetHeight : 0;
-                    const gap = 15;
-                    
-                    const rect = container.getBoundingClientRect();
-                    const scrollTarget = window.scrollY + rect.top - (headerHeight + statusHeight + gap);
-                    
-                    window.scrollTo({
-                        top: Math.max(0, scrollTarget),
-                        behavior: behavior // <-- Aplica a animação escolhida aqui
-                    });
+                const header = document.querySelector('header');
+                const statusPanel = document.querySelector('.status-panel');
+                const headerHeight = header ? header.offsetHeight : 0;
+                const statusHeight = statusPanel ? statusPanel.offsetHeight : 0;
+                const gap = 15;
+                
+                const rect = container.getBoundingClientRect();
+                const scrollTarget = window.scrollY + rect.top - (headerHeight + statusHeight + gap);
+                
+                window.scrollTo({
+                    top: Math.max(0, scrollTarget),
+                    behavior: behavior
                 });
             });
-        }, 300);
+        }, 100);
     }
 
     // ==================== INICIALIZAÇÃO ====================
@@ -1531,7 +1527,6 @@
             document.getElementById('welcomeScreen').style.display = 'flex';
         } else {
             document.getElementById('welcomeScreen').style.display = 'none';
-            // 1º Rolagem: Sem animação (Rápido para o Lighthouse)
             scrollToToday('auto'); 
         }
     });
