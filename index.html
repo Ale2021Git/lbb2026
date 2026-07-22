@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
 <script>
   // ========== CORREÇÃO DO SERVICE WORKER ==========
   if ('serviceWorker' in navigator) {
@@ -461,6 +462,8 @@
 </header>
 
 <main id="main-content">
+    <!-- Título semântico para acessibilidade -->
+    <h1 class="sr-only">Escala Braun OnLine</h1>
 <div class="status-panel" aria-live="polite">
     <div id="big-clock" class="clock">00:00:00</div>
     <div id="status-msg" class="status-msg">---</div>
@@ -802,13 +805,63 @@
         }
         // Salva a nova versão
         setStorageValue('braun_app_version', APP_VERSION);
-        // Recarrega a página forçadamente (ignorando cache)
-        window.location.reload(true);
+        // Recarrega a página forçadamente (argumento obsoleto 'true' removido)
+        window.location.reload();
     }
 
     // ==============================================================
-    // TODAS AS FUNÇÕES DO APP - VERSÃO SEM COPA
+    // TODAS AS FUNÇÕES DO APP - VERSÃO CORRIGIDA
     // ==============================================================
+
+    // ==================== ACESSIBILIDADE: FOCUS TRAP ====================
+    let activeModalElement = null;
+    let lastFocusedElement = null;
+    const focusableElementsSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+    function trapFocus(e) {
+        if (!activeModalElement) return;
+        const focusable = activeModalElement.querySelectorAll(focusableElementsSelector);
+        const firstFocusable = focusable[0];
+        const lastFocusable = focusable[focusable.length - 1];
+        const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+        if (!isTabPressed) return;
+
+        if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable.focus();
+            }
+        } else {
+            if (document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable.focus();
+            }
+        }
+    }
+
+    function focusModal(modalId) {
+        const overlay = document.getElementById('overlay');
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        // Armazena o elemento que estava com foco antes de abrir
+        lastFocusedElement = document.activeElement;
+
+        overlay.style.display = 'block';
+        modal.classList.add('show');
+
+        if (activeModalElement) {
+            document.removeEventListener('keydown', trapFocus);
+        }
+        activeModalElement = modal;
+        document.addEventListener('keydown', trapFocus);
+
+        // Foca no primeiro elemento interativo do modal
+        const firstFocusable = modal.querySelector(focusableElementsSelector);
+        if (firstFocusable) {
+            setTimeout(() => firstFocusable.focus(), 50);
+        }
+    }
 
     // ==================== OTIMIZAÇÕES ====================
     let cachedFerias = null;
@@ -1022,7 +1075,7 @@
 
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
-        const frag = document.createDocumentFragment();
+        const frag = document.createDocumentFragment(); // Otimização: Evita reflows múltiplos
         const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
         const ano = parseInt(currentAno);
         const t = currentTurma;
@@ -1159,15 +1212,33 @@
         diaSem = (diaSem === 0) ? 7 : diaSem;
         document.getElementById('lote-display').innerText = `${yy}${ww}${diaSem}`;
 
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('infoCard').classList.add('show');
+        focusModal('infoCard');
+        // Já que o primeiro elemento focado será o textarea devido ao focus trap, tudo certo.
     }
 
     function copyLote() {
         const lote = document.getElementById('lote-display').innerText;
-        navigator.clipboard.writeText(lote).catch(() => {});
         const disp = document.getElementById('lote-display');
         const orig = disp.innerText;
+
+        // Funcionalidade robusta com fallback
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(lote).catch(() => {});
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = lote;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.warn('Não foi possível copiar o texto.');
+            }
+            document.body.removeChild(textArea);
+        }
+
         disp.innerText = 'COPIADO!';
         setTimeout(() => { disp.innerText = orig; }, 1000);
     }
@@ -1187,32 +1258,32 @@
         document.getElementById('drawerOverlay').classList.add('show');
         const menuBtn = document.getElementById('menuButton');
         if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+        // Foca no fechamento ou no primeiro item
+        setTimeout(() => document.querySelector('#hamburgerDrawer .drawer-close-btn').focus(), 100);
     }
     function closeHamburger() {
         document.getElementById('hamburgerDrawer').classList.remove('open');
         document.getElementById('drawerOverlay').classList.remove('show');
         const menuBtn = document.getElementById('menuButton');
         if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+        document.getElementById('menuButton').focus();
     }
 
     // ==================== MODAIS EXISTENTES ====================
 
     function openRamais() {
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('ramaisCard').classList.add('show');
+        focusModal('ramaisCard');
     }
 
     function openPrivacy() {
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('privacyCard').classList.add('show');
+        focusModal('privacyCard');
     }
 
     function openFerias() {
         document.getElementById('feriasInicio').value = getStorageValue('braun_ferias_inicio') || '';
         document.getElementById('feriasFim').value = getStorageValue('braun_ferias_fim') || '';
         document.getElementById('configCard').classList.remove('show');
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('feriasCard').classList.add('show');
+        focusModal('feriasCard');
     }
 
     function saveFerias() {
@@ -1235,8 +1306,7 @@
 
     function openConfig() {
         document.getElementById('minimalGreetingToggle').checked = (getStorageValue('braun_minimal_greeting') === 'true');
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('configCard').classList.add('show');
+        focusModal('configCard');
     }
 
     function toggleMinimalGreeting() {
@@ -1251,7 +1321,7 @@
         if (cachedStats[cacheKey]) {
             document.getElementById('stats-content').innerHTML = cachedStats[cacheKey];
             document.getElementById('configCard').classList.remove('show');
-            document.getElementById('statsCard').classList.add('show');
+            focusModal('statsCard');
             return;
         }
         
@@ -1291,7 +1361,7 @@
         cachedStats[cacheKey] = htmlStats;
         document.getElementById('stats-content').innerHTML = htmlStats;
         document.getElementById('configCard').classList.remove('show');
-        document.getElementById('statsCard').classList.add('show');
+        focusModal('statsCard');
     }
 
     function salvarDadosPerfil() {
@@ -1381,27 +1451,31 @@
         document.getElementById('turmaPerfil').value = getStorageValue('braun_turma_perfil') || 'A';
         document.getElementById('anoPerfil').value = getStorageValue('braun_ano') || '2026';
         document.getElementById('setorPerfil').value = getStorageValue('braun_setor') || '';
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('meuPerfilCard').classList.add('show');
+        focusModal('meuPerfilCard');
     }
 
     function openColaboradorDoMes() {
         closeHamburger();
         preencherDadosModais();
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('colaboradorDoMesCard').classList.add('show');
+        focusModal('colaboradorDoMesCard');
     }
 
     function openMeusPedidos() {
         closeHamburger();
         preencherDadosModais();
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('meusPedidosCard').classList.add('show');
+        focusModal('meusPedidosCard');
     }
 
     function closeAllModals() {
         document.getElementById('overlay').style.display = 'none';
         document.querySelectorAll('.bottom-modal').forEach(el => el.classList.remove('show'));
+        document.removeEventListener('keydown', trapFocus);
+        activeModalElement = null;
+        // Restaura o foco
+        if (lastFocusedElement && lastFocusedElement.focus) {
+            lastFocusedElement.focus();
+            lastFocusedElement = null;
+        }
     }
 
     function toggleDarkMode() {
