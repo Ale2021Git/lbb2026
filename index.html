@@ -1009,7 +1009,7 @@
         setTimeout(() => {
             welcome.style.display = 'none';
             setStorageValue('braun_visited', 'true');
-            scrollToToday();
+            scrollToToday('auto');
         }, 500);
     }
 
@@ -1074,19 +1074,29 @@
         return d >= new Date(range.inicio + 'T00:00:00').getTime() && d <= new Date(range.fim + 'T00:00:00').getTime();
     }
 
+    // ================= FUNÇÃO OTIMIZADA DE CALENDÁRIO =================
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
-        const frag = document.createDocumentFragment(); // Otimização: Evita reflows múltiplos
-        const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
-        const ano = parseInt(currentAno);
-        const t = currentTurma;
-        const fer = getFeriados(ano);
-        const lang = translations[currentRegion];
-        const hojeStr = new Date().toDateString();
+        box.innerHTML = ''; // Limpa o container
+        let currentMonth = 0;
+        const totalMonths = 12;
 
-        atualizarBadgeTurma();
+        function construirProximoMes() {
+            if (currentMonth >= totalMonths) {
+                // Calendário 100% carregado. Agora podemos fazer a animação suave!
+                setTimeout(() => scrollToToday('smooth'), 100);
+                return;
+            }
 
-        for (let m = 0; m < 12; m++) {
+            // Puxa as variáveis apenas uma vez a cada mês
+            const m = currentMonth;
+            const ano = parseInt(currentAno);
+            const t = currentTurma;
+            const fer = getFeriados(ano);
+            const lang = translations[currentRegion];
+            const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
+            const hojeStr = new Date().toDateString();
+
             const dtM = new Date(ano, m, 1);
             const nomeM = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(dtM);
             const container = document.createElement('div');
@@ -1117,7 +1127,6 @@
             for (let i = 0; i < esp; i++) hF += `<div></div>`;
 
             let colAtual = esp;
-
             for (let d = 1; d <= diasNoMes; d++) {
                 const at = new Date(ano, m, d);
                 const isoS = `${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -1125,13 +1134,9 @@
                 const f = fer[isoS];
                 const nt = logs[isoF];
 
-                if (colAtual === 7) {
-                    colAtual = 0;
-                    hF += `<div class="dia-label-w">${getWeekNumberCached(at)}</div>`;
-                }
-
+                if (colAtual === 7) { colAtual = 0; hF += `<div class="dia-label-w">${getWeekNumberCached(at)}</div>`; }
+                
                 let cls = 'dia ';
-
                 if (currentRegion === 'BR') {
                     const r = checkBR(at, t);
                     cls += (r.isA ? 'AMARELO ' : 'VERDE ');
@@ -1141,29 +1146,27 @@
                     cls += (mnt.isEG ? 'AZUL ' : 'VERDE ');
                     cls += (mnt.trab ? 'TRABALHO ' : 'FOLGA ');
                 }
-
                 if (hojeStr === at.toDateString()) cls += 'hoje ';
                 if (nt) cls += 'HAS_NOTE ';
                 if (isFerias(at)) cls += 'FERIAS ';
-
-                if (f || nt) {
-                    hasEv = true;
-                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`;
-                }
-
+                if (f || nt) { hasEv = true; hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`; }
+                
                 hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')">${d}</div>`;
                 colAtual++;
             }
 
             hF += `</div></div>`;
             hB += `${!hasEv ? '<div style="opacity:0.6;font-size:0.9em;">Sem registros.</div>' : ''}</div>`;
-
             container.innerHTML = `<div class="mes-inner">${hF}${hB}</div>`;
-            frag.appendChild(container);
+
+            box.appendChild(container);
+            currentMonth++;
+            
+            // CRUCIAL: Aguarda 15ms para o navegador respirar antes de desenhar o próximo mês
+            setTimeout(construirProximoMes, 15);
         }
 
-        box.innerHTML = '';
-        box.appendChild(frag);
+        construirProximoMes();
     }
 
     function tick() {
@@ -1214,7 +1217,6 @@
         document.getElementById('lote-display').innerText = `${yy}${ww}${diaSem}`;
 
         focusModal('infoCard');
-        // Já que o primeiro elemento focado será o textarea devido ao focus trap, tudo certo.
     }
 
     function copyLote() {
@@ -1259,7 +1261,6 @@
         document.getElementById('drawerOverlay').classList.add('show');
         const menuBtn = document.getElementById('menuButton');
         if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
-        // Foca no fechamento ou no primeiro item
         setTimeout(() => document.querySelector('#hamburgerDrawer .drawer-close-btn').focus(), 100);
     }
     function closeHamburger() {
@@ -1484,7 +1485,9 @@
         setStorageValue('braun_dark_mode', document.body.classList.contains('dark-mode'));
     }
 
-    function scrollToToday() {
+    // ================== FUNÇÃO DE ROLAGEM REVISADA ==================
+    // Agora aceita 'smooth' ou 'auto' como parâmetro
+    function scrollToToday(behavior = 'auto') {
         setTimeout(() => {
             const hoje = document.querySelector('.hoje');
             if (!hoje) return;
@@ -1505,7 +1508,7 @@
                     
                     window.scrollTo({
                         top: Math.max(0, scrollTarget),
-                        behavior: 'smooth'
+                        behavior: behavior // <-- Aplica a animação escolhida aqui
                     });
                 });
             });
@@ -1528,7 +1531,8 @@
             document.getElementById('welcomeScreen').style.display = 'flex';
         } else {
             document.getElementById('welcomeScreen').style.display = 'none';
-            scrollToToday();
+            // 1º Rolagem: Sem animação (Rápido para o Lighthouse)
+            scrollToToday('auto'); 
         }
     });
 
