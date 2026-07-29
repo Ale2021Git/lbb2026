@@ -398,6 +398,218 @@
                 backface-visibility: hidden;
             }
         }
+
+        /* ===== ESTILOS DA SEÇÃO CARTILHAS ===== */
+        .cartilha-titulo {
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 1.5em;
+            margin: 0 0 6px 0;
+        }
+        .cartilha-sub {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        .cartilha-conteudo {
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+        .cartilha-conteudo strong {
+            color: var(--primary);
+        }
+        .cartilha-conteudo ul {
+            padding-left: 20px;
+        }
+        .cartilha-conteudo li {
+            margin-bottom: 8px;
+        }
+        .cartilha-destaque {
+            background: var(--bg);
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .cartilha-exemplo {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px dashed var(--border);
+        }
+        .cartilha-progresso {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .cartilha-progresso-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 80px;
+        }
+        .cartilha-progresso-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.5s;
+        }
+        .cartilha-progresso-text {
+            font-weight: 700;
+            font-size: 0.9em;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+        .cartilha-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .cartilha-tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85em;
+            color: var(--text);
+            opacity: 0.5;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cartilha-tab-btn.active {
+            opacity: 1;
+            background: var(--primary);
+            color: white;
+        }
+        .cartilha-tab-btn .material-symbols-outlined {
+            font-size: 18px;
+        }
+        .cartilha-tab-btn.lida {
+            opacity: 0.7;
+            text-decoration: line-through;
+        }
+        .cartilha-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .cartilha-panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .cartilha-btn-marcar {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 18px;
+            font-weight: 800;
+            font-size: 1em;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .cartilha-btn-marcar:active {
+            transform: scale(0.97);
+        }
+        .cartilha-btn-marcar.marcado {
+            background: var(--border);
+            color: var(--text);
+        }
+        .cartilha-btn-marcar .material-symbols-outlined {
+            font-size: 22px;
+        }
+        .cartilha-quiz {
+            margin-top: 25px;
+            border-top: 2px solid var(--border);
+            padding-top: 20px;
+        }
+        .cartilha-quiz h4 {
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+        .quiz-pergunta {
+            font-weight: 700;
+            margin: 12px 0 6px 0;
+        }
+        .quiz-opcoes {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .quiz-opcao {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-weight: 600;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .quiz-opcao:active {
+            transform: scale(0.97);
+        }
+        .quiz-opcao.certa {
+            border-color: var(--primary);
+            background: rgba(0,169,122,0.15);
+        }
+        .quiz-opcao.errada {
+            border-color: #e74c3c;
+            background: rgba(231,76,60,0.15);
+        }
+        .quiz-opcao.desabilitada {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .quiz-feedback {
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .quiz-feedback.certo { color: var(--primary); }
+        .quiz-feedback.errado { color: #e74c3c; }
+        .cartilha-stats {
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            border: 1px solid var(--border);
+        }
+        .cartilha-stats span {
+            font-weight: 700;
+            font-size: 0.85em;
+        }
+        .cartilha-stats .stat-num {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -409,7 +621,7 @@
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
-    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.4 / 2026 / 2027</div>
+    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.6 / 2026 / 2027</div>
 </div>
 
 <button id="install-button" onclick="installPWA()">
@@ -462,7 +674,6 @@
 </header>
 
 <main id="main-content">
-    <!-- Título semântico para acessibilidade -->
     <h1 class="sr-only">Escala Braun OnLine</h1>
 <div class="status-panel" aria-live="polite">
     <div id="big-clock" class="clock">00:00:00</div>
@@ -486,7 +697,7 @@
         </div>
         <div>
             <div class="drawer-brand-text">Braun OnLine</div>
-            <div class="drawer-brand-sub">v3.3· 2026/2027</div>
+            <div class="drawer-brand-sub">v3.6 · 2026/2027</div>
         </div>
         <button class="drawer-close-btn" onclick="closeHamburger()" aria-label="Fechar menu">
             <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -528,6 +739,16 @@
             <div>
                 <div class="drawer-item-label">Meus Pedidos</div>
                 <div class="drawer-item-sub">Uniformes e requisitos</div>
+            </div>
+            <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
+        </button>
+
+        <div class="drawer-section-label">Aprendizado</div>
+        <button class="drawer-item highlight" onclick="closeHamburger(); openCartilhas();">
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📘</div>
+            <div>
+                <div class="drawer-item-label">Cartilhas</div>
+                <div class="drawer-item-sub">Kaizen · 5S · PDCA · Qualidade · Segurança · BPF · Sustentabilidade · Compliance</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
@@ -575,6 +796,37 @@
     VOTE AQUI
 </button>
 
+<!-- ============ MODAL CARTILHAS ============ -->
+<div id="cartilhasCard" class="bottom-modal" role="dialog" aria-label="Cartilhas" aria-modal="true">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <h2 style="font-weight:800;color:var(--primary);margin:0;">📘 Cartilhas</h2>
+        <span style="font-size:0.75em; opacity:0.5; font-weight:600;" id="cartilhaVersao">v1.0</span>
+    </div>
+    <div class="cartilha-sub">Aprenda sobre melhorias contínuas, qualidade, segurança, compliance e muito mais.</div>
+
+    <!-- Progresso -->
+    <div class="cartilha-progresso">
+        <span style="font-weight:600; font-size:0.85em;">Progresso</span>
+        <div class="cartilha-progresso-bar">
+            <div class="cartilha-progresso-bar-fill" id="progressoFill" style="width:0%;"></div>
+        </div>
+        <span class="cartilha-progresso-text" id="progressoTexto">0/8</span>
+    </div>
+
+    <!-- Abas -->
+    <div class="cartilha-tabs" id="cartilhaTabs">
+        <!-- Gerado via JS -->
+    </div>
+
+    <!-- Painéis -->
+    <div id="cartilhaPanels">
+        <!-- Gerado via JS -->
+    </div>
+
+    <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
+</div>
+
+<!-- ============ MODAIS EXISTENTES (mantidos) ============ -->
 <div id="infoCard" class="bottom-modal" role="dialog" aria-label="Informações do dia" aria-modal="true">
     <div id="card-data" style="font-weight:800;color:var(--primary);font-size:1.3em;margin-bottom:10px;"></div>
     <div class="lote-box">
@@ -772,7 +1024,7 @@
     // ==============================================================
     // CONTROLE DE VERSÃO - FORÇA ATUALIZAÇÃO
     // ==============================================================
-    const APP_VERSION = '2026.07.02'; // Força atualização do Service Worker
+    const APP_VERSION = '2026.07.04'; // Força atualização do Service Worker
 
     function getStorageValue(key) {
         try { return localStorage.getItem(key); } catch (e) {
@@ -844,9 +1096,7 @@
         const modal = document.getElementById(modalId);
         if (!modal) return;
 
-        // Armazena o elemento que estava com foco antes de abrir
         lastFocusedElement = document.activeElement;
-
         overlay.style.display = 'block';
         modal.classList.add('show');
 
@@ -856,7 +1106,6 @@
         activeModalElement = modal;
         document.addEventListener('keydown', trapFocus);
 
-        // Foca no primeiro elemento interativo do modal
         const firstFocusable = modal.querySelector(focusableElementsSelector);
         if (firstFocusable) {
             setTimeout(() => firstFocusable.focus(), 50);
@@ -1076,13 +1325,12 @@
     // ================= FUNÇÃO ULTRA-OTIMIZADA (RequestAnimationFrame) =================
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
-        box.innerHTML = ''; // Limpa o container
+        box.innerHTML = '';
         let currentMonth = 0;
         const totalMonths = 12;
 
         function construirProximoMes() {
             if (currentMonth >= totalMonths) {
-                // Calendário 100% carregado. Rola suavemente apenas se o usuário não mexer na tela antes
                 setTimeout(() => scrollToToday('smooth'), 300);
                 return;
             }
@@ -1160,7 +1408,6 @@
             box.appendChild(container);
             currentMonth++;
             
-            // CRUCIAL: requestAnimationFrame sincroniza com o ciclo de pintura do navegador
             requestAnimationFrame(() => setTimeout(construirProximoMes, 0));
         }
 
@@ -1222,7 +1469,6 @@
         const disp = document.getElementById('lote-display');
         const orig = disp.innerText;
 
-        // Funcionalidade robusta com fallback
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(lote).catch(() => {});
         } else {
@@ -1471,7 +1717,6 @@
         document.querySelectorAll('.bottom-modal').forEach(el => el.classList.remove('show'));
         document.removeEventListener('keydown', trapFocus);
         activeModalElement = null;
-        // Restaura o foco
         if (lastFocusedElement && lastFocusedElement.focus) {
             lastFocusedElement.focus();
             lastFocusedElement = null;
@@ -1492,7 +1737,6 @@
             const container = hoje.closest('.mes-container');
             if (!container) return;
             
-            // Previne Forced Reflow ao executar o cálculo no próximo ciclo de renderização
             requestAnimationFrame(() => {
                 const header = document.querySelector('header');
                 const statusPanel = document.querySelector('.status-panel');
@@ -1509,6 +1753,438 @@
                 });
             });
         }, 100);
+    }
+
+    // ==============================================================
+    // ==================== SEÇÃO CARTILHAS =========================
+    // ==============================================================
+
+    // Dados das cartilhas (8 temas)
+    const cartilhasData = [
+        {
+            id: 'kaizen',
+            icone: 'trending_up',
+            titulo: 'Kaizen – Melhoria Contínua',
+            conteudo: `
+                <p><strong>Kaizen</strong> é uma filosofia japonesa que significa "mudança para melhor". No ambiente industrial, ela se traduz em <strong>pequenas melhorias diárias</strong> realizadas por todos os colaboradores.</p>
+                <div class="cartilha-destaque">
+                    <strong>Princípios do Kaizen:</strong><br>
+                    • Eliminar desperdícios (Muda)<br>
+                    • Padronizar processos<br>
+                    • Envolver todos os níveis hierárquicos<br>
+                    • Focar em dados e fatos
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo prático:</strong> Um operador percebe que a troca de ferramenta em uma máquina demora 15 minutos. Ele sugere uma nova disposição das ferramentas, reduzindo o tempo para 8 minutos – uma melhoria simples, mas que gera ganho de produtividade.
+                </div>
+                <p><strong>Benefícios:</strong> Aumento da eficiência, redução de custos, maior engajamento da equipe e melhoria da qualidade.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'O que significa a palavra Kaizen?',
+                    opcoes: ['Grande revolução', 'Mudança para melhor', 'Padronização total', 'Controle de qualidade'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'Qual é um dos princípios do Kaizen?',
+                    opcoes: ['Focar apenas em grandes mudanças', 'Eliminar desperdícios', 'Centralizar decisões na diretoria', 'Ignorar dados'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'O Kaizen busca melhorias:',
+                    opcoes: ['Apenas na produção', 'Somente na gestão', 'Pequenas e diárias', 'Apenas em crises'],
+                    certa: 2
+                }
+            ]
+        },
+        {
+            id: '5s',
+            icone: 'cleaning_services',
+            titulo: 'Os 5S – Organização e Limpeza',
+            conteudo: `
+                <p>Os <strong>5S</strong> são cinco sensos que promovem um ambiente de trabalho organizado, limpo e seguro. Eles são a base para a qualidade e produtividade.</p>
+                <div class="cartilha-destaque">
+                    <strong>Os 5S:</strong><br>
+                    <b>1. Seiri (Utilização):</b> Separar o que é útil do que não é.<br>
+                    <b>2. Seiton (Ordenação):</b> Organizar cada coisa em seu lugar.<br>
+                    <b>3. Seiso (Limpeza):</b> Manter o ambiente limpo.<br>
+                    <b>4. Seiketsu (Padronização):</b> Criar regras para manter os três primeiros.<br>
+                    <b>5. Shitsuke (Disciplina):</b> Seguir os padrões com disciplina.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Na área de produção, aplicar o 5S significa que ferramentas têm lugar fixo, pisos estão sempre limpos e todos sabem onde encontrar o que precisam, reduzindo perda de tempo.
+                </div>
+                <p><strong>Resultado:</strong> Menos acidentes, maior qualidade, melhor clima organizacional e eficiência operacional.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'Quantos sensos compõem os 5S?',
+                    opcoes: ['3', '5', '7', '10'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'O Seiri (Utilização) consiste em:',
+                    opcoes: ['Limpar o ambiente', 'Organizar ferramentas', 'Separar o útil do inútil', 'Criar padrões'],
+                    certa: 2
+                },
+                {
+                    pergunta: 'Qual senso trata da "Disciplina" para manter os padrões?',
+                    opcoes: ['Seiso', 'Seiketsu', 'Shitsuke', 'Seiton'],
+                    certa: 2
+                }
+            ]
+        },
+        {
+            id: 'pdca',
+            icone: 'cycle',
+            titulo: 'PDCA – Planejar, Fazer, Checar, Agir',
+            conteudo: `
+                <p>O <strong>PDCA</strong> é um método de gestão para resolver problemas e implementar melhorias de forma estruturada. É um ciclo contínuo.</p>
+                <div class="cartilha-destaque">
+                    <strong>Etapas do PDCA:</strong><br>
+                    <b>P (Plan – Planejar):</b> Definir metas e plano de ação.<br>
+                    <b>D (Do – Fazer):</b> Executar o plano.<br>
+                    <b>C (Check – Checar):</b> Verificar os resultados.<br>
+                    <b>A (Act – Agir):</b> Padronizar ou corrigir o que deu errado.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Uma linha de envase apresenta variação de peso. A equipe planeja ajustar a máquina (P), executa (D), mede os pesos (C) e, se o resultado for bom, padroniza o ajuste (A). Se não, recomeça o ciclo.
+                </div>
+                <p><strong>Uso:</strong> O PDCA é usado em projetos de melhoria, auditorias, gestão de qualidade e rotinas operacionais.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'O que significa a sigla PDCA?',
+                    opcoes: ['Planejar, Definir, Controlar, Aplicar', 'Planejar, Fazer, Checar, Agir', 'Produzir, Distribuir, Controlar, Avaliar', 'Padronizar, Dirigir, Controlar, Ajustar'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'Na etapa "C" (Check), o que deve ser feito?',
+                    opcoes: ['Executar o plano', 'Verificar os resultados', 'Padronizar a solução', 'Definir metas'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'O PDCA é um ciclo:',
+                    opcoes: ['Linear', 'Contínuo', 'Apenas para gestores', 'Somente para produção'],
+                    certa: 1
+                }
+            ]
+        },
+        {
+            id: 'ferramentas',
+            icone: 'build',
+            titulo: 'Ferramentas da Qualidade',
+            conteudo: `
+                <p>Existem diversas ferramentas para identificar e resolver problemas de qualidade. As mais conhecidas são:</p>
+                <div class="cartilha-destaque">
+                    <strong>Principais ferramentas:</strong><br>
+                    • <b>Diagrama de Ishikawa (Espinha de Peixe):</b> Identifica causas raiz de um problema.<br>
+                    • <b>5 Porquês:</b> Perguntar "por quê" sucessivamente para chegar à causa raiz.<br>
+                    • <b>Fluxograma:</b> Mapeia o processo passo a passo.<br>
+                    • <b>Gráfico de Pareto:</b> Prioriza os problemas mais frequentes.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Um produto apresenta defeito. Usando o Diagrama de Ishikawa, a equipe lista possíveis causas (máquina, material, método, mão de obra, meio ambiente) e encontra que o material estava fora da especificação.
+                </div>
+                <p><strong>Benefícios:</strong> Resolução mais rápida de problemas, redução de retrabalho e aumento da satisfação do cliente.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'Qual ferramenta é usada para encontrar causas raiz?',
+                    opcoes: ['Gráfico de Pareto', 'Diagrama de Ishikawa', 'Fluxograma', '5 Porquês'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'O que o Diagrama de Ishikawa também é chamado?',
+                    opcoes: ['Diagrama de Causa e Efeito', 'Diagrama de Pareto', 'Gráfico de Controle', 'Fluxograma'],
+                    certa: 0
+                },
+                {
+                    pergunta: 'Para priorizar problemas, qual ferramenta é recomendada?',
+                    opcoes: ['5 Porquês', 'Fluxograma', 'Gráfico de Pareto', 'Ishikawa'],
+                    certa: 2
+                }
+            ]
+        },
+        {
+            id: 'seguranca',
+            icone: 'security',
+            titulo: 'Segurança do Trabalho',
+            conteudo: `
+                <p>A segurança é prioridade na Braun. Todos os colaboradores devem conhecer e aplicar as normas de prevenção.</p>
+                <div class="cartilha-destaque">
+                    <strong>Pilares da Segurança:</strong><br>
+                    • Usar <b>EPIs</b> (capacete, óculos, luvas, etc.) corretamente.<br>
+                    • Manter a área de trabalho organizada (5S).<br>
+                    • Conhecer os <b>procedimentos de emergência</b> e rotas de fuga.<br>
+                    • Reportar imediatamente qualquer <b>condição insegura</b>.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Um colaborador percebe um piso escorregadio. Ele sinaliza o local, comunica a liderança e a equipe de manutenção resolve o problema antes que ocorra um acidente.
+                </div>
+                <p><strong>Compromisso:</strong> Segurança é responsabilidade de todos. Cada um de nós é agente de prevenção.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'Qual a primeira ação ao identificar um risco?',
+                    opcoes: ['Ignorar', 'Sinalizar e comunicar', 'Continuar trabalhando', 'Aguardar o supervisor'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'EPI significa:',
+                    opcoes: ['Equipamento de Proteção Individual', 'Equipamento de Produção Interna', 'Estação de Proteção Integrada', 'Equipamento Preventivo Industrial'],
+                    certa: 0
+                },
+                {
+                    pergunta: 'O que deve ser feito em caso de emergência?',
+                    opcoes: ['Correr para a saída', 'Seguir o plano de emergência e rotas de fuga', 'Aguardar instruções', 'Filmar o ocorrido'],
+                    certa: 1
+                }
+            ]
+        },
+        {
+            id: 'bpf',
+            icone: 'medication',
+            titulo: 'Boas Práticas de Fabricação (BPF)',
+            conteudo: `
+                <p>As <strong>BPF</strong> são um conjunto de procedimentos que garantem a qualidade e segurança dos produtos, especialmente na indústria farmacêutica e alimentícia.</p>
+                <div class="cartilha-destaque">
+                    <strong>Princípios das BPF:</strong><br>
+                    • <b>Higiene</b> – colaboradores devem manter-se limpos e usar vestimentas adequadas.<br>
+                    • <b>Controle de processos</b> – cada etapa deve ser monitorada.<br>
+                    • <b>Rastreabilidade</b> – todos os materiais e produtos devem ser identificados.<br>
+                    • <b>Documentação</b> – registrar todas as atividades.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Na área de envase, os operadores seguem um checklist de limpeza antes de iniciar a produção, registram temperaturas e umidade, e todo lote é identificado com código de rastreabilidade.
+                </div>
+                <p><strong>Importância:</strong> BPF evitam contaminações, garantem a eficácia dos produtos e atendem às exigências da ANVISA.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'O que as BPF garantem?',
+                    opcoes: ['Apenas a produtividade', 'Qualidade e segurança do produto', 'Redução de custos', 'Aumento de vendas'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'Um princípio fundamental das BPF é:',
+                    opcoes: ['Usar qualquer roupa', 'Não registrar atividades', 'Manter a higiene pessoal', 'Trabalhar sem supervisão'],
+                    certa: 2
+                },
+                {
+                    pergunta: 'A rastreabilidade permite:',
+                    opcoes: ['Aumentar a velocidade da produção', 'Identificar a origem de um lote', 'Reduzir colaboradores', 'Eliminar a documentação'],
+                    certa: 1
+                }
+            ]
+        },
+        {
+            id: 'sustentabilidade',
+            icone: 'eco',
+            titulo: 'Sustentabilidade e Redução de Desperdícios',
+            conteudo: `
+                <p>A Braun está comprometida com a sustentabilidade. Todos podemos contribuir com pequenas atitudes que fazem grande diferença.</p>
+                <div class="cartilha-destaque">
+                    <strong>Ações sustentáveis no dia a dia:</strong><br>
+                    • <b>Economia de energia</b> – apagar luzes e desligar máquinas quando não em uso.<br>
+                    • <b>Uso racional de água</b> – evitar vazamentos e desperdícios.<br>
+                    • <b>Separação de resíduos</b> – reciclar corretamente plástico, papel e metal.<br>
+                    • <b>Redução de materiais</b> – evitar impressões desnecessárias e otimizar o uso de insumos.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Ao final do turno, verifique se as máquinas estão desligadas, as luzes apagadas e os resíduos foram descartados nos coletores adequados. Uma simples atitude que reduz o impacto ambiental.
+                </div>
+                <p><strong>Impacto:</strong> Além de preservar o meio ambiente, a sustentabilidade gera economia de recursos e fortalece a imagem da empresa.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'Qual atitude contribui para a sustentabilidade?',
+                    opcoes: ['Deixar luzes acesas', 'Descartar resíduos corretamente', 'Usar água em excesso', 'Imprimir documentos desnecessários'],
+                    certa: 1
+                },
+                {
+                    pergunta: 'A redução de desperdícios beneficia:',
+                    opcoes: ['Apenas o meio ambiente', 'Apenas a empresa', 'Todos (ambiente, empresa e colaboradores)', 'Nenhum dos anteriores'],
+                    certa: 2
+                },
+                {
+                    pergunta: 'Qual atitude NÃO é sustentável?',
+                    opcoes: ['Desligar equipamentos no fim do turno', 'Reciclar materiais', 'Deixar torneira pingando', 'Reutilizar papel'],
+                    certa: 2
+                }
+            ]
+        },
+        // ===== NOVA CARTILHA: COMPLIANCE =====
+        {
+            id: 'compliance',
+            icone: 'gavel',
+            titulo: 'Compliance – Ética e Integridade',
+            conteudo: `
+                <p><strong>Compliance</strong> significa agir de acordo com as leis, regulamentos e princípios éticos da empresa. Na Braun, a integridade é um valor inegociável.</p>
+                <div class="cartilha-destaque">
+                    <strong>Pilares do Compliance na Braun:</strong><br>
+                    • <b>Código de Conduta:</b> Guia de comportamento esperado de todos.<br>
+                    • <b>Conflito de Interesses:</b> Evitar situações onde interesses pessoais entrem em conflito com os da empresa.<br>
+                    • <b>Anticorrupção:</b> Não oferecer, receber ou solicitar vantagens indevidas.<br>
+                    • <b>Proteção de Dados (LGPD):</b> Tratar informações pessoais com segurança e sigilo.<br>
+                    • <b>Canal de Denúncia:</b> Reportar qualquer irregularidade de forma segura e anônima.
+                </div>
+                <div class="cartilha-exemplo">
+                    <strong>Exemplo:</strong> Um fornecedor oferece um presente de alto valor a um colaborador para agilizar um contrato. A conduta correta é recusar o presente e reportar o ocorrido ao Canal de Denúncia da Braun.
+                </div>
+                <p><strong>Compromisso:</strong> Todos os colaboradores, independentemente do nível hierárquico, são responsáveis por manter a ética e a transparência em suas ações diárias.</p>
+            `,
+            quiz: [
+                {
+                    pergunta: 'O que é Compliance?',
+                    opcoes: [
+                        'Um cargo na diretoria',
+                        'Um conjunto de regras para garantir ética e conformidade',
+                        'Um programa de treinamento técnico',
+                        'Uma ferramenta de produção'
+                    ],
+                    certa: 1
+                },
+                {
+                    pergunta: 'Ao receber um presente de um fornecedor, o correto é:',
+                    opcoes: [
+                        'Aceitar normalmente',
+                        'Recusar e reportar ao Canal de Denúncia',
+                        'Aceitar apenas se for de pequeno valor',
+                        'Dividir com a equipe'
+                    ],
+                    certa: 1
+                },
+                {
+                    pergunta: 'Quem deve seguir as regras de Compliance?',
+                    opcoes: [
+                        'Apenas a diretoria',
+                        'Apenas o RH',
+                        'Todos os colaboradores',
+                        'Apenas fornecedores'
+                    ],
+                    certa: 2
+                }
+            ]
+        }
+    ];
+
+    // Variáveis de estado das cartilhas
+    let cartilhaAtiva = 'kaizen';
+    let cartilhasLidas = JSON.parse(getStorageValue('braun_cartilhas_lidas') || '[]');
+
+    function openCartilhas() {
+        closeHamburger();
+        renderCartilhas();
+        focusModal('cartilhasCard');
+    }
+
+    function renderCartilhas() {
+        const tabsContainer = document.getElementById('cartilhaTabs');
+        const panelsContainer = document.getElementById('cartilhaPanels');
+        tabsContainer.innerHTML = '';
+        panelsContainer.innerHTML = '';
+
+        // Ordenar cartilhas: lidas por último
+        const sorted = [...cartilhasData].sort((a, b) => {
+            const aLida = cartilhasLidas.includes(a.id) ? 1 : 0;
+            const bLida = cartilhasLidas.includes(b.id) ? 1 : 0;
+            return aLida - bLida;
+        });
+
+        sorted.forEach((cart, idx) => {
+            const isActive = cart.id === cartilhaAtiva;
+            const estaLida = cartilhasLidas.includes(cart.id);
+
+            // Aba
+            const btn = document.createElement('button');
+            btn.className = `cartilha-tab-btn${isActive ? ' active' : ''}${estaLida ? ' lida' : ''}`;
+            btn.setAttribute('data-target', cart.id);
+            btn.innerHTML = `<span class="material-symbols-outlined">${cart.icone}</span> ${cart.titulo.split('–')[0].trim()}`;
+            btn.onclick = () => {
+                cartilhaAtiva = cart.id;
+                renderCartilhas();
+            };
+            tabsContainer.appendChild(btn);
+
+            // Painel
+            const panel = document.createElement('div');
+            panel.className = `cartilha-panel${isActive ? ' active' : ''}`;
+            panel.id = `panel-${cart.id}`;
+            panel.innerHTML = `
+                <div class="cartilha-titulo">${cart.icone ? `<span class="material-symbols-outlined" style="font-size:28px;vertical-align:middle;">${cart.icone}</span>` : ''} ${cart.titulo}</div>
+                <div class="cartilha-conteudo">${cart.conteudo}</div>
+                <button class="cartilha-btn-marcar ${estaLida ? 'marcado' : ''}" onclick="toggleCartilhaLida('${cart.id}')">
+                    <span class="material-symbols-outlined">${estaLida ? 'check_circle' : 'circle'}</span>
+                    ${estaLida ? 'MARCADA COMO LIDA' : 'MARCAR COMO LIDA'}
+                </button>
+                <div class="cartilha-quiz">
+                    <h4>📝 Teste seu conhecimento</h4>
+                    ${cart.quiz.map((q, qi) => `
+                        <div class="quiz-pergunta">${qi+1}. ${q.pergunta}</div>
+                        <div class="quiz-opcoes" id="quiz-${cart.id}-${qi}">
+                            ${q.opcoes.map((op, oi) => `
+                                <div class="quiz-opcao" onclick="responderQuiz('${cart.id}', ${qi}, ${oi})">${op}</div>
+                            `).join('')}
+                        </div>
+                        <div class="quiz-feedback" id="feedback-${cart.id}-${qi}"></div>
+                    `).join('')}
+                </div>
+            `;
+            panelsContainer.appendChild(panel);
+        });
+
+        // Atualizar progresso
+        atualizarProgresso();
+    }
+
+    function toggleCartilhaLida(id) {
+        const index = cartilhasLidas.indexOf(id);
+        if (index > -1) {
+            cartilhasLidas.splice(index, 1);
+        } else {
+            cartilhasLidas.push(id);
+        }
+        setStorageValue('braun_cartilhas_lidas', JSON.stringify(cartilhasLidas));
+        renderCartilhas();
+    }
+
+    function atualizarProgresso() {
+        const total = cartilhasData.length;
+        const lidas = cartilhasLidas.length;
+        const pct = Math.round((lidas / total) * 100);
+        document.getElementById('progressoFill').style.width = pct + '%';
+        document.getElementById('progressoTexto').innerText = `${lidas}/${total}`;
+    }
+
+    function responderQuiz(cartId, qIndex, opIndex) {
+        const cart = cartilhasData.find(c => c.id === cartId);
+        if (!cart) return;
+        const q = cart.quiz[qIndex];
+        const opcoesDiv = document.getElementById(`quiz-${cartId}-${qIndex}`);
+        const feedback = document.getElementById(`feedback-${cartId}-${qIndex}`);
+
+        // Desabilitar todas as opções
+        opcoesDiv.querySelectorAll('.quiz-opcao').forEach(el => el.classList.add('desabilitada'));
+
+        // Destacar certa e errada
+        const opEls = opcoesDiv.querySelectorAll('.quiz-opcao');
+        opEls.forEach((el, i) => {
+            if (i === q.certa) {
+                el.classList.add('certa');
+            } else if (i === opIndex && opIndex !== q.certa) {
+                el.classList.add('errada');
+            }
+        });
+
+        // Feedback
+        if (opIndex === q.certa) {
+            feedback.innerHTML = '✅ Correto!';
+            feedback.className = 'quiz-feedback certo';
+        } else {
+            feedback.innerHTML = '❌ Incorreto. A resposta certa é: ' + q.opcoes[q.certa];
+            feedback.className = 'quiz-feedback errado';
+        }
     }
 
     // ==================== INICIALIZAÇÃO ====================
@@ -1529,6 +2205,8 @@
             document.getElementById('welcomeScreen').style.display = 'none';
             scrollToToday('auto'); 
         }
+        // Inicializa progresso das cartilhas
+        atualizarProgresso();
     });
 
 </script>

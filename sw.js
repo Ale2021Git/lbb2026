@@ -1,5 +1,5 @@
 // Nome do cache - Versão atualizada para forçar atualização
-const CACHE_NAME = 'braun-v3.4';
+const CACHE_NAME = 'braun-v3.5';
 
 // Lista de arquivos essenciais
 const assets = [
