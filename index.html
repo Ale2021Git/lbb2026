@@ -222,18 +222,47 @@
         .lote-value { font-family: 'JetBrains Mono', monospace; font-size: 1.6em; font-weight: 800; color: var(--text); letter-spacing: 2px; }
         .lote-copy { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--primary); cursor: pointer; background: none; border: none; }
         .privacy-link { color: var(--primary); font-weight: 800; text-decoration: none; display: block; margin-top: 10px; cursor: pointer; background: none; border: none; font-size: inherit; }
-        #btn-flutuante-votar {
+        /* Botão flutuante de Novidades - aparece apenas se houver novidades não lidas */
+        #btn-flutuante-novidades {
             position: fixed; bottom: 95px; right: 20px;
-            background: linear-gradient(135deg, #FFD700, #EBC13D); color: #1A1A1A;
-            border: none; border-radius: 50px; padding: 12px 22px; font-weight: 800;
-            font-size: 0.85em; display: none; align-items: center; gap: 8px;
+            background: var(--primary); color: white;
+            border: none; border-radius: 50px; padding: 12px 22px;
+            font-weight: 800; font-size: 0.85em;
+            display: none; /* Oculto por padrão, JS mostra se houver novidades */
+            align-items: center; gap: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.25); z-index: 900;
             animation: bounceIn 0.8s cubic-bezier(0.68,-0.55,0.27,1.55);
-            text-decoration: none; cursor: pointer; border: 2px solid white;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.4);
+            transition: 0.2s;
+        }
+        #btn-flutuante-novidades:active { transform: scale(0.95); }
+        #btn-flutuante-novidades .badge {
+            background: #e74c3c; color: white; border-radius: 50%;
+            font-size: 0.7em; font-weight: 900; padding: 2px 8px;
+            margin-left: 4px;
         }
         @keyframes bounceIn {
             from { opacity: 0; transform: scale(0.5) translateY(20px); }
             to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        /* Animação do sininho */
+        @keyframes shake-bell {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-15deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-10deg); }
+            50% { transform: rotate(5deg); }
+            60% { transform: rotate(-5deg); }
+            70% { transform: rotate(2deg); }
+            80% { transform: rotate(-2deg); }
+            90% { transform: rotate(0deg); }
+        }
+        #btn-flutuante-novidades .animar-sino {
+            display: inline-block;
+            animation: shake-bell 1.2s ease-in-out infinite;
+            transform-origin: top center;
         }
         .hamburger-btn {
             background: none; border: none; color: white; cursor: pointer;
@@ -472,33 +501,36 @@
             gap: 8px;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--border);
-            padding-bottom: 10px;
+            padding-bottom: 12px;
         }
         .cartilha-tab-btn {
-            background: none;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            background: var(--bg);
+            border: 2px solid transparent;
+            padding: 8px 14px;
+            border-radius: 30px;
             font-weight: 700;
-            font-size: 0.85em;
+            font-size: 0.8em;
             color: var(--text);
-            opacity: 0.5;
+            opacity: 0.7;
             cursor: pointer;
             transition: 0.2s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .cartilha-tab-btn.active {
             opacity: 1;
             background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
         .cartilha-tab-btn .material-symbols-outlined {
             font-size: 18px;
         }
         .cartilha-tab-btn.lida {
-            opacity: 0.7;
+            opacity: 0.5;
             text-decoration: line-through;
         }
         .cartilha-panel {
@@ -509,7 +541,7 @@
             display: block;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to   { opacity: 1; transform: translateY(0); }
         }
         .cartilha-btn-marcar {
@@ -591,24 +623,64 @@
         }
         .quiz-feedback.certo { color: var(--primary); }
         .quiz-feedback.errado { color: #e74c3c; }
-        .cartilha-stats {
-            background: var(--bg);
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 15px;
+
+        /* ===== ESTILOS DAS NOVIDADES ===== */
+        .novidades-timeline {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 10px;
+        }
+        .novidade-card {
+            background: var(--bg);
+            border-radius: 16px;
+            padding: 16px;
             border: 1px solid var(--border);
+            transition: 0.2s;
+            cursor: pointer;
         }
-        .cartilha-stats span {
-            font-weight: 700;
-            font-size: 0.85em;
+        .novidade-card:active {
+            transform: scale(0.98);
         }
-        .cartilha-stats .stat-num {
+        .novidade-card.lida {
+            opacity: 0.6;
+        }
+        .novidade-card .novidade-titulo {
+            font-weight: 800;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .novidade-card .novidade-desc {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+        .novidade-card .novidade-data {
+            font-size: 0.7em;
+            opacity: 0.5;
+            margin-top: 8px;
+            display: block;
+        }
+        .novidade-card .badge-novo {
+            background: var(--primary);
+            color: white;
+            font-size: 0.6em;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        .novidade-card .link-cartilha {
             color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 6px;
         }
     </style>
 </head>
@@ -697,7 +769,7 @@
         </div>
         <div>
             <div class="drawer-brand-text">Braun OnLine</div>
-            <div class="drawer-brand-sub">v3.6 · 2026/2027</div>
+            <div class="drawer-brand-sub">v3.7 · 2026/2027</div>
         </div>
         <button class="drawer-close-btn" onclick="closeHamburger()" aria-label="Fechar menu">
             <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -748,7 +820,7 @@
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📘</div>
             <div>
                 <div class="drawer-item-label">Cartilhas</div>
-                <div class="drawer-item-sub">Kaizen · 5S · PDCA · Qualidade · Segurança · BPF · Sustentabilidade · Compliance</div>
+                <div class="drawer-item-sub">Kaizen · 5S · PDCA · Qualidade · Segurança · BPF · Sustentabilidade · Compliance · Incêndio</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
@@ -791,10 +863,25 @@
 
 <div id="overlay" onclick="closeAllModals()" aria-hidden="true"></div>
 
-<button id="btn-flutuante-votar" onclick="registrarVoto()" aria-label="Votar na pesquisa">
-    <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">award_star</span>
-    VOTE AQUI
+<!-- BOTÃO FLUTUANTE DE NOVIDADES com sininho animado -->
+<button id="btn-flutuante-novidades" onclick="openNovidades()" aria-label="Novidades">
+    <span class="material-symbols-outlined animar-sino" id="sinoIcon">notifications</span>
+    Novidades
+    <span class="badge" id="novidadesBadge" style="display:none;">0</span>
 </button>
+
+<!-- ============ MODAL NOVIDADES ============ -->
+<div id="novidadesCard" class="bottom-modal" role="dialog" aria-label="Novidades" aria-modal="true">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <h2 style="font-weight:800;color:var(--primary);margin:0;">🔔 Novidades</h2>
+        <button onclick="marcarTodasNovidadesLidas()" style="background:none;border:none;color:var(--primary);font-weight:700;font-size:0.8em;cursor:pointer;">Marcar todas como lidas</button>
+    </div>
+    <div class="cartilha-sub">Fique por dentro das últimas atualizações e conteúdos.</div>
+    <div id="novidadesLista" class="novidades-timeline">
+        <!-- renderizado via JS -->
+    </div>
+    <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
+</div>
 
 <!-- ============ MODAL CARTILHAS ============ -->
 <div id="cartilhasCard" class="bottom-modal" role="dialog" aria-label="Cartilhas" aria-modal="true">
@@ -802,7 +889,7 @@
         <h2 style="font-weight:800;color:var(--primary);margin:0;">📘 Cartilhas</h2>
         <span style="font-size:0.75em; opacity:0.5; font-weight:600;" id="cartilhaVersao">v1.0</span>
     </div>
-    <div class="cartilha-sub">Aprenda sobre melhorias contínuas, qualidade, segurança, compliance e muito mais.</div>
+    <div class="cartilha-sub">Aprenda sobre melhorias contínuas, qualidade, segurança, compliance, incêndio e muito mais.</div>
 
     <!-- Progresso -->
     <div class="cartilha-progresso">
@@ -810,7 +897,7 @@
         <div class="cartilha-progresso-bar">
             <div class="cartilha-progresso-bar-fill" id="progressoFill" style="width:0%;"></div>
         </div>
-        <span class="cartilha-progresso-text" id="progressoTexto">0/8</span>
+        <span class="cartilha-progresso-text" id="progressoTexto">0/9</span>
     </div>
 
     <!-- Abas -->
@@ -1024,7 +1111,7 @@
     // ==============================================================
     // CONTROLE DE VERSÃO - FORÇA ATUALIZAÇÃO
     // ==============================================================
-    const APP_VERSION = '2026.07.29'; // Força atualização do Service Worker
+    const APP_VERSION = '2026.07.06';
 
     function getStorageValue(key) {
         try { return localStorage.getItem(key); } catch (e) {
@@ -1042,11 +1129,9 @@
         }
     }
 
-    // Verifica se a versão mudou
     const storedVersion = getStorageValue('braun_app_version');
     if (storedVersion !== APP_VERSION) {
         console.log('🔄 Nova versão detectada. Atualizando...');
-        // Limpa o cache do Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(registrations => {
                 for (let reg of registrations) {
@@ -1055,17 +1140,13 @@
                 }
             });
         }
-        // Salva a nova versão
         setStorageValue('braun_app_version', APP_VERSION);
-        // Recarrega a página forçadamente
         window.location.reload();
     }
 
     // ==============================================================
-    // TODAS AS FUNÇÕES DO APP - VERSÃO CORRIGIDA
+    // ACESSIBILIDADE E DEMAIS FUNÇÕES
     // ==============================================================
-
-    // ==================== ACESSIBILIDADE: FOCUS TRAP ====================
     let activeModalElement = null;
     let lastFocusedElement = null;
     const focusableElementsSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -1213,7 +1294,7 @@
         }
     }
 
-    // ==================== INICIALIZAÇÃO ====================
+    // ==================== ESCALA ====================
     let currentRegion = getStorageValue('braun_last_region') || 'BR';
     let dataAtiva = '';
     const _escalaCache = new Map();
@@ -1267,7 +1348,6 @@
         if (badgeText) { badgeText.innerText = `Turma ${turmaLetra}`; }
     }
 
-    // ==================== ESCALA ====================
     function setRegion(r) {
         currentRegion = r;
         setStorageValue('braun_last_region', r);
@@ -1322,7 +1402,7 @@
         return d >= new Date(range.inicio + 'T00:00:00').getTime() && d <= new Date(range.fim + 'T00:00:00').getTime();
     }
 
-    // ================= FUNÇÃO ULTRA-OTIMIZADA (RequestAnimationFrame) =================
+    // ================= FUNÇÃO DE RENDERIZAÇÃO DO CALENDÁRIO =================
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
         box.innerHTML = '';
@@ -1432,19 +1512,13 @@
         }
     }
 
-    function gerenciarBotaoVotacao() {
-        const btn = document.getElementById('btn-flutuante-votar');
-        const agora = new Date();
-        const chave = `voto_realizado_${agora.getMonth()}_${agora.getFullYear()}`;
-        btn.style.display = getStorageValue(chave) === 'true' ? 'none' : 'flex';
-    }
-
-    function registrarVoto() {
-        const agora = new Date();
-        const chave = `voto_realizado_${agora.getMonth()}_${agora.getFullYear()}`;
-        window.open('https://forms.gle/KfS9XFv9UseZYqnS7', '_blank');
-        setStorageValue(chave, 'true');
-        document.getElementById('btn-flutuante-votar').style.display = 'none';
+    // ==================== FUNÇÕES DE APOIO ====================
+    function abrirFormularioVotacao() {
+        const nome = getStorageValue('braun_nome_completo') || 'Não informado';
+        const matricula = getStorageValue('braun_matricula') || 'Não informado';
+        const ano = getStorageValue('braun_ano') || '2026';
+        const link = `https://forms.gle/KfS9XFv9UseZYqnS7?entry.1=${encodeURIComponent(nome)}&entry.2=${encodeURIComponent(matricula)}&entry.3=${encodeURIComponent(ano)}`;
+        window.open(link, '_blank');
     }
 
     function openCard(iso) {
@@ -1515,23 +1589,15 @@
         document.getElementById('menuButton').focus();
     }
 
-    // ==================== MODAIS EXISTENTES ====================
-
-    function openRamais() {
-        focusModal('ramaisCard');
-    }
-
-    function openPrivacy() {
-        focusModal('privacyCard');
-    }
-
+    // ==================== MODAIS ====================
+    function openRamais() { focusModal('ramaisCard'); }
+    function openPrivacy() { focusModal('privacyCard'); }
     function openFerias() {
         document.getElementById('feriasInicio').value = getStorageValue('braun_ferias_inicio') || '';
         document.getElementById('feriasFim').value = getStorageValue('braun_ferias_fim') || '';
         document.getElementById('configCard').classList.remove('show');
         focusModal('feriasCard');
     }
-
     function saveFerias() {
         const ini = document.getElementById('feriasInicio').value;
         const fim = document.getElementById('feriasFim').value;
@@ -1542,23 +1608,19 @@
         clearFeriasCache();
         closeAllModals(); gerarCalendario(); tick();
     }
-
     function clearFerias() {
         removeStorageValue('braun_ferias_inicio');
         removeStorageValue('braun_ferias_fim');
         clearFeriasCache();
         closeAllModals(); gerarCalendario(); tick();
     }
-
     function openConfig() {
         document.getElementById('minimalGreetingToggle').checked = (getStorageValue('braun_minimal_greeting') === 'true');
         focusModal('configCard');
     }
-
     function toggleMinimalGreeting() {
         setStorageValue('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked);
     }
-
     function openStats() {
         const ano = parseInt(currentAno);
         const turma = currentTurma;
@@ -1659,37 +1721,6 @@
         document.getElementById('pedidoAno').innerText = ano;
     }
 
-    function abrirFormularioVotacao() {
-        const nome = getStorageValue('braun_nome_completo') || 'Não informado';
-        const matricula = getStorageValue('braun_matricula') || 'Não informado';
-        const ano = getStorageValue('braun_ano') || '2026';
-        const link = `https://forms.gle/KfS9XFv9UseZYqnS7?entry.1=${encodeURIComponent(nome)}&entry.2=${encodeURIComponent(matricula)}&entry.3=${encodeURIComponent(ano)}`;
-        window.open(link, '_blank');
-    }
-
-    function enviarPedidoEmail() {
-        const nome = document.getElementById('pedidoNome').innerText;
-        const matricula = document.getElementById('pedidoMatricula').innerText;
-        const turma = document.getElementById('pedidoTurma').innerText;
-        const ano = document.getElementById('pedidoAno').innerText;
-        const item = document.getElementById('pedidoItem').value;
-        const tamanho = document.getElementById('pedidoTamanho').value;
-        const obs = document.getElementById('pedidoObs').value;
-        
-        const corpo = `
-            Nome: ${nome}
-            Matrícula: ${matricula}
-            Turma: ${turma}
-            Ano: ${ano}
-            
-            Item desejado: ${item}
-            Tamanho: ${tamanho}
-            Observações: ${obs}
-        `;
-        const mailto = `mailto:em_breve@braun.com.br?subject=Pedido de Uniforme - ${nome}&body=${encodeURIComponent(corpo)}`;
-        window.open(mailto, '_blank');
-    }
-
     function openMeuPerfil() {
         closeHamburger();
         document.getElementById('nomePerfil').value = getStorageValue('braun_nome_completo') || '';
@@ -1728,7 +1759,6 @@
         setStorageValue('braun_dark_mode', document.body.classList.contains('dark-mode'));
     }
 
-    // ================== FUNÇÃO DE ROLAGEM REVISADA ==================
     function scrollToToday(behavior = 'auto') {
         setTimeout(() => {
             const hoje = document.querySelector('.hoje');
@@ -1756,320 +1786,142 @@
     }
 
     // ==============================================================
-    // ==================== SEÇÃO CARTILHAS =========================
+    // ==================== DADOS DAS CARTILHAS =====================
     // ==============================================================
-
-    // Dados das cartilhas (8 temas)
     const cartilhasData = [
         {
             id: 'kaizen',
             icone: 'trending_up',
             titulo: 'Kaizen – Melhoria Contínua',
-            conteudo: `
-                <p><strong>Kaizen</strong> é uma filosofia japonesa que significa "mudança para melhor". No ambiente industrial, ela se traduz em <strong>pequenas melhorias diárias</strong> realizadas por todos os colaboradores.</p>
-                <div class="cartilha-destaque">
-                    <strong>Princípios do Kaizen:</strong><br>
-                    • Eliminar desperdícios (Muda)<br>
-                    • Padronizar processos<br>
-                    • Envolver todos os níveis hierárquicos<br>
-                    • Focar em dados e fatos
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo prático:</strong> Um operador percebe que a troca de ferramenta em uma máquina demora 15 minutos. Ele sugere uma nova disposição das ferramentas, reduzindo o tempo para 8 minutos – uma melhoria simples, mas que gera ganho de produtividade.
-                </div>
-                <p><strong>Benefícios:</strong> Aumento da eficiência, redução de custos, maior engajamento da equipe e melhoria da qualidade.</p>
-            `,
+            conteudo: `<p><strong>Kaizen</strong> é uma filosofia japonesa que significa "mudança para melhor". No ambiente industrial, ela se traduz em <strong>pequenas melhorias diárias</strong> realizadas por todos os colaboradores.</p>
+            <div class="cartilha-destaque"><strong>Princípios do Kaizen:</strong><br> • Eliminar desperdícios (Muda)<br> • Padronizar processos<br> • Envolver todos os níveis hierárquicos<br> • Focar em dados e fatos</div>
+            <div class="cartilha-exemplo"><strong>Exemplo prático:</strong> Um operador percebe que a troca de ferramenta em uma máquina demora 15 minutos. Ele sugere uma nova disposição das ferramentas, reduzindo o tempo para 8 minutos – uma melhoria simples, mas que gera ganho de produtividade.</div>
+            <p><strong>Benefícios:</strong> Aumento da eficiência, redução de custos, maior engajamento da equipe e melhoria da qualidade.</p>`,
             quiz: [
-                {
-                    pergunta: 'O que significa a palavra Kaizen?',
-                    opcoes: ['Grande revolução', 'Mudança para melhor', 'Padronização total', 'Controle de qualidade'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'Qual é um dos princípios do Kaizen?',
-                    opcoes: ['Focar apenas em grandes mudanças', 'Eliminar desperdícios', 'Centralizar decisões na diretoria', 'Ignorar dados'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'O Kaizen busca melhorias:',
-                    opcoes: ['Apenas na produção', 'Somente na gestão', 'Pequenas e diárias', 'Apenas em crises'],
-                    certa: 2
-                }
+                { pergunta: 'O que significa a palavra Kaizen?', opcoes: ['Grande revolução', 'Mudança para melhor', 'Padronização total', 'Controle de qualidade'], certa: 1 },
+                { pergunta: 'Qual é um dos princípios do Kaizen?', opcoes: ['Focar apenas em grandes mudanças', 'Eliminar desperdícios', 'Centralizar decisões na diretoria', 'Ignorar dados'], certa: 1 },
+                { pergunta: 'O Kaizen busca melhorias:', opcoes: ['Apenas na produção', 'Somente na gestão', 'Pequenas e diárias', 'Apenas em crises'], certa: 2 }
             ]
         },
         {
             id: '5s',
             icone: 'cleaning_services',
             titulo: 'Os 5S – Organização e Limpeza',
-            conteudo: `
-                <p>Os <strong>5S</strong> são cinco sensos que promovem um ambiente de trabalho organizado, limpo e seguro. Eles são a base para a qualidade e produtividade.</p>
-                <div class="cartilha-destaque">
-                    <strong>Os 5S:</strong><br>
-                    <b>1. Seiri (Utilização):</b> Separar o que é útil do que não é.<br>
-                    <b>2. Seiton (Ordenação):</b> Organizar cada coisa em seu lugar.<br>
-                    <b>3. Seiso (Limpeza):</b> Manter o ambiente limpo.<br>
-                    <b>4. Seiketsu (Padronização):</b> Criar regras para manter os três primeiros.<br>
-                    <b>5. Shitsuke (Disciplina):</b> Seguir os padrões com disciplina.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Na área de produção, aplicar o 5S significa que ferramentas têm lugar fixo, pisos estão sempre limpos e todos sabem onde encontrar o que precisam, reduzindo perda de tempo.
-                </div>
-                <p><strong>Resultado:</strong> Menos acidentes, maior qualidade, melhor clima organizacional e eficiência operacional.</p>
-            `,
+            conteudo: `<p>Os <strong>5S</strong> são cinco sensos que promovem um ambiente de trabalho organizado, limpo e seguro. Eles são a base para a qualidade e produtividade.</p>
+            <div class="cartilha-destaque"><strong>Os 5S:</strong><br><b>1. Seiri (Utilização):</b> Separar o que é útil do que não é.<br><b>2. Seiton (Ordenação):</b> Organizar cada coisa em seu lugar.<br><b>3. Seiso (Limpeza):</b> Manter o ambiente limpo.<br><b>4. Seiketsu (Padronização):</b> Criar regras para manter os três primeiros.<br><b>5. Shitsuke (Disciplina):</b> Seguir os padrões com disciplina.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Na área de produção, aplicar o 5S significa que ferramentas têm lugar fixo, pisos estão sempre limpos e todos sabem onde encontrar o que precisam.</div>
+            <p><strong>Resultado:</strong> Menos acidentes, maior qualidade, melhor clima organizacional e eficiência operacional.</p>`,
             quiz: [
-                {
-                    pergunta: 'Quantos sensos compõem os 5S?',
-                    opcoes: ['3', '5', '7', '10'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'O Seiri (Utilização) consiste em:',
-                    opcoes: ['Limpar o ambiente', 'Organizar ferramentas', 'Separar o útil do inútil', 'Criar padrões'],
-                    certa: 2
-                },
-                {
-                    pergunta: 'Qual senso trata da "Disciplina" para manter os padrões?',
-                    opcoes: ['Seiso', 'Seiketsu', 'Shitsuke', 'Seiton'],
-                    certa: 2
-                }
+                { pergunta: 'Quantos sensos compõem os 5S?', opcoes: ['3', '5', '7', '10'], certa: 1 },
+                { pergunta: 'O Seiri (Utilização) consiste em:', opcoes: ['Limpar o ambiente', 'Organizar ferramentas', 'Separar o útil do inútil', 'Criar padrões'], certa: 2 },
+                { pergunta: 'Qual senso trata da "Disciplina" para manter os padrões?', opcoes: ['Seiso', 'Seiketsu', 'Shitsuke', 'Seiton'], certa: 2 }
             ]
         },
         {
             id: 'pdca',
             icone: 'cycle',
             titulo: 'PDCA – Planejar, Fazer, Checar, Agir',
-            conteudo: `
-                <p>O <strong>PDCA</strong> é um método de gestão para resolver problemas e implementar melhorias de forma estruturada. É um ciclo contínuo.</p>
-                <div class="cartilha-destaque">
-                    <strong>Etapas do PDCA:</strong><br>
-                    <b>P (Plan – Planejar):</b> Definir metas e plano de ação.<br>
-                    <b>D (Do – Fazer):</b> Executar o plano.<br>
-                    <b>C (Check – Checar):</b> Verificar os resultados.<br>
-                    <b>A (Act – Agir):</b> Padronizar ou corrigir o que deu errado.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Uma linha de envase apresenta variação de peso. A equipe planeja ajustar a máquina (P), executa (D), mede os pesos (C) e, se o resultado for bom, padroniza o ajuste (A). Se não, recomeça o ciclo.
-                </div>
-                <p><strong>Uso:</strong> O PDCA é usado em projetos de melhoria, auditorias, gestão de qualidade e rotinas operacionais.</p>
-            `,
+            conteudo: `<p>O <strong>PDCA</strong> é um método de gestão para resolver problemas e implementar melhorias de forma estruturada. É um ciclo contínuo.</p>
+            <div class="cartilha-destaque"><strong>Etapas do PDCA:</strong><br><b>P (Plan – Planejar):</b> Definir metas e plano de ação.<br><b>D (Do – Fazer):</b> Executar o plano.<br><b>C (Check – Checar):</b> Verificar os resultados.<br><b>A (Act – Agir):</b> Padronizar ou corrigir.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Uma linha de envase apresenta variação de peso. A equipe planeja ajustar a máquina (P), executa (D), mede os pesos (C) e, se o resultado for bom, padroniza o ajuste (A).</div>
+            <p><strong>Uso:</strong> O PDCA é usado em projetos de melhoria, auditorias, gestão de qualidade e rotinas operacionais.</p>`,
             quiz: [
-                {
-                    pergunta: 'O que significa a sigla PDCA?',
-                    opcoes: ['Planejar, Definir, Controlar, Aplicar', 'Planejar, Fazer, Checar, Agir', 'Produzir, Distribuir, Controlar, Avaliar', 'Padronizar, Dirigir, Controlar, Ajustar'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'Na etapa "C" (Check), o que deve ser feito?',
-                    opcoes: ['Executar o plano', 'Verificar os resultados', 'Padronizar a solução', 'Definir metas'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'O PDCA é um ciclo:',
-                    opcoes: ['Linear', 'Contínuo', 'Apenas para gestores', 'Somente para produção'],
-                    certa: 1
-                }
+                { pergunta: 'O que significa a sigla PDCA?', opcoes: ['Planejar, Definir, Controlar, Aplicar', 'Planejar, Fazer, Checar, Agir', 'Produzir, Distribuir, Controlar, Avaliar', 'Padronizar, Dirigir, Controlar, Ajustar'], certa: 1 },
+                { pergunta: 'Na etapa "C" (Check), o que deve ser feito?', opcoes: ['Executar o plano', 'Verificar os resultados', 'Padronizar a solução', 'Definir metas'], certa: 1 },
+                { pergunta: 'O PDCA é um ciclo:', opcoes: ['Linear', 'Contínuo', 'Apenas para gestores', 'Somente para produção'], certa: 1 }
             ]
         },
         {
             id: 'ferramentas',
             icone: 'build',
             titulo: 'Ferramentas da Qualidade',
-            conteudo: `
-                <p>Existem diversas ferramentas para identificar e resolver problemas de qualidade. As mais conhecidas são:</p>
-                <div class="cartilha-destaque">
-                    <strong>Principais ferramentas:</strong><br>
-                    • <b>Diagrama de Ishikawa (Espinha de Peixe):</b> Identifica causas raiz de um problema.<br>
-                    • <b>5 Porquês:</b> Perguntar "por quê" sucessivamente para chegar à causa raiz.<br>
-                    • <b>Fluxograma:</b> Mapeia o processo passo a passo.<br>
-                    • <b>Gráfico de Pareto:</b> Prioriza os problemas mais frequentes.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Um produto apresenta defeito. Usando o Diagrama de Ishikawa, a equipe lista possíveis causas (máquina, material, método, mão de obra, meio ambiente) e encontra que o material estava fora da especificação.
-                </div>
-                <p><strong>Benefícios:</strong> Resolução mais rápida de problemas, redução de retrabalho e aumento da satisfação do cliente.</p>
-            `,
+            conteudo: `<p>Existem diversas ferramentas para identificar e resolver problemas de qualidade. As mais conhecidas são:</p>
+            <div class="cartilha-destaque"><strong>Principais ferramentas:</strong><br> • <b>Diagrama de Ishikawa</b> – causas raiz.<br> • <b>5 Porquês</b> – perguntar sucessivamente.<br> • <b>Fluxograma</b> – mapeia o processo.<br> • <b>Gráfico de Pareto</b> – prioriza problemas.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Um produto apresenta defeito. Usando o Diagrama de Ishikawa, a equipe lista possíveis causas (máquina, material, método, mão de obra, meio ambiente) e encontra que o material estava fora da especificação.</div>
+            <p><strong>Benefícios:</strong> Resolução mais rápida, redução de retrabalho e maior satisfação do cliente.</p>`,
             quiz: [
-                {
-                    pergunta: 'Qual ferramenta é usada para encontrar causas raiz?',
-                    opcoes: ['Gráfico de Pareto', 'Diagrama de Ishikawa', 'Fluxograma', '5 Porquês'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'O que o Diagrama de Ishikawa também é chamado?',
-                    opcoes: ['Diagrama de Causa e Efeito', 'Diagrama de Pareto', 'Gráfico de Controle', 'Fluxograma'],
-                    certa: 0
-                },
-                {
-                    pergunta: 'Para priorizar problemas, qual ferramenta é recomendada?',
-                    opcoes: ['5 Porquês', 'Fluxograma', 'Gráfico de Pareto', 'Ishikawa'],
-                    certa: 2
-                }
+                { pergunta: 'Qual ferramenta é usada para encontrar causas raiz?', opcoes: ['Gráfico de Pareto', 'Diagrama de Ishikawa', 'Fluxograma', '5 Porquês'], certa: 1 },
+                { pergunta: 'O Diagrama de Ishikawa também é chamado de:', opcoes: ['Diagrama de Causa e Efeito', 'Diagrama de Pareto', 'Gráfico de Controle', 'Fluxograma'], certa: 0 },
+                { pergunta: 'Para priorizar problemas, qual ferramenta é recomendada?', opcoes: ['5 Porquês', 'Fluxograma', 'Gráfico de Pareto', 'Ishikawa'], certa: 2 }
             ]
         },
         {
             id: 'seguranca',
             icone: 'security',
             titulo: 'Segurança do Trabalho',
-            conteudo: `
-                <p>A segurança é prioridade na Braun. Todos os colaboradores devem conhecer e aplicar as normas de prevenção.</p>
-                <div class="cartilha-destaque">
-                    <strong>Pilares da Segurança:</strong><br>
-                    • Usar <b>EPIs</b> (capacete, óculos, luvas, etc.) corretamente.<br>
-                    • Manter a área de trabalho organizada (5S).<br>
-                    • Conhecer os <b>procedimentos de emergência</b> e rotas de fuga.<br>
-                    • Reportar imediatamente qualquer <b>condição insegura</b>.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Um colaborador percebe um piso escorregadio. Ele sinaliza o local, comunica a liderança e a equipe de manutenção resolve o problema antes que ocorra um acidente.
-                </div>
-                <p><strong>Compromisso:</strong> Segurança é responsabilidade de todos. Cada um de nós é agente de prevenção.</p>
-            `,
+            conteudo: `<p>A segurança é prioridade na Braun. Todos devem conhecer e aplicar as normas de prevenção.</p>
+            <div class="cartilha-destaque"><strong>Pilares da Segurança:</strong><br> • Usar <b>EPIs</b> corretamente.<br> • Manter a área organizada (5S).<br> • Conhecer os <b>procedimentos de emergência</b>.<br> • Reportar qualquer <b>condição insegura</b>.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Um colaborador percebe um piso escorregadio. Ele sinaliza o local, comunica a liderança e a equipe de manutenção resolve o problema antes que ocorra um acidente.</div>
+            <p><strong>Compromisso:</strong> Segurança é responsabilidade de todos.</p>`,
             quiz: [
-                {
-                    pergunta: 'Qual a primeira ação ao identificar um risco?',
-                    opcoes: ['Ignorar', 'Sinalizar e comunicar', 'Continuar trabalhando', 'Aguardar o supervisor'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'EPI significa:',
-                    opcoes: ['Equipamento de Proteção Individual', 'Equipamento de Produção Interna', 'Estação de Proteção Integrada', 'Equipamento Preventivo Industrial'],
-                    certa: 0
-                },
-                {
-                    pergunta: 'O que deve ser feito em caso de emergência?',
-                    opcoes: ['Correr para a saída', 'Seguir o plano de emergência e rotas de fuga', 'Aguardar instruções', 'Filmar o ocorrido'],
-                    certa: 1
-                }
+                { pergunta: 'Qual a primeira ação ao identificar um risco?', opcoes: ['Ignorar', 'Sinalizar e comunicar', 'Continuar trabalhando', 'Aguardar o supervisor'], certa: 1 },
+                { pergunta: 'EPI significa:', opcoes: ['Equipamento de Proteção Individual', 'Equipamento de Produção Interna', 'Estação de Proteção Integrada', 'Equipamento Preventivo Industrial'], certa: 0 },
+                { pergunta: 'O que deve ser feito em caso de emergência?', opcoes: ['Correr para a saída', 'Seguir o plano de emergência', 'Aguardar instruções', 'Filmar o ocorrido'], certa: 1 }
             ]
         },
         {
             id: 'bpf',
             icone: 'medication',
             titulo: 'Boas Práticas de Fabricação (BPF)',
-            conteudo: `
-                <p>As <strong>BPF</strong> são um conjunto de procedimentos que garantem a qualidade e segurança dos produtos, especialmente na indústria farmacêutica e alimentícia.</p>
-                <div class="cartilha-destaque">
-                    <strong>Princípios das BPF:</strong><br>
-                    • <b>Higiene</b> – colaboradores devem manter-se limpos e usar vestimentas adequadas.<br>
-                    • <b>Controle de processos</b> – cada etapa deve ser monitorada.<br>
-                    • <b>Rastreabilidade</b> – todos os materiais e produtos devem ser identificados.<br>
-                    • <b>Documentação</b> – registrar todas as atividades.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Na área de envase, os operadores seguem um checklist de limpeza antes de iniciar a produção, registram temperaturas e umidade, e todo lote é identificado com código de rastreabilidade.
-                </div>
-                <p><strong>Importância:</strong> BPF evitam contaminações, garantem a eficácia dos produtos e atendem às exigências da ANVISA.</p>
-            `,
+            conteudo: `<p>As <strong>BPF</strong> garantem a qualidade e segurança dos produtos na indústria farmacêutica.</p>
+            <div class="cartilha-destaque"><strong>Princípios das BPF:</strong><br> • <b>Higiene</b> – manter-se limpo.<br> • <b>Controle de processos</b> – monitorar cada etapa.<br> • <b>Rastreabilidade</b> – identificar materiais e produtos.<br> • <b>Documentação</b> – registrar atividades.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Na área de envase, os operadores seguem um checklist de limpeza, registram temperaturas e umidade, e todo lote é identificado com código de rastreabilidade.</div>
+            <p><strong>Importância:</strong> BPF evitam contaminações e atendem às exigências da ANVISA.</p>`,
             quiz: [
-                {
-                    pergunta: 'O que as BPF garantem?',
-                    opcoes: ['Apenas a produtividade', 'Qualidade e segurança do produto', 'Redução de custos', 'Aumento de vendas'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'Um princípio fundamental das BPF é:',
-                    opcoes: ['Usar qualquer roupa', 'Não registrar atividades', 'Manter a higiene pessoal', 'Trabalhar sem supervisão'],
-                    certa: 2
-                },
-                {
-                    pergunta: 'A rastreabilidade permite:',
-                    opcoes: ['Aumentar a velocidade da produção', 'Identificar a origem de um lote', 'Reduzir colaboradores', 'Eliminar a documentação'],
-                    certa: 1
-                }
+                { pergunta: 'O que as BPF garantem?', opcoes: ['Apenas a produtividade', 'Qualidade e segurança do produto', 'Redução de custos', 'Aumento de vendas'], certa: 1 },
+                { pergunta: 'Um princípio fundamental das BPF é:', opcoes: ['Usar qualquer roupa', 'Não registrar atividades', 'Manter a higiene pessoal', 'Trabalhar sem supervisão'], certa: 2 },
+                { pergunta: 'A rastreabilidade permite:', opcoes: ['Aumentar a velocidade', 'Identificar a origem de um lote', 'Reduzir colaboradores', 'Eliminar a documentação'], certa: 1 }
             ]
         },
         {
             id: 'sustentabilidade',
             icone: 'eco',
             titulo: 'Sustentabilidade e Redução de Desperdícios',
-            conteudo: `
-                <p>A Braun está comprometida com a sustentabilidade. Todos podemos contribuir com pequenas atitudes que fazem grande diferença.</p>
-                <div class="cartilha-destaque">
-                    <strong>Ações sustentáveis no dia a dia:</strong><br>
-                    • <b>Economia de energia</b> – apagar luzes e desligar máquinas quando não em uso.<br>
-                    • <b>Uso racional de água</b> – evitar vazamentos e desperdícios.<br>
-                    • <b>Separação de resíduos</b> – reciclar corretamente plástico, papel e metal.<br>
-                    • <b>Redução de materiais</b> – evitar impressões desnecessárias e otimizar o uso de insumos.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Ao final do turno, verifique se as máquinas estão desligadas, as luzes apagadas e os resíduos foram descartados nos coletores adequados. Uma simples atitude que reduz o impacto ambiental.
-                </div>
-                <p><strong>Impacto:</strong> Além de preservar o meio ambiente, a sustentabilidade gera economia de recursos e fortalece a imagem da empresa.</p>
-            `,
+            conteudo: `<p>A Braun está comprometida com a sustentabilidade. Todos podemos contribuir.</p>
+            <div class="cartilha-destaque"><strong>Ações sustentáveis:</strong><br> • <b>Economia de energia</b> – apagar luzes e desligar máquinas.<br> • <b>Uso racional de água</b> – evitar vazamentos.<br> • <b>Separação de resíduos</b> – reciclar.<br> • <b>Redução de materiais</b> – evitar impressões.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Ao final do turno, verifique se as máquinas estão desligadas, as luzes apagadas e os resíduos foram descartados nos coletores adequados.</div>
+            <p><strong>Impacto:</strong> Preserva o meio ambiente, gera economia e fortalece a imagem da empresa.</p>`,
             quiz: [
-                {
-                    pergunta: 'Qual atitude contribui para a sustentabilidade?',
-                    opcoes: ['Deixar luzes acesas', 'Descartar resíduos corretamente', 'Usar água em excesso', 'Imprimir documentos desnecessários'],
-                    certa: 1
-                },
-                {
-                    pergunta: 'A redução de desperdícios beneficia:',
-                    opcoes: ['Apenas o meio ambiente', 'Apenas a empresa', 'Todos (ambiente, empresa e colaboradores)', 'Nenhum dos anteriores'],
-                    certa: 2
-                },
-                {
-                    pergunta: 'Qual atitude NÃO é sustentável?',
-                    opcoes: ['Desligar equipamentos no fim do turno', 'Reciclar materiais', 'Deixar torneira pingando', 'Reutilizar papel'],
-                    certa: 2
-                }
+                { pergunta: 'Qual atitude contribui para a sustentabilidade?', opcoes: ['Deixar luzes acesas', 'Descartar resíduos corretamente', 'Usar água em excesso', 'Imprimir documentos desnecessários'], certa: 1 },
+                { pergunta: 'A redução de desperdícios beneficia:', opcoes: ['Apenas o meio ambiente', 'Apenas a empresa', 'Todos', 'Nenhum'], certa: 2 },
+                { pergunta: 'Qual atitude NÃO é sustentável?', opcoes: ['Desligar equipamentos', 'Reciclar materiais', 'Deixar torneira pingando', 'Reutilizar papel'], certa: 2 }
             ]
         },
-        // ===== NOVA CARTILHA: COMPLIANCE =====
         {
             id: 'compliance',
             icone: 'gavel',
             titulo: 'Compliance – Ética e Integridade',
-            conteudo: `
-                <p><strong>Compliance</strong> significa agir de acordo com as leis, regulamentos e princípios éticos da empresa. Na Braun, a integridade é um valor inegociável.</p>
-                <div class="cartilha-destaque">
-                    <strong>Pilares do Compliance na Braun:</strong><br>
-                    • <b>Código de Conduta:</b> Guia de comportamento esperado de todos.<br>
-                    • <b>Conflito de Interesses:</b> Evitar situações onde interesses pessoais entrem em conflito com os da empresa.<br>
-                    • <b>Anticorrupção:</b> Não oferecer, receber ou solicitar vantagens indevidas.<br>
-                    • <b>Proteção de Dados (LGPD):</b> Tratar informações pessoais com segurança e sigilo.<br>
-                    • <b>Canal de Denúncia:</b> Reportar qualquer irregularidade de forma segura e anônima.
-                </div>
-                <div class="cartilha-exemplo">
-                    <strong>Exemplo:</strong> Um fornecedor oferece um presente de alto valor a um colaborador para agilizar um contrato. A conduta correta é recusar o presente e reportar o ocorrido ao Canal de Denúncia da Braun.
-                </div>
-                <p><strong>Compromisso:</strong> Todos os colaboradores, independentemente do nível hierárquico, são responsáveis por manter a ética e a transparência em suas ações diárias.</p>
-            `,
+            conteudo: `<p><strong>Compliance</strong> significa agir de acordo com as leis e princípios éticos da empresa.</p>
+            <div class="cartilha-destaque"><strong>Pilares do Compliance na Braun:</strong><br> • <b>Código de Conduta</b><br> • <b>Conflito de Interesses</b> – evitar situações pessoais.<br> • <b>Anticorrupção</b> – não oferecer ou receber vantagens.<br> • <b>Proteção de Dados (LGPD)</b><br> • <b>Canal de Denúncia</b> – reportar irregularidades.</div>
+            <div class="cartilha-exemplo"><strong>Exemplo:</strong> Um fornecedor oferece um presente de alto valor para agilizar um contrato. A conduta correta é recusar e reportar ao Canal de Denúncia.</div>
+            <p><strong>Compromisso:</strong> Todos são responsáveis pela ética e transparência.</p>`,
             quiz: [
-                {
-                    pergunta: 'O que é Compliance?',
-                    opcoes: [
-                        'Um cargo na diretoria',
-                        'Um conjunto de regras para garantir ética e conformidade',
-                        'Um programa de treinamento técnico',
-                        'Uma ferramenta de produção'
-                    ],
-                    certa: 1
-                },
-                {
-                    pergunta: 'Ao receber um presente de um fornecedor, o correto é:',
-                    opcoes: [
-                        'Aceitar normalmente',
-                        'Recusar e reportar ao Canal de Denúncia',
-                        'Aceitar apenas se for de pequeno valor',
-                        'Dividir com a equipe'
-                    ],
-                    certa: 1
-                },
-                {
-                    pergunta: 'Quem deve seguir as regras de Compliance?',
-                    opcoes: [
-                        'Apenas a diretoria',
-                        'Apenas o RH',
-                        'Todos os colaboradores',
-                        'Apenas fornecedores'
-                    ],
-                    certa: 2
-                }
+                { pergunta: 'O que é Compliance?', opcoes: ['Um cargo na diretoria', 'Regras para garantir ética e conformidade', 'Treinamento técnico', 'Ferramenta de produção'], certa: 1 },
+                { pergunta: 'Ao receber um presente de um fornecedor, o correto é:', opcoes: ['Aceitar normalmente', 'Recusar e reportar', 'Aceitar se for pequeno', 'Dividir com a equipe'], certa: 1 },
+                { pergunta: 'Quem deve seguir as regras de Compliance?', opcoes: ['Apenas a diretoria', 'Apenas o RH', 'Todos os colaboradores', 'Apenas fornecedores'], certa: 2 }
+            ]
+        },
+        {
+            id: 'incendio',
+            icone: 'local_fire_department',
+            titulo: 'Prevenção de Incêndios e Uso de Extintores',
+            conteudo: `<p>Em uma indústria farmacêutica, os riscos de incêndio são elevados devido a <strong>solventes inflamáveis</strong>, <strong>produtos oxidantes</strong> e <strong>materiais combustíveis</strong>.</p>
+            <div class="cartilha-destaque"><strong>Classes de Incêndio:</strong><br> • <b>Classe A</b> – sólidos (papel, madeira) – Água ou Pó.<br> • <b>Classe B</b> – líquidos inflamáveis – CO₂ ou Pó.<br> • <b>Classe C</b> – elétricos – CO₂ ou Pó (NUNCA água).<br> • <b>Classe D</b> – metais – Pó especial.<br> • <b>Classe K</b> – gorduras – Espuma ou K.</div>
+            <div class="cartilha-exemplo"><strong>Método PASS:</strong><br> <b>P</b> – Puxar o pino.<br> <b>A</b> – Apontar para a base do fogo.<br> <b>S</b> – Apertar a alavanca.<br> <b>S</b> – Varrer a base do fogo.</div>
+            <p><strong>Cuidados em áreas farmacêuticas:</strong> Em salas limpas, prefira CO₂ em vez de pó químico. Inspecione extintores mensalmente. Mantenha rotas de fuga desobstruídas.</p>
+            <p><strong>Conduta:</strong> Acione o alarme, use o extintor se treinado, abandone a área se o fogo se espalhar, chame os bombeiros (193).</p>`,
+            quiz: [
+                { pergunta: 'Qual extintor NUNCA deve ser usado em incêndios elétricos (Classe C)?', opcoes: ['CO₂', 'Pó Químico', 'Água', 'Pó Especial'], certa: 2 },
+                { pergunta: 'O que significa a sigla PASS?', opcoes: ['Puxar, Apontar, Apertar, Varrer', 'Parar, Avaliar, Segurar, Sair', 'Prevenir, Atuar, Salvar, Sinalizar', 'Pegar, Arremessar, Soprar, Seguir'], certa: 0 },
+                { pergunta: 'Em uma área estéril, qual extintor é mais recomendado?', opcoes: ['Pó Químico', 'Água', 'CO₂', 'Espuma'], certa: 2 }
             ]
         }
     ];
 
-    // Variáveis de estado das cartilhas
+    // ==============================================================
+    // ==================== SEÇÃO CARTILHAS =========================
+    // ==============================================================
+
     let cartilhaAtiva = 'kaizen';
     let cartilhasLidas = JSON.parse(getStorageValue('braun_cartilhas_lidas') || '[]');
 
@@ -2085,29 +1937,27 @@
         tabsContainer.innerHTML = '';
         panelsContainer.innerHTML = '';
 
-        // Ordenar cartilhas: lidas por último
         const sorted = [...cartilhasData].sort((a, b) => {
             const aLida = cartilhasLidas.includes(a.id) ? 1 : 0;
             const bLida = cartilhasLidas.includes(b.id) ? 1 : 0;
             return aLida - bLida;
         });
 
-        sorted.forEach((cart, idx) => {
+        sorted.forEach((cart) => {
             const isActive = cart.id === cartilhaAtiva;
             const estaLida = cartilhasLidas.includes(cart.id);
 
-            // Aba
             const btn = document.createElement('button');
             btn.className = `cartilha-tab-btn${isActive ? ' active' : ''}${estaLida ? ' lida' : ''}`;
             btn.setAttribute('data-target', cart.id);
-            btn.innerHTML = `<span class="material-symbols-outlined">${cart.icone}</span> ${cart.titulo.split('–')[0].trim()}`;
+            const tituloCurto = cart.titulo.split('–')[0].trim() || cart.titulo.split('-')[0].trim() || cart.titulo;
+            btn.innerHTML = `<span class="material-symbols-outlined">${cart.icone}</span> ${tituloCurto}`;
             btn.onclick = () => {
                 cartilhaAtiva = cart.id;
                 renderCartilhas();
             };
             tabsContainer.appendChild(btn);
 
-            // Painel
             const panel = document.createElement('div');
             panel.className = `cartilha-panel${isActive ? ' active' : ''}`;
             panel.id = `panel-${cart.id}`;
@@ -2134,7 +1984,6 @@
             panelsContainer.appendChild(panel);
         });
 
-        // Atualizar progresso
         atualizarProgresso();
     }
 
@@ -2147,6 +1996,7 @@
         }
         setStorageValue('braun_cartilhas_lidas', JSON.stringify(cartilhasLidas));
         renderCartilhas();
+        atualizarNovidadesUI();
     }
 
     function atualizarProgresso() {
@@ -2164,20 +2014,13 @@
         const opcoesDiv = document.getElementById(`quiz-${cartId}-${qIndex}`);
         const feedback = document.getElementById(`feedback-${cartId}-${qIndex}`);
 
-        // Desabilitar todas as opções
         opcoesDiv.querySelectorAll('.quiz-opcao').forEach(el => el.classList.add('desabilitada'));
-
-        // Destacar certa e errada
         const opEls = opcoesDiv.querySelectorAll('.quiz-opcao');
         opEls.forEach((el, i) => {
-            if (i === q.certa) {
-                el.classList.add('certa');
-            } else if (i === opIndex && opIndex !== q.certa) {
-                el.classList.add('errada');
-            }
+            if (i === q.certa) el.classList.add('certa');
+            else if (i === opIndex && opIndex !== q.certa) el.classList.add('errada');
         });
 
-        // Feedback
         if (opIndex === q.certa) {
             feedback.innerHTML = '✅ Correto!';
             feedback.className = 'quiz-feedback certo';
@@ -2185,6 +2028,156 @@
             feedback.innerHTML = '❌ Incorreto. A resposta certa é: ' + q.opcoes[q.certa];
             feedback.className = 'quiz-feedback errado';
         }
+    }
+
+    // ==============================================================
+    // ==================== SEÇÃO NOVIDADES =========================
+    // ==============================================================
+
+    const novidadesData = [
+        {
+            id: 'nov5',
+            titulo: '🧯 Nova Cartilha: Prevenção de Incêndios e Extintores',
+            descricao: 'Aprenda sobre classes de incêndio, método PASS, cuidados em áreas farmacêuticas e muito mais. Disponível na seção Cartilhas.',
+            data: '2026-07-05',
+            cartilhaId: 'incendio'
+        },
+        {
+            id: 'nov1',
+            titulo: '📘 Nova Cartilha: Compliance',
+            descricao: 'Aprenda sobre Ética, Código de Conduta, Conflito de Interesses, Anticorrupção, LGPD e Canal de Denúncia.',
+            data: '2026-07-04',
+            cartilhaId: 'compliance'
+        },
+        {
+            id: 'nov2',
+            titulo: '📘 Conheça as 9 Cartilhas de Melhorias',
+            descricao: 'Kaizen, 5S, PDCA, Ferramentas da Qualidade, Segurança, BPF, Sustentabilidade, Compliance e Incêndio. Acesse todas na seção Cartilhas.',
+            data: '2026-07-03',
+            cartilhaId: null
+        },
+        {
+            id: 'nov3',
+            titulo: '🔔 App atualizado para versão 3.7',
+            descricao: 'Novo sistema de Novidades e melhorias na navegação. Atualize seu app para a versão mais recente.',
+            data: '2026-07-02',
+            cartilhaId: null
+        }
+    ];
+
+    let novidadesLidas = JSON.parse(getStorageValue('braun_novidades_lidas') || '[]');
+
+    function openNovidades() {
+        closeAllModals();
+        renderNovidades();
+        focusModal('novidadesCard');
+    }
+
+    function renderNovidades() {
+        const container = document.getElementById('novidadesLista');
+        container.innerHTML = '';
+
+        const sorted = [...novidadesData].sort((a, b) => new Date(b.data) - new Date(a.data));
+
+        sorted.forEach(nov => {
+            const lida = novidadesLidas.includes(nov.id);
+            const card = document.createElement('div');
+            card.className = `novidade-card ${lida ? 'lida' : ''}`;
+            card.setAttribute('data-id', nov.id);
+
+            let badgeHtml = '';
+            if (!lida) badgeHtml = `<span class="badge-novo">NOVO</span>`;
+            let linkHtml = '';
+            if (nov.cartilhaId) {
+                linkHtml = `<span class="link-cartilha" onclick="event.stopPropagation(); abrirCartilhaPorId('${nov.cartilhaId}')">Abrir cartilha →</span>`;
+            } else if (nov.id === 'nov2') {
+                linkHtml = `<span class="link-cartilha" onclick="event.stopPropagation(); abrirListaCartilhas()">Ver todas →</span>`;
+            }
+
+            card.innerHTML = `
+                <div class="novidade-titulo">${nov.titulo} ${badgeHtml}</div>
+                <div class="novidade-desc">${nov.descricao}</div>
+                ${linkHtml}
+                <span class="novidade-data">${formatarData(nov.data)}</span>
+            `;
+
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.link-cartilha')) return;
+                marcarNovidadeLida(nov.id);
+                if (nov.cartilhaId) {
+                    abrirCartilhaPorId(nov.cartilhaId);
+                } else if (nov.id === 'nov2') {
+                    abrirListaCartilhas();
+                } else {
+                    renderNovidades();
+                    atualizarNovidadesUI();
+                }
+            });
+
+            container.appendChild(card);
+        });
+
+        atualizarNovidadesUI();
+    }
+
+    function marcarNovidadeLida(id) {
+        if (!novidadesLidas.includes(id)) {
+            novidadesLidas.push(id);
+            setStorageValue('braun_novidades_lidas', JSON.stringify(novidadesLidas));
+        }
+        renderNovidades();
+        atualizarNovidadesUI();
+    }
+
+    function marcarTodasNovidadesLidas() {
+        const ids = novidadesData.map(n => n.id);
+        ids.forEach(id => {
+            if (!novidadesLidas.includes(id)) {
+                novidadesLidas.push(id);
+            }
+        });
+        setStorageValue('braun_novidades_lidas', JSON.stringify(novidadesLidas));
+        renderNovidades();
+        atualizarNovidadesUI();
+    }
+
+    function atualizarNovidadesUI() {
+        const total = novidadesData.length;
+        const lidas = novidadesLidas.length;
+        const naoLidas = total - lidas;
+        const badge = document.getElementById('novidadesBadge');
+        const btn = document.getElementById('btn-flutuante-novidades');
+        const sino = document.getElementById('sinoIcon');
+
+        if (naoLidas > 0) {
+            badge.style.display = 'inline';
+            badge.innerText = naoLidas;
+            btn.style.display = 'flex';
+            // Adiciona a classe de animação ao sininho
+            sino.classList.add('animar-sino');
+        } else {
+            badge.style.display = 'none';
+            btn.style.display = 'none';
+            // Remove a animação quando não há novidades
+            sino.classList.remove('animar-sino');
+        }
+    }
+
+    function formatarData(dataStr) {
+        const d = new Date(dataStr + 'T00:00:00');
+        return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    function abrirCartilhaPorId(id) {
+        closeAllModals();
+        cartilhaAtiva = id;
+        openCartilhas();
+    }
+
+    function abrirListaCartilhas() {
+        closeAllModals();
+        cartilhaAtiva = cartilhasData[0].id;
+        openCartilhas();
     }
 
     // ==================== INICIALIZAÇÃO ====================
@@ -2197,16 +2190,15 @@
         gerarCalendario();
         startClock();
         tick();
-        gerenciarBotaoVotacao();
         preencherDadosModais();
         if (!getStorageValue('braun_visited')) {
             document.getElementById('welcomeScreen').style.display = 'flex';
         } else {
             document.getElementById('welcomeScreen').style.display = 'none';
-            scrollToToday('auto'); 
+            scrollToToday('auto');
         }
-        // Inicializa progresso das cartilhas
         atualizarProgresso();
+        atualizarNovidadesUI();
     });
 
 </script>
