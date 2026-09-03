@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://www.google.com https://analytics.google.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com 'unsafe-inline'; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://www.google.com https://analytics.google.com;">
 <script>
-  // ========== CORREÇÃO DO SERVICE WORKER ==========
+  // ========== ANTI-FLASH DO MODO ESCURO ==========
+  (function() {
+    try {
+      if (localStorage.getItem('braun_dark_mode') === 'true') {
+        document.documentElement.classList.add('dark-mode');
+      }
+    } catch(e) {}
+  })();
+
+  // ========== SERVICE WORKER ==========
   if ('serviceWorker' in navigator) {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (!isIOS) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=20260603')
-          .then(reg => console.log('PWA pronto para instalação no Android!', reg.scope))
-          .catch(err => console.error('Erro no instalador:', err));
+        navigator.serviceWorker.register('./sw.js?v=20260831')
+          .then(reg => {
+            console.log('PWA pronto!', reg.scope);
+            reg.onupdatefound = () => {
+              const iw = reg.installing;
+              iw.onstatechange = () => {
+                if (iw.state === 'installed' && navigator.serviceWorker.controller) {
+                  if (confirm('Nova versão do Braun OnLine disponível! Deseja atualizar agora?')) {
+                    window.location.reload();
+                  }
+                }
+              };
+            };
+          })
+          .catch(err => console.error('Erro no SW:', err));
       });
     }
   }
@@ -134,13 +155,82 @@
             font-size: 16px;
         }
 
+        /* ===== BLOCO FIXO: RELÓGIO + NAVEGAÇÃO ===== */
+        .sticky-header-block {
+            position: sticky;
+            top: 85px; /* altura do header */
+            z-index: 95;
+            padding: 0 15px;
+        }
         .status-panel {
-            background: var(--card); border-radius: 25px; padding: 15px 10px; margin: 0px 15px 0px 15px;
-            border: 1px solid var(--border); text-align: center; box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-            position: sticky; top: 85px; z-index: 95;
+            background: var(--card);
+            border-radius: 25px 25px 0 0;
+            padding: 15px 10px;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 0;
         }
         .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
         .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
+
+        .mes-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card);
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 0;
+        }
+        .mes-nav-btn {
+            background: var(--bg);
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary);
+            transition: 0.2s;
+        }
+        .mes-nav-btn:active {
+            transform: scale(0.92);
+            background: var(--primary);
+            color: white;
+        }
+        .mes-nav-title {
+            font-weight: 800;
+            font-size: 1.05em;
+            color: var(--text);
+            text-transform: capitalize;
+            flex: 1;
+            text-align: center;
+        }
+        .btn-hoje {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            margin-left: 8px;
+            white-space: nowrap;
+        }
+        .btn-hoje:active {
+            transform: scale(0.95);
+        }
         
         #calendario-box {
             margin-top: 0px;
@@ -153,7 +243,7 @@
             display: flex; 
             flex-direction: column; 
             padding-top: 0px;
-            scroll-margin-top: 110px;
+            scroll-margin-top: 180px;
         }
         #calendario-box > .mes-container:first-child { margin-top: 0px; }
         
@@ -806,6 +896,57 @@
         .btn-mic .material-symbols-outlined {
             font-size: 28px;
         }
+
+        /* ===== MICRO-INTERAÇÕES E POLISH ===== */
+        button, .tab, .drawer-item, .dia, .turma-badge, .ramal-badge {
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+        button:active, .tab:active, .drawer-item:active, .dia:active {
+            transform: scale(0.96);
+        }
+        .status-panel {
+            transition: box-shadow 0.3s ease;
+        }
+        .turma-badge {
+            position: relative;
+            overflow: hidden;
+        }
+        .turma-badge::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: shine 4s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            20%, 100% { transform: translateX(100%) rotate(45deg); }
+        }
+        .hoje {
+            box-shadow: 0 0 0 3px white, 0 0 20px var(--accent), 0 4px 12px rgba(112,48,160,0.4) !important;
+        }
+        .cartilha-btn-marcar.marcado {
+            background: linear-gradient(135deg, var(--primary), #007d5a);
+        }
+        .cartilha-progresso-bar-fill {
+            background: linear-gradient(90deg, var(--primary), var(--verde));
+            box-shadow: 0 0 10px rgba(0,169,122,0.4);
+        }
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .success-feedback {
+            animation: successPulse 0.4s ease;
+        }
+        .bottom-modal {
+            transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
     </style>
 </head>
 <body>
@@ -817,7 +958,7 @@
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
-    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.7 / 2026 / 2027</div>
+    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.8 / 2026 / 2027</div>
 </div>
 
 <button id="install-button" onclick="installPWA()">
@@ -871,19 +1012,35 @@
 
 <main id="main-content">
     <h1 class="sr-only">Escala Braun OnLine</h1>
-<div class="status-panel" aria-live="polite">
-    <div id="big-clock" class="clock">00:00:00</div>
-    <div id="status-msg" class="status-msg">---</div>
-</div>
 
-<div id="calendario-box"></div>
+    <!-- BLOCO FIXO: RELÓGIO + NAVEGAÇÃO -->
+    <div class="sticky-header-block">
+        <div class="status-panel" aria-live="polite">
+            <div id="big-clock" class="clock">00:00:00</div>
+            <div id="status-msg" class="status-msg">---</div>
+        </div>
+        <div class="mes-nav" id="mesNav">
+            <button class="mes-nav-btn" onclick="mudarMes(-1)" aria-label="Mês anterior">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <div class="mes-nav-title" id="mesNavTitle">Janeiro 2026</div>
+            <button class="btn-hoje" onclick="irParaHoje()">
+                <span class="material-symbols-outlined" style="font-size:18px;">today</span>
+                HOJE
+            </button>
+            <button class="mes-nav-btn" onclick="mudarMes(1)" aria-label="Próximo mês">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="calendario-box"></div>
 </main>
 
 <div class="tab-bar" role="tablist" aria-label="Selecionar região">
     <button class="tab" onclick="setRegion('BR')" id="tab-BR" role="tab" aria-selected="true"><span class="material-symbols-outlined" aria-hidden="true">factory</span>ECOFLAC</button>
     <button class="tab" onclick="setRegion('MNT')" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUTENÇÃO</button>
     
-    <!-- Botão de PESQUISAR (lupa) - agora sem fundo, igual aos outros -->
     <button class="tab" onclick="openPesquisa()" id="tab-SEARCH" role="tab" aria-selected="false">
         <span class="material-symbols-outlined search-icon">search</span>
         <span>BUSCAR</span>
@@ -899,7 +1056,7 @@
         </div>
         <div>
             <div class="drawer-brand-text">Braun OnLine</div>
-            <div class="drawer-brand-sub">v3.7 · 2026/2027</div>
+            <div class="drawer-brand-sub">v3.8 · 2026/2027</div>
         </div>
         <button class="drawer-close-btn" onclick="closeHamburger()" aria-label="Fechar menu">
             <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -951,6 +1108,16 @@
             <div>
                 <div class="drawer-item-label">Cartilhas</div>
                 <div class="drawer-item-sub">Kaizen · 5S · PDCA · Qualidade · Segurança · BPF · Sustentabilidade · Compliance · Incêndio</div>
+            </div>
+            <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
+        </button>
+
+        <div class="drawer-section-label">Conquistas</div>
+        <button class="drawer-item" onclick="closeHamburger(); openConquistas();">
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">🏅</div>
+            <div>
+                <div class="drawer-item-label">Minhas Conquistas</div>
+                <div class="drawer-item-sub">Selos e progresso</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
@@ -1077,6 +1244,12 @@
     </button>
     <button onclick="openStats()" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;">
         <span class="material-symbols-outlined" aria-hidden="true">analytics</span> ESTATÍSTICAS DA ESCALA
+    </button>
+    <button onclick="exportarEscalaICS()" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;">
+        <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span> EXPORTAR ESCALA (.ICS)
+    </button>
+    <button onclick="iniciarNotificacoes()" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;">
+        <span class="material-symbols-outlined" aria-hidden="true">notifications</span> ATIVAR LEMBRETES DE TURNO
     </button>
     <button onclick="closeAllModals()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;">FECHAR</button>
 </div>
@@ -1249,12 +1422,10 @@
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🔍 Pesquisar data</h2>
     
     <div style="display:flex;flex-direction:column;gap:14px;">
-        <!-- Linha 1: Seletor de data ocupa 100% -->
         <div style="width:100%;">
             <input type="date" id="pesquisaData" class="input-date" style="width:100%;box-sizing:border-box;">
         </div>
 
-        <!-- Linha 2: Campo de texto + Botões com tamanhos fixos -->
         <div style="display:flex;gap:10px;align-items:center;width:100%;">
             <input type="text" id="pesquisaDataTexto" placeholder="dd/mm/aaaa ou fale a data" 
                    style="flex:1;min-width:60px;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:600;font-size:0.9em;">
@@ -1270,7 +1441,6 @@
         </div>
     </div>
 
-    <!-- Resultado (mantido igual) -->
     <div id="resultadoPesquisa" style="background:var(--bg);border-radius:16px;padding:15px;border:1px solid var(--border);min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;margin-top:15px;">
         <div id="resultadoTexto" style="font-weight:800;font-size:1.2em;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:8px;">
             Nenhuma pesquisa realizada.
@@ -1286,11 +1456,18 @@
     </div>
 </div>
 
+<!-- ============ MODAL CONQUISTAS ============ -->
+<div id="conquistasCard" class="bottom-modal" role="dialog" aria-label="Conquistas" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;">🏅 Minhas Conquistas</h2>
+    <div id="listaConquistas" style="display:flex;flex-direction:column;gap:12px;margin-top:15px;"></div>
+    <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
+</div>
+
 <script>
     // ==============================================================
     // CONTROLE DE VERSÃO - FORÇA ATUALIZAÇÃO
     // ==============================================================
-    const APP_VERSION = '2026.07.06';
+    const APP_VERSION = '2026.08.31';
 
     function getStorageValue(key) {
         try { return localStorage.getItem(key); } catch (e) {
@@ -1520,9 +1697,13 @@
         MNT: { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA MNT', days: ['S','T','Q','Q','S','S','D'] }
     };
 
-    let currentAno = getStorageValue('braun_ano') || '2026';
+    let currentAno = parseInt(getStorageValue('braun_ano')) || 2026;
     let currentTurma = getStorageValue(`braun_turma_${currentRegion}`) || 'AC';
 
+    let mesAtualVisivel = new Date().getMonth();
+    let anoAtualVisivel = currentAno;
+
+    // ==================== INICIALIZAÇÃO DO PERFIL ====================
     (function init() {
         const savedTurma = getStorageValue('braun_turma_perfil');
         if (savedTurma) {
@@ -1582,8 +1763,10 @@
         _escalaCache.clear();
         gerarCalendario();
         tick();
+        scrollParaMes(mesAtualVisivel, anoAtualVisivel);
     }
 
+    // ==================== CÁLCULO DA ESCALA ====================
     function checkBR(dt, t) {
         const key = `BR_${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_${t}`;
         if (_escalaCache.has(key)) return _escalaCache.get(key);
@@ -1618,21 +1801,41 @@
         return d >= new Date(range.inicio + 'T00:00:00').getTime() && d <= new Date(range.fim + 'T00:00:00').getTime();
     }
 
-    // ================= FUNÇÃO DE RENDERIZAÇÃO DO CALENDÁRIO =================
+    // ================= ESCAPE HTML =================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ================= DIA DA SEMANA =================
+    function diaDaSemanaPorExtenso(data) {
+        const dias = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+        return dias[data.getDay()];
+    }
+
+    // ================= FORMATAR TURMA PARA VOZ =================
+    function formatarTurmaParaVoz(turma) {
+        if (!turma || turma.length !== 2) return turma;
+        return turma.split('').join(' e ');
+    }
+
+    // ================= RENDERIZAÇÃO DO CALENDÁRIO =================
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
         box.innerHTML = '';
         let currentMonth = 0;
         const totalMonths = 12;
+        const ano = anoAtualVisivel; // usa o ano atual da navegação
 
         function construirProximoMes() {
             if (currentMonth >= totalMonths) {
-                setTimeout(() => scrollToToday('smooth'), 300);
+                setTimeout(() => scrollParaMes(mesAtualVisivel, anoAtualVisivel), 100);
                 return;
             }
 
             const m = currentMonth;
-            const ano = parseInt(currentAno);
             const t = currentTurma;
             const fer = getFeriados(ano);
             const lang = translations[currentRegion];
@@ -1643,6 +1846,8 @@
             const nomeM = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(dtM);
             const container = document.createElement('div');
             container.className = 'mes-container';
+            container.dataset.mes = m;
+            container.dataset.ano = ano;
 
             let hF = `<div class="mes-face mes-front" onclick="this.parentElement.classList.toggle('flipped')">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin:5px 10px 0 10px;">
@@ -1691,7 +1896,10 @@
                 if (hojeStr === at.toDateString()) cls += 'hoje ';
                 if (nt) cls += 'HAS_NOTE ';
                 if (isFerias(at)) cls += 'FERIAS ';
-                if (f || nt) { hasEv = true; hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${nt}` : ''}</div>`; }
+                if (f || nt) { 
+                    hasEv = true; 
+                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `📝 ${escapeHtml(nt)}` : ''}</div>`; 
+                }
                 
                 hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')">${d}</div>`;
                 colAtual++;
@@ -1708,6 +1916,7 @@
         }
 
         construirProximoMes();
+        atualizarTituloMes();
     }
 
     function tick() {
@@ -1920,6 +2129,11 @@
         setStorageValue('braun_last_region', region);
         setStorageValue(`braun_turma_${region}`, grupo);
         
+        // Atualiza o ano da navegação
+        currentAno = parseInt(ano) || 2026;
+        anoAtualVisivel = currentAno;
+        mesAtualVisivel = new Date().getMonth();
+        
         _escalaCache.clear();
         gerarCalendario();
         tick();
@@ -1981,34 +2195,123 @@
         setStorageValue('braun_dark_mode', document.body.classList.contains('dark-mode'));
     }
 
+    // ==================== NAVEGAÇÃO DE MÊS ====================
+    function atualizarTituloMes() {
+        const dt = new Date(anoAtualVisivel, mesAtualVisivel, 1);
+        const nome = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(dt);
+        const el = document.getElementById('mesNavTitle');
+        if (el) el.innerText = nome.charAt(0).toUpperCase() + nome.slice(1);
+    }
+
+    function mudarMes(direcao) {
+        mesAtualVisivel += direcao;
+        if (mesAtualVisivel > 11) {
+            mesAtualVisivel = 0;
+            anoAtualVisivel++;
+        } else if (mesAtualVisivel < 0) {
+            mesAtualVisivel = 11;
+            anoAtualVisivel--;
+        }
+
+        if (anoAtualVisivel < 2026) { anoAtualVisivel = 2026; mesAtualVisivel = 0; }
+        if (anoAtualVisivel > 2027) { anoAtualVisivel = 2027; mesAtualVisivel = 11; }
+
+        if (anoAtualVisivel !== parseInt(currentAno)) {
+            currentAno = anoAtualVisivel;
+            setStorageValue('braun_ano', String(currentAno));
+            _escalaCache.clear();
+            gerarCalendario();
+            setTimeout(() => {
+                scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+            }, 150);
+        } else {
+            scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+        }
+        atualizarTituloMes();
+    }
+
+    function irParaHoje() {
+        const hoje = new Date();
+        mesAtualVisivel = hoje.getMonth();
+        anoAtualVisivel = hoje.getFullYear();
+
+        if (anoAtualVisivel < 2026 || anoAtualVisivel > 2027) {
+            anoAtualVisivel = 2026;
+            mesAtualVisivel = 0;
+        }
+
+        if (anoAtualVisivel !== parseInt(currentAno)) {
+            currentAno = anoAtualVisivel;
+            setStorageValue('braun_ano', String(currentAno));
+            _escalaCache.clear();
+            gerarCalendario();
+            setTimeout(() => {
+                scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+            }, 150);
+        } else {
+            scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+        }
+        atualizarTituloMes();
+    }
+
+    function scrollParaMes(mes, ano) {
+        let container = document.querySelector(`.mes-container[data-mes="${mes}"][data-ano="${ano}"]`);
+        if (!container) {
+            // tenta recarregar o calendário se não encontrou
+            currentAno = ano;
+            setStorageValue('braun_ano', String(currentAno));
+            _escalaCache.clear();
+            gerarCalendario();
+            setTimeout(() => {
+                container = document.querySelector(`.mes-container[data-mes="${mes}"][data-ano="${ano}"]`);
+                if (container) {
+                    const header = document.querySelector('header');
+                    const stickyBlock = document.querySelector('.sticky-header-block');
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    const blockHeight = stickyBlock ? stickyBlock.offsetHeight : 0;
+                    const totalOffset = headerHeight + blockHeight + 20;
+                    const rect = container.getBoundingClientRect();
+                    const target = window.scrollY + rect.top - totalOffset;
+                    window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+                }
+            }, 200);
+            return;
+        }
+
+        const header = document.querySelector('header');
+        const stickyBlock = document.querySelector('.sticky-header-block');
+        const headerHeight = header ? header.offsetHeight : 0;
+        const blockHeight = stickyBlock ? stickyBlock.offsetHeight : 0;
+        const totalOffset = headerHeight + blockHeight + 20;
+        const rect = container.getBoundingClientRect();
+        const target = window.scrollY + rect.top - totalOffset;
+        window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+    }
+
     function scrollToToday(behavior = 'auto') {
-        setTimeout(() => {
-            const hoje = document.querySelector('.hoje');
-            if (!hoje) return;
-            
-            const container = hoje.closest('.mes-container');
-            if (!container) return;
-            
-            requestAnimationFrame(() => {
-                const header = document.querySelector('header');
-                const statusPanel = document.querySelector('.status-panel');
-                const headerHeight = header ? header.offsetHeight : 0;
-                const statusHeight = statusPanel ? statusPanel.offsetHeight : 0;
-                const gap = 15;
-                
-                const rect = container.getBoundingClientRect();
-                const scrollTarget = window.scrollY + rect.top - (headerHeight + statusHeight + gap);
-                
-                window.scrollTo({
-                    top: Math.max(0, scrollTarget),
-                    behavior: behavior
-                });
-            });
-        }, 100);
+        const hoje = new Date();
+        mesAtualVisivel = hoje.getMonth();
+        anoAtualVisivel = hoje.getFullYear();
+        if (anoAtualVisivel < 2026 || anoAtualVisivel > 2027) {
+            anoAtualVisivel = 2026;
+            mesAtualVisivel = 0;
+        }
+        if (anoAtualVisivel !== parseInt(currentAno)) {
+            currentAno = anoAtualVisivel;
+            setStorageValue('braun_ano', String(currentAno));
+            _escalaCache.clear();
+            gerarCalendario();
+            setTimeout(() => {
+                scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+            }, 200);
+        } else {
+            scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+        }
+        atualizarTituloMes();
     }
 
     // ==============================================================
-    // ==================== DADOS DAS CARTILHAS =====================
+    // ==================== CARTILHAS ===============================
     // ==============================================================
     const cartilhasData = [
         {
@@ -2140,10 +2443,6 @@
         }
     ];
 
-    // ==============================================================
-    // ==================== SEÇÃO CARTILHAS =========================
-    // ==============================================================
-
     let cartilhaAtiva = 'kaizen';
     let cartilhasLidas = JSON.parse(getStorageValue('braun_cartilhas_lidas') || '[]');
 
@@ -2215,6 +2514,9 @@
             cartilhasLidas.splice(index, 1);
         } else {
             cartilhasLidas.push(id);
+            if (cartilhasLidas.length === 1) salvarConquista('primeiro_passo');
+            if (cartilhasLidas.length === 5) salvarConquista('leitor_dedicado');
+            if (cartilhasLidas.length === cartilhasData.length) salvarConquista('expert_braun');
         }
         setStorageValue('braun_cartilhas_lidas', JSON.stringify(cartilhasLidas));
         renderCartilhas();
@@ -2229,12 +2531,16 @@
         document.getElementById('progressoTexto').innerText = `${lidas}/${total}`;
     }
 
+    let quizzesAcertados = parseInt(getStorageValue('braun_quizzes_acertados') || '0');
+
     function responderQuiz(cartId, qIndex, opIndex) {
         const cart = cartilhasData.find(c => c.id === cartId);
         if (!cart) return;
         const q = cart.quiz[qIndex];
         const opcoesDiv = document.getElementById(`quiz-${cartId}-${qIndex}`);
         const feedback = document.getElementById(`feedback-${cartId}-${qIndex}`);
+
+        if (opcoesDiv.querySelector('.desabilitada')) return;
 
         opcoesDiv.querySelectorAll('.quiz-opcao').forEach(el => el.classList.add('desabilitada'));
         const opEls = opcoesDiv.querySelectorAll('.quiz-opcao');
@@ -2246,6 +2552,11 @@
         if (opIndex === q.certa) {
             feedback.innerHTML = '✅ Correto!';
             feedback.className = 'quiz-feedback certo';
+            quizzesAcertados++;
+            setStorageValue('braun_quizzes_acertados', quizzesAcertados);
+            if (quizzesAcertados === 10) {
+                salvarConquista('quiz_master');
+            }
         } else {
             feedback.innerHTML = '❌ Incorreto. A resposta certa é: ' + q.opcoes[q.certa];
             feedback.className = 'quiz-feedback errado';
@@ -2253,17 +2564,9 @@
     }
 
     // ==============================================================
-    // ==================== SEÇÃO NOVIDADES =========================
+    // ==================== NOVIDADES ===============================
     // ==============================================================
-
     const novidadesData = [
-        {
-            id: 'nov6',
-            titulo: '🌊 Nova animação para dias de folga!',
-            descricao: 'Substituímos a palmeira 🌴 por uma onda 🌊 com movimento suave. A engrenagem ⚙️ do trabalho continua girando nota 10!',
-            data: '2026-08-23',
-            cartilhaId: null
-        },
         {
             id: 'nov7',
             titulo: '🔍 Nova lupa de pesquisa no rodapé',
@@ -2294,9 +2597,9 @@
         },
         {
             id: 'nov3',
-            titulo: '🔔 App atualizado para versão 3.7',
-            descricao: 'Novo sistema de Novidades e melhorias na navegação. Atualize seu app para a versão mais recente.',
-            data: '2026-08-02',
+            titulo: '🔔 App atualizado para versão 3.8',
+            descricao: 'Novo sistema de Novidades, navegação entre anos aprimorada e melhorias gerais. Atualize seu app para a versão mais recente!',
+            data: '2026-09-02',
             cartilhaId: null
         }
     ];
@@ -2415,9 +2718,8 @@
     }
 
     // ==============================================================
-    // ==================== FUNÇÕES DE PESQUISA =====================
+    // ==================== PESQUISA E VOZ =========================
     // ==============================================================
-
     let resultadoPesquisaAtual = null;
     let recognitionInstance = null;
 
@@ -2434,11 +2736,6 @@
 
     function fecharPesquisa() {
         closeAllModals();
-    }
-
-    function formatarTurmaParaVoz(turma) {
-        if (!turma || turma.length !== 2) return turma;
-        return turma.split('').join(' e ');
     }
 
     function pesquisarData() {
@@ -2476,7 +2773,8 @@
 
         let status, cor, iconeHtml, detalhes;
         const regiaoNome = region === 'BR' ? 'ECOFLAC' : 'MANUTENÇÃO';
-        detalhes = `Região: ${regiaoNome} · Turma: ${turma}`;
+        const turmaFalada = formatarTurmaParaVoz(turma);
+        detalhes = `Região: ${regiaoNome} · Turmas ${turmaFalada}`;
 
         if (ferias) {
             status = 'EM FÉRIAS ✈️';
@@ -2492,11 +2790,13 @@
             iconeHtml = `<span class="icone-folga">🌊</span>`;
         }
 
+        const diaSemana = diaDaSemanaPorExtenso(dataObj);
         const dataStr = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+        
         resultadoDiv.style.color = cor;
         resultadoDiv.innerHTML = `
             ${iconeHtml}
-            <div><strong>${dataStr}</strong></div>
+            <div><strong>${diaSemana}, ${dataStr}</strong></div>
             <div style="font-size:1.1em;">${status}</div>
         `;
         detalheDiv.innerText = detalhes;
@@ -2597,34 +2897,254 @@
         const voz = new SpeechSynthesisUtterance();
         voz.lang = 'pt-BR';
         voz.rate = 1.1;
-        const dataStr = resultadoPesquisaAtual.data.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+        const dataObj = resultadoPesquisaAtual.data;
+        const diaSemana = diaDaSemanaPorExtenso(dataObj);
+        const dataStr = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
         const status = resultadoPesquisaAtual.status;
-        const regiao = resultadoPesquisaAtual.detalhes || '';
-        voz.text = `Data ${dataStr}. ${status}. ${regiao}`;
+        const turma = currentTurma;
+        const turmaFalada = formatarTurmaParaVoz(turma);
+        const regiaoNome = currentRegion === 'BR' ? 'ECOFLAC' : 'MANUTENÇÃO';
+        voz.text = `${diaSemana}, ${dataStr}. ${status}. Região ${regiaoNome}, turmas ${turmaFalada}.`;
         if (window.speechSynthesis) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(voz); }
     }
 
-    function enviarPedidoEmail() {
-        const nome = getStorageValue('braun_nome_completo') || 'Não informado';
-        const matricula = getStorageValue('braun_matricula') || 'Não informado';
-        const turma = getStorageValue('braun_turma_perfil') || 'Não informado';
-        const ano = getStorageValue('braun_ano') || 'Não informado';
-        const item = document.getElementById('pedidoItem').value || 'Não informado';
-        const tamanho = document.getElementById('pedidoTamanho').value || 'Não informado';
-        const obs = document.getElementById('pedidoObs').value || '';
-        const assunto = encodeURIComponent(`Pedido de Uniforme - ${nome}`);
-        const corpo = encodeURIComponent(`Nome: ${nome}\nMatrícula: ${matricula}\nTurma: ${turma}\nAno: ${ano}\nItem: ${item}\nTamanho: ${tamanho}\nObservações: ${obs}`);
-        window.open(`mailto:ecoflac@braun.com.br?subject=${assunto}&body=${corpo}`, '_blank');
+    // ==============================================================
+    // ==================== EXPORTAÇÃO ICS =========================
+    // ==============================================================
+    function exportarEscalaICS() {
+        const ano = parseInt(currentAno);
+        const turma = currentTurma;
+        const region = currentRegion;
+        const nomeTurma = getStorageValue('braun_turma_perfil') || turma;
+        
+        let ics = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//Braun OnLine//Escala 2026-2027//PT',
+            'CALSCALE:GREGORIAN',
+            'METHOD:PUBLISH',
+            `X-WR-CALNAME:Escala Braun - Turma ${nomeTurma}`,
+            'X-WR-TIMEZONE:America/Sao_Paulo'
+        ];
+        
+        for (let m = 0; m < 12; m++) {
+            const diasNoMes = new Date(ano, m + 1, 0).getDate();
+            for (let d = 1; d <= diasNoMes; d++) {
+                const data = new Date(ano, m, d);
+                const trabalhando = isTrabalhando(data, region, turma);
+                const ferias = isFerias(data);
+                if (!trabalhando && !ferias) continue;
+                
+                const yyyy = data.getFullYear();
+                const mm = String(data.getMonth() + 1).padStart(2, '0');
+                const dd = String(data.getDate()).padStart(2, '0');
+                const dataStr = `${yyyy}${mm}${dd}`;
+
+                const endDate = new Date(data);
+                endDate.setDate(endDate.getDate() + 1);
+                const endY = endDate.getFullYear();
+                const endM = String(endDate.getMonth() + 1).padStart(2, '0');
+                const endD = String(endDate.getDate()).padStart(2, '0');
+                const endStr = `${endY}${endM}${endD}`;
+                
+                let titulo = ferias ? '✈️ Férias' : '⚙️ Trabalho';
+                let descricao = ferias 
+                    ? 'Período de férias programado no Braun OnLine'
+                    : `Dia de trabalho - Turma ${nomeTurma} (${region === 'BR' ? 'ECOFLAC' : 'Manutenção'})`;
+                
+                ics.push('BEGIN:VEVENT');
+                ics.push(`UID:${dataStr}-braun-${turma}@braunonline`);
+                ics.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`);
+                ics.push(`DTSTART;VALUE=DATE:${dataStr}`);
+                ics.push(`DTEND;VALUE=DATE:${endStr}`);
+                ics.push(`SUMMARY:${titulo}`);
+                ics.push(`DESCRIPTION:${descricao}`);
+                ics.push('END:VEVENT');
+            }
+        }
+        
+        ics.push('END:VCALENDAR');
+        
+        const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Escala_Braun_Turma_${nomeTurma}_${ano}.ics`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        alert('Arquivo .ics gerado! Abra no seu aplicativo de calendário para importar.');
+    }
+
+    // ==============================================================
+    // ==================== NOTIFICAÇÕES ===========================
+    // ==============================================================
+    async function solicitarPermissaoNotificacao() {
+        if (!('Notification' in window)) {
+            alert('Seu navegador não suporta notificações.');
+            return false;
+        }
+        if (Notification.permission === 'granted') return true;
+        if (Notification.permission !== 'denied') {
+            const permission = await Notification.requestPermission();
+            return permission === 'granted';
+        }
+        return false;
+    }
+
+    function mostrarNotificacaoLocal(titulo, corpo) {
+        if (Notification.permission === 'granted') {
+            new Notification(titulo, {
+                body: corpo,
+                icon: './maskable_icon_x192.png',
+                badge: './maskable_icon_x192.png',
+                tag: 'braun-lembrete',
+                renotify: true
+            });
+        }
+    }
+
+    function agendarLembreteTurno() {
+        const amanha = new Date();
+        amanha.setDate(amanha.getDate() + 1);
+        amanha.setHours(0, 0, 0, 0);
+        const trabalhando = isTrabalhando(amanha, currentRegion, currentTurma);
+        const ferias = isFerias(amanha);
+        if (ferias) {
+            mostrarNotificacaoLocal('✈️ Férias amanhã', 'Aproveite seu descanso! Suas férias estão programadas.');
+        } else if (trabalhando) {
+            mostrarNotificacaoLocal('⚙️ Trabalho amanhã', `Você está escalado para trabalhar amanhã (${amanha.toLocaleDateString('pt-BR')}).`);
+        } else {
+            mostrarNotificacaoLocal('🌊 Folga amanhã', 'Aproveite seu dia de folga!');
+        }
+
+        const now = new Date();
+        const target = new Date(now);
+        target.setDate(target.getDate() + 1);
+        target.setHours(8, 0, 0, 0);
+        const diff = target.getTime() - now.getTime();
+        if (diff > 0) {
+            setTimeout(() => {
+                const hoje = new Date();
+                const trabHoje = isTrabalhando(hoje, currentRegion, currentTurma);
+                const feriasHoje = isFerias(hoje);
+                let msg = '';
+                if (feriasHoje) msg = 'Você está de férias hoje! Aproveite!';
+                else if (trabHoje) msg = 'Lembrete: você está escalado para trabalhar hoje!';
+                else msg = 'Bom dia! Hoje é seu dia de folga.';
+                mostrarNotificacaoLocal('⏰ Lembrete de Turno', msg);
+            }, diff);
+        }
+    }
+
+    function verificarNovidadesParaNotificar() {
+        const total = novidadesData.length;
+        const lidas = novidadesLidas.length;
+        const naoLidas = total - lidas;
+        if (naoLidas > 0 && Notification.permission === 'granted') {
+            mostrarNotificacaoLocal(`🔔 ${naoLidas} novidade${naoLidas > 1 ? 's' : ''} no Braun OnLine`, 'Toque para ver as atualizações.');
+        }
+    }
+
+    async function iniciarNotificacoes() {
+        const permitido = await solicitarPermissaoNotificacao();
+        if (permitido) {
+            const ultimaVerificacao = getStorageValue('braun_ultima_notificacao');
+            const hoje = new Date().toDateString();
+            if (ultimaVerificacao !== hoje) {
+                agendarLembreteTurno();
+                verificarNovidadesParaNotificar();
+                setStorageValue('braun_ultima_notificacao', hoje);
+            }
+            alert('Lembretes ativados com sucesso! Você receberá avisos sobre seu turno.');
+        } else {
+            alert('Permissão de notificação negada. Você pode ativar nas configurações do navegador.');
+        }
+    }
+
+    // ==============================================================
+    // ==================== GAMIFICAÇÃO ============================
+    // ==============================================================
+    const conquistas = {
+        primeiro_passo: { id: 'primeiro_passo', titulo: 'Primeiro Passo', descricao: 'Marcou a primeira cartilha como lida', icone: '🏁' },
+        leitor_dedicado: { id: 'leitor_dedicado', titulo: 'Leitor Dedicado', descricao: 'Leu 5 cartilhas', icone: '📚' },
+        expert_braun: { id: 'expert_braun', titulo: 'Expert Braun', descricao: 'Completou todas as 9 cartilhas', icone: '🏆' },
+        quiz_master: { id: 'quiz_master', titulo: 'Quiz Master', descricao: 'Acertou 10 perguntas de quiz', icone: '🎯' }
+    };
+
+    function getConquistas() {
+        return JSON.parse(getStorageValue('braun_conquistas') || '[]');
+    }
+
+    function salvarConquista(id) {
+        const lista = getConquistas();
+        if (!lista.includes(id)) {
+            lista.push(id);
+            setStorageValue('braun_conquistas', JSON.stringify(lista));
+            mostrarConquistaDesbloqueada(id);
+        }
+    }
+
+    function mostrarConquistaDesbloqueada(id) {
+        const c = conquistas[id];
+        if (!c) return;
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #7030A0, #00A97A); color: white;
+            padding: 16px 24px; border-radius: 20px; font-weight: 800;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 3000;
+            display: flex; align-items: center; gap: 12px;
+            animation: bounceIn 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);
+            max-width: 90%;
+        `;
+        toast.innerHTML = `
+            <span style="font-size: 2em;">${c.icone}</span>
+            <div>
+                <div style="font-size: 0.75em; opacity: 0.85;">CONQUISTA DESBLOQUEADA</div>
+                <div style="font-size: 1.1em;">${c.titulo}</div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.4s';
+            setTimeout(() => toast.remove(), 400);
+        }, 3500);
+    }
+
+    function openConquistas() {
+        const lista = getConquistas();
+        const container = document.getElementById('listaConquistas');
+        container.innerHTML = '';
+        Object.values(conquistas).forEach(c => {
+            const desbloqueada = lista.includes(c.id);
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: var(--bg); border-radius: 16px; padding: 16px;
+                border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+                opacity: ${desbloqueada ? '1' : '0.45'};
+            `;
+            card.innerHTML = `
+                <div style="font-size:2.2em;">${c.icone}</div>
+                <div>
+                    <div style="font-weight:800;font-size:1.05em;">${c.titulo}</div>
+                    <div style="font-size:0.85em;opacity:0.7;">${c.descricao}</div>
+                    ${desbloqueada ? '<div style="font-size:0.75em;color:var(--primary);font-weight:700;margin-top:4px;">✓ Desbloqueada</div>' : 
+                    '<div style="font-size:0.75em;opacity:0.5;margin-top:4px;">Bloqueada</div>'}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        focusModal('conquistasCard');
     }
 
     // ==============================================================
     // ==================== INICIALIZAÇÃO ==========================
     // ==============================================================
-
     window.addEventListener('load', function() {
-        if (document.body.classList.contains('dark-mode')) {
-            document.body.classList.remove('dark-mode');
-        }
         const darkMode = getStorageValue('braun_dark_mode') === 'true';
         if (darkMode) document.body.classList.add('dark-mode');
 
@@ -2641,6 +3161,7 @@
         atualizarBadgeTurma();
         preencherDadosModais();
         atualizarNovidadesUI();
+        atualizarTituloMes();
 
         document.getElementById('pesquisaDataTexto').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -2649,7 +3170,7 @@
             }
         });
     });
-</script>
 
+</script>
 </body>
 </html>
