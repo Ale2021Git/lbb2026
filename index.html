@@ -12,24 +12,43 @@
     } catch(e) {}
   })();
 
-  // ========== SERVICE WORKER ==========
+  // ========== CONTROLE DE VERSÃO (SEM LOOP) ==========
+  const APP_VERSION = '2026.09.03';
+
+  function getStorageValue(key) {
+    try { return localStorage.getItem(key); } catch (e) {
+      try { return sessionStorage.getItem(key); } catch (f) { return null; }
+    }
+  }
+  function setStorageValue(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) {
+      try { sessionStorage.setItem(key, value); } catch (f) {}
+    }
+  }
+  function removeStorageValue(key) {
+    try { localStorage.removeItem(key); } catch (e) {
+      try { sessionStorage.removeItem(key); } catch (f) {}
+    }
+  }
+
+  const storedVersion = getStorageValue('braun_app_version');
+  if (storedVersion !== APP_VERSION) {
+    console.log('🔄 Nova versão detectada. Atualizando...');
+    setStorageValue('braun_app_version', APP_VERSION);
+    if (!sessionStorage.getItem('braun_reloaded')) {
+      sessionStorage.setItem('braun_reloaded', 'true');
+      window.location.reload();
+    }
+  }
+
+  // ========== SERVICE WORKER (SEM CONFIRM) ==========
   if ('serviceWorker' in navigator) {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if (!isIOS) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=20260831')
+        navigator.serviceWorker.register('./sw.js?v=' + APP_VERSION)
           .then(reg => {
             console.log('PWA pronto!', reg.scope);
-            reg.onupdatefound = () => {
-              const iw = reg.installing;
-              iw.onstatechange = () => {
-                if (iw.state === 'installed' && navigator.serviceWorker.controller) {
-                  if (confirm('Nova versão do Braun OnLine disponível! Deseja atualizar agora?')) {
-                    window.location.reload();
-                  }
-                }
-              };
-            };
           })
           .catch(err => console.error('Erro no SW:', err));
       });
@@ -158,7 +177,7 @@
         /* ===== BLOCO FIXO: RELÓGIO + NAVEGAÇÃO ===== */
         .sticky-header-block {
             position: sticky;
-            top: 85px; /* altura do header */
+            top: 85px;
             z-index: 95;
             padding: 0 15px;
         }
@@ -318,7 +337,7 @@
             background: var(--primary); color: white;
             border: none; border-radius: 50px; padding: 12px 22px;
             font-weight: 800; font-size: 0.85em;
-            display: none; /* Oculto por padrão, JS mostra se houver novidades */
+            display: none;
             align-items: center; gap: 8px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.25); z-index: 900;
             animation: bounceIn 0.8s cubic-bezier(0.68,-0.55,0.27,1.55);
@@ -327,7 +346,7 @@
             transition: 0.2s;
         }
         #btn-flutuante-novidades .badge {
-            background: #7030A0; /* Roxo Braun */
+            background: #7030A0;
             color: white;
             border-radius: 50%;
             font-size: 0.7em;
@@ -336,7 +355,6 @@
             margin-left: 4px;
         }
 
-        /* ===== BOTÃO DE PESQUISA (LUPA) NO RODAPÉ - AGORA SEM FUNDO, IGUAL AOS OUTROS ===== */
         #tab-SEARCH {
             flex: 1;
             display: flex;
@@ -352,18 +370,15 @@
         }
         #tab-SEARCH.active { color: #FFFFFF; }
         #tab-SEARCH .search-icon {
-            font-size: 28px; /* mesmo tamanho dos outros ícones */
+            font-size: 28px;
             transition: transform 0.2s;
         }
-        #tab-SEARCH:active .search-icon {
-            transform: scale(0.9);
-        }
+        #tab-SEARCH:active .search-icon { transform: scale(0.9); }
 
         @keyframes bounceIn {
             from { opacity: 0; transform: scale(0.5) translateY(20px); }
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
-        /* Animação do sininho */
         @keyframes shake-bell {
             0%, 100% { transform: rotate(0deg); }
             10% { transform: rotate(15deg); }
@@ -437,516 +452,107 @@
             width: 100%;
             text-align: left;
             border: none;
-            border-left: none;
-            border-right: none;
-            border-bottom: none;
-            border-top: none;
             margin-bottom: 2px;
         }
         .drawer-item:active { background: rgba(0,0,0,0.05); }
         body.dark-mode .drawer-item:active { background: rgba(255,255,255,0.05); }
-        .drawer-item.highlight {
-            background: rgba(0,169,122,0.08);
-        }
-        body.dark-mode .drawer-item.highlight {
-            background: rgba(0,169,122,0.15);
-        }
+        .drawer-item.highlight { background: rgba(0,169,122,0.08); }
+        body.dark-mode .drawer-item.highlight { background: rgba(0,169,122,0.15); }
         .drawer-item-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 20px;
-            background: transparent !important;
-            color: var(--text) !important;
+            width: 38px; height: 38px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 20px;
+            background: transparent !important; color: var(--text) !important;
         }
-        .drawer-item-label {
-            flex: 1;
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text);
-        }
-        .drawer-item-sub {
-            font-size: 0.75rem;
-            font-weight: 500;
-            opacity: 0.5;
-            margin-top: 2px;
-            color: var(--text);
-        }
-        .drawer-item-arrow {
-            color: var(--text);
-            opacity: 0.3;
-            font-size: 20px;
-        }
-        .drawer-item.no-arrow .drawer-item-arrow {
-            display: none;
-        }
-        .drawer-footer {
-            padding: 15px 20px;
-            border-top: 1px solid var(--border);
-            font-size: 0.75rem;
-            opacity: 0.6;
-            font-weight: 600;
-        }
-        .qr-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .qr-img {
-            filter: invert(1);
-        }
-        
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-        
-        .skip-link {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        .skip-link:focus {
-            top: 10px;
-            left: 10px;
-            width: auto;
-            height: auto;
-            background: #000;
-            color: #fff;
-            padding: 10px;
-            z-index: 9999;
-            border-radius: 8px;
-        }
-        
+        .drawer-item-label { flex: 1; font-weight: 700; font-size: 1.1rem; color: var(--text); }
+        .drawer-item-sub { font-size: 0.75rem; font-weight: 500; opacity: 0.5; margin-top: 2px; color: var(--text); }
+        .drawer-item-arrow { color: var(--text); opacity: 0.3; font-size: 20px; }
+        .drawer-item.no-arrow .drawer-item-arrow { display: none; }
+        .drawer-footer { padding: 15px 20px; border-top: 1px solid var(--border); font-size: 0.75rem; opacity: 0.6; font-weight: 600; }
+        .qr-img { width: 120px; height: 120px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body.dark-mode .qr-img { filter: invert(1); }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        .skip-link { position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+        .skip-link:focus { top: 10px; left: 10px; width: auto; height: auto; background: #000; color: #fff; padding: 10px; z-index: 9999; border-radius: 8px; }
         @supports (-webkit-touch-callout: none) {
-            .mes-inner {
-                transform-style: preserve-3d;
-                -webkit-transform-style: preserve-3d;
-            }
-            .mes-face {
-                -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
-            }
+            .mes-inner { transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
+            .mes-face { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
         }
-
-        /* ===== ESTILOS DA SEÇÃO CARTILHAS ===== */
-        .cartilha-titulo {
-            font-weight: 900;
-            color: var(--primary);
-            font-size: 1.5em;
-            margin: 0 0 6px 0;
-        }
-        .cartilha-sub {
-            font-size: 0.9em;
-            opacity: 0.7;
-            margin-bottom: 18px;
-            font-weight: 600;
-        }
-        .cartilha-conteudo {
-            line-height: 1.7;
-            font-size: 0.95em;
-        }
-        .cartilha-conteudo strong {
-            color: var(--primary);
-        }
-        .cartilha-conteudo ul {
-            padding-left: 20px;
-        }
-        .cartilha-conteudo li {
-            margin-bottom: 8px;
-        }
-        .cartilha-destaque {
-            background: var(--bg);
-            border-left: 5px solid var(--primary);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-        }
-        .cartilha-exemplo {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 15px 0;
-            border: 1px dashed var(--border);
-        }
-        .cartilha-progresso {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .cartilha-progresso-bar {
-            flex: 1;
-            height: 8px;
-            background: var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            min-width: 80px;
-        }
-        .cartilha-progresso-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--primary);
-            transition: width 0.5s;
-        }
-        .cartilha-progresso-text {
-            font-weight: 700;
-            font-size: 0.9em;
-            color: var(--primary);
-            white-space: nowrap;
-        }
-        .cartilha-tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
-        }
-        .cartilha-tab-btn {
-            background: var(--bg);
-            border: 2px solid transparent;
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.8em;
-            color: var(--text);
-            opacity: 0.7;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .cartilha-tab-btn.active {
-            opacity: 1;
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        .cartilha-tab-btn .material-symbols-outlined {
-            font-size: 18px;
-        }
-        .cartilha-tab-btn.lida {
-            opacity: 0.5;
-            text-decoration: line-through;
-        }
-        .cartilha-panel {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        .cartilha-panel.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .cartilha-btn-marcar {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 20px;
-            border-radius: 18px;
-            font-weight: 800;
-            font-size: 1em;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .cartilha-btn-marcar:active {
-            transform: scale(0.97);
-        }
-        .cartilha-btn-marcar.marcado {
-            background: var(--border);
-            color: var(--text);
-        }
-        .cartilha-btn-marcar .material-symbols-outlined {
-            font-size: 22px;
-        }
-        .cartilha-quiz {
-            margin-top: 25px;
-            border-top: 2px solid var(--border);
-            padding-top: 20px;
-        }
-        .cartilha-quiz h4 {
-            color: var(--primary);
-            margin: 0 0 15px 0;
-            font-size: 1.1em;
-        }
-        .quiz-pergunta {
-            font-weight: 700;
-            margin: 12px 0 6px 0;
-        }
-        .quiz-opcoes {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        .quiz-opcao {
-            background: var(--bg);
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 10px 14px;
-            font-weight: 600;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .quiz-opcao:active {
-            transform: scale(0.97);
-        }
-        .quiz-opcao.certa {
-            border-color: var(--primary);
-            background: rgba(0,169,122,0.15);
-        }
-        .quiz-opcao.errada {
-            border-color: #e74c3c;
-            background: rgba(231,76,60,0.15);
-        }
-        .quiz-opcao.desabilitada {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-        .quiz-feedback {
-            font-weight: 700;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
+        /* Cartilhas */
+        .cartilha-titulo { font-weight: 900; color: var(--primary); font-size: 1.5em; margin: 0 0 6px 0; }
+        .cartilha-sub { font-size: 0.9em; opacity: 0.7; margin-bottom: 18px; font-weight: 600; }
+        .cartilha-conteudo { line-height: 1.7; font-size: 0.95em; }
+        .cartilha-conteudo strong { color: var(--primary); }
+        .cartilha-conteudo ul { padding-left: 20px; }
+        .cartilha-conteudo li { margin-bottom: 8px; }
+        .cartilha-destaque { background: var(--bg); border-left: 5px solid var(--primary); padding: 15px; border-radius: 10px; margin: 15px 0; }
+        .cartilha-exemplo { background: var(--bg); border-radius: 12px; padding: 15px; margin: 15px 0; border: 1px dashed var(--border); }
+        .cartilha-progresso { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .cartilha-progresso-bar { flex: 1; height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; min-width: 80px; }
+        .cartilha-progresso-bar-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.5s; }
+        .cartilha-progresso-text { font-weight: 700; font-size: 0.9em; color: var(--primary); white-space: nowrap; }
+        .cartilha-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+        .cartilha-tab-btn { background: var(--bg); border: 2px solid transparent; padding: 8px 14px; border-radius: 30px; font-weight: 700; font-size: 0.8em; color: var(--text); opacity: 0.7; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex-shrink: 0; }
+        .cartilha-tab-btn.active { opacity: 1; background: var(--primary); color: white; border-color: var(--primary); }
+        .cartilha-tab-btn .material-symbols-outlined { font-size: 18px; }
+        .cartilha-tab-btn.lida { opacity: 0.5; text-decoration: line-through; }
+        .cartilha-panel { display: none; animation: fadeIn 0.3s ease; }
+        .cartilha-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .cartilha-btn-marcar { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 18px; font-weight: 800; font-size: 1em; width: 100%; cursor: pointer; margin-top: 20px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .cartilha-btn-marcar:active { transform: scale(0.97); }
+        .cartilha-btn-marcar.marcado { background: var(--border); color: var(--text); }
+        .cartilha-btn-marcar .material-symbols-outlined { font-size: 22px; }
+        .cartilha-quiz { margin-top: 25px; border-top: 2px solid var(--border); padding-top: 20px; }
+        .cartilha-quiz h4 { color: var(--primary); margin: 0 0 15px 0; font-size: 1.1em; }
+        .quiz-pergunta { font-weight: 700; margin: 12px 0 6px 0; }
+        .quiz-opcoes { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+        .quiz-opcao { background: var(--bg); border: 2px solid var(--border); border-radius: 12px; padding: 10px 14px; font-weight: 600; font-size: 0.9em; cursor: pointer; transition: 0.2s; }
+        .quiz-opcao:active { transform: scale(0.97); }
+        .quiz-opcao.certa { border-color: var(--primary); background: rgba(0,169,122,0.15); }
+        .quiz-opcao.errada { border-color: #e74c3c; background: rgba(231,76,60,0.15); }
+        .quiz-opcao.desabilitada { pointer-events: none; opacity: 0.6; }
+        .quiz-feedback { font-weight: 700; font-size: 0.9em; margin-top: 5px; }
         .quiz-feedback.certo { color: var(--primary); }
         .quiz-feedback.errado { color: #e74c3c; }
-
-        /* ===== ESTILOS DAS NOVIDADES ===== */
-        .novidades-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 10px;
-        }
-        .novidade-card {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid var(--border);
-            transition: 0.2s;
-            cursor: pointer;
-        }
-        .novidade-card:active {
-            transform: scale(0.98);
-        }
-        .novidade-card.lida {
-            opacity: 0.6;
-        }
-        .novidade-card .novidade-titulo {
-            font-weight: 800;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .novidade-card .novidade-desc {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-top: 4px;
-            line-height: 1.4;
-        }
-        .novidade-card .novidade-data {
-            font-size: 0.7em;
-            opacity: 0.5;
-            margin-top: 8px;
-            display: block;
-        }
-        .novidade-card .badge-novo {
-            background: var(--primary);
-            color: white;
-            font-size: 0.6em;
-            font-weight: 800;
-            padding: 2px 10px;
-            border-radius: 20px;
-            margin-left: 8px;
-        }
-        .novidade-card .link-cartilha {
-            color: var(--primary);
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 6px;
-        }
-
-        /* ===== ESTILOS DO MODAL DE PESQUISA ===== */
-        #resultadoPesquisa {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 15px;
-            border: 1px solid var(--border);
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            text-align: center;
-        }
-        #resultadoTexto {
-            font-weight: 800;
-            font-size: 1.2em;
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        /* ===== ÍCONES ANIMADOS ===== */
-        .icone-folga {
-            font-size: 3.5rem;
-            display: inline-block;
-            animation: onda 2.5s ease-in-out infinite;
-        }
-        .icone-trabalho {
-            font-size: 3.5rem;
-            display: inline-block;
-            animation: girar 3s linear infinite;
-        }
-        .icone-ferias {
-            font-size: 3.5rem;
-            display: inline-block;
-            animation: voar 2s ease-in-out infinite;
-        }
-        @keyframes onda {
-            0%   { transform: translateX(0px) rotate(0deg); }
-            25%  { transform: translateX(8px) rotate(3deg); }
-            75%  { transform: translateX(-8px) rotate(-3deg); }
-            100% { transform: translateX(0px) rotate(0deg); }
-        }
-        @keyframes girar {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
-        }
-        @keyframes voar {
-            0%   { transform: translateX(0px) rotate(0deg); }
-            25%  { transform: translateX(8px) rotate(-5deg); }
-            75%  { transform: translateX(-8px) rotate(5deg); }
-            100% { transform: translateX(0px) rotate(0deg); }
-        }
-        #resultadoDetalhe {
-            font-size: 0.85em;
-            opacity: 0.7;
-        }
-        .btn-ouvir {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            flex: 1;
-        }
-        .btn-ouvir:active {
-            transform: scale(0.96);
-        }
-        /* Botão microfone na pesquisa - TAMANHO FIXO */
-        .btn-mic {
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 54px;
-            height: 54px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            flex-shrink: 0;
-        }
-        .btn-mic:active {
-            transform: scale(0.92);
-        }
-        .btn-mic .material-symbols-outlined {
-            font-size: 28px;
-        }
-
-        /* ===== MICRO-INTERAÇÕES E POLISH ===== */
-        button, .tab, .drawer-item, .dia, .turma-badge, .ramal-badge {
-            transition: transform 0.15s ease, opacity 0.15s ease;
-        }
-        button:active, .tab:active, .drawer-item:active, .dia:active {
-            transform: scale(0.96);
-        }
-        .status-panel {
-            transition: box-shadow 0.3s ease;
-        }
-        .turma-badge {
-            position: relative;
-            overflow: hidden;
-        }
-        .turma-badge::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
-            transform: rotate(45deg);
-            animation: shine 4s infinite;
-        }
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            20%, 100% { transform: translateX(100%) rotate(45deg); }
-        }
-        .hoje {
-            box-shadow: 0 0 0 3px white, 0 0 20px var(--accent), 0 4px 12px rgba(112,48,160,0.4) !important;
-        }
-        .cartilha-btn-marcar.marcado {
-            background: linear-gradient(135deg, var(--primary), #007d5a);
-        }
-        .cartilha-progresso-bar-fill {
-            background: linear-gradient(90deg, var(--primary), var(--verde));
-            box-shadow: 0 0 10px rgba(0,169,122,0.4);
-        }
-        @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .success-feedback {
-            animation: successPulse 0.4s ease;
-        }
-        .bottom-modal {
-            transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-        }
+        /* Novidades */
+        .novidades-timeline { display: flex; flex-direction: column; gap: 16px; margin-top: 10px; }
+        .novidade-card { background: var(--bg); border-radius: 16px; padding: 16px; border: 1px solid var(--border); transition: 0.2s; cursor: pointer; }
+        .novidade-card:active { transform: scale(0.98); }
+        .novidade-card.lida { opacity: 0.6; }
+        .novidade-card .novidade-titulo { font-weight: 800; font-size: 1em; display: flex; align-items: center; gap: 8px; }
+        .novidade-card .novidade-desc { font-size: 0.9em; opacity: 0.8; margin-top: 4px; line-height: 1.4; }
+        .novidade-card .novidade-data { font-size: 0.7em; opacity: 0.5; margin-top: 8px; display: block; }
+        .novidade-card .badge-novo { background: var(--primary); color: white; font-size: 0.6em; font-weight: 800; padding: 2px 10px; border-radius: 20px; margin-left: 8px; }
+        .novidade-card .link-cartilha { color: var(--primary); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; }
+        /* Pesquisa */
+        #resultadoPesquisa { background: var(--bg); border-radius: 16px; padding: 15px; border: 1px solid var(--border); min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; }
+        #resultadoTexto { font-weight: 800; font-size: 1.2em; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .icone-folga { font-size: 3.5rem; display: inline-block; animation: onda 2.5s ease-in-out infinite; }
+        .icone-trabalho { font-size: 3.5rem; display: inline-block; animation: girar 3s linear infinite; }
+        .icone-ferias { font-size: 3.5rem; display: inline-block; animation: voar 2s ease-in-out infinite; }
+        @keyframes onda { 0% { transform: translateX(0px) rotate(0deg); } 25% { transform: translateX(8px) rotate(3deg); } 75% { transform: translateX(-8px) rotate(-3deg); } 100% { transform: translateX(0px) rotate(0deg); } }
+        @keyframes girar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes voar { 0% { transform: translateX(0px) rotate(0deg); } 25% { transform: translateX(8px) rotate(-5deg); } 75% { transform: translateX(-8px) rotate(5deg); } 100% { transform: translateX(0px) rotate(0deg); } }
+        #resultadoDetalhe { font-size: 0.85em; opacity: 0.7; }
+        .btn-ouvir { background: var(--primary); color: white; border: none; padding: 12px 16px; border-radius: 18px; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; flex: 1; }
+        .btn-ouvir:active { transform: scale(0.96); }
+        .btn-mic { background: var(--accent); color: white; border: none; border-radius: 50%; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+        .btn-mic:active { transform: scale(0.92); }
+        .btn-mic .material-symbols-outlined { font-size: 28px; }
+        /* Micro-interações */
+        button, .tab, .drawer-item, .dia, .turma-badge, .ramal-badge { transition: transform 0.15s ease, opacity 0.15s ease; }
+        button:active, .tab:active, .drawer-item:active, .dia:active { transform: scale(0.96); }
+        .status-panel { transition: box-shadow 0.3s ease; }
+        .turma-badge { position: relative; overflow: hidden; }
+        .turma-badge::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent); transform: rotate(45deg); animation: shine 4s infinite; }
+        @keyframes shine { 0% { transform: translateX(-100%) rotate(45deg); } 20%, 100% { transform: translateX(100%) rotate(45deg); } }
+        .hoje { box-shadow: 0 0 0 3px white, 0 0 20px var(--accent), 0 4px 12px rgba(112,48,160,0.4) !important; }
+        .cartilha-btn-marcar.marcado { background: linear-gradient(135deg, var(--primary), #007d5a); }
+        .cartilha-progresso-bar-fill { background: linear-gradient(90deg, var(--primary), var(--verde)); box-shadow: 0 0 10px rgba(0,169,122,0.4); }
+        @keyframes successPulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .success-feedback { animation: successPulse 0.4s ease; }
+        .bottom-modal { transition: bottom 0.4s cubic-bezier(0.32, 0.72, 0, 1); }
     </style>
 </head>
 <body>
@@ -1013,7 +619,6 @@
 <main id="main-content">
     <h1 class="sr-only">Escala Braun OnLine</h1>
 
-    <!-- BLOCO FIXO: RELÓGIO + NAVEGAÇÃO -->
     <div class="sticky-header-block">
         <div class="status-panel" aria-live="polite">
             <div id="big-clock" class="clock">00:00:00</div>
@@ -1040,7 +645,6 @@
 <div class="tab-bar" role="tablist" aria-label="Selecionar região">
     <button class="tab" onclick="setRegion('BR')" id="tab-BR" role="tab" aria-selected="true"><span class="material-symbols-outlined" aria-hidden="true">factory</span>ECOFLAC</button>
     <button class="tab" onclick="setRegion('MNT')" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUTENÇÃO</button>
-    
     <button class="tab" onclick="openPesquisa()" id="tab-SEARCH" role="tab" aria-selected="false">
         <span class="material-symbols-outlined search-icon">search</span>
         <span>BUSCAR</span>
@@ -1072,7 +676,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-
         <div class="drawer-section-label">Contatos</div>
         <button class="drawer-item" onclick="closeHamburger(); openRamais();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📞</div>
@@ -1082,7 +685,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-        
         <div class="drawer-section-label">Colaborador</div>
         <button class="drawer-item" onclick="openColaboradorDoMes()">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">🏆</div>
@@ -1092,7 +694,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-
         <button class="drawer-item" onclick="openMeusPedidos()">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📦</div>
             <div>
@@ -1101,7 +702,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-
         <div class="drawer-section-label">Aprendizado</div>
         <button class="drawer-item highlight" onclick="closeHamburger(); openCartilhas();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">📘</div>
@@ -1111,7 +711,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-
         <div class="drawer-section-label">Conquistas</div>
         <button class="drawer-item" onclick="closeHamburger(); openConquistas();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">🏅</div>
@@ -1121,7 +720,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-
         <div class="drawer-section-label">Ferramentas</div>
         <button class="drawer-item" onclick="closeHamburger(); openConfig();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">⚙️</div>
@@ -1139,7 +737,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-        
         <button class="drawer-item" onclick="closeHamburger(); openPrivacy();">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">🛡️</div>
             <div>
@@ -1148,7 +745,6 @@
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
-        
         <div class="drawer-section-label">Conecte-se</div>
         <div class="drawer-item" style="cursor:default; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 15px 0;">
             <img src="qr-code.png" alt="QR Code para acessar o Braun OnLine" class="qr-img" style="width: 120px; height: 120px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
@@ -1160,7 +756,6 @@
 
 <div id="overlay" onclick="closeAllModals()" aria-hidden="true"></div>
 
-<!-- BOTÃO FLUTUANTE DE NOVIDADES com sininho animado -->
 <button id="btn-flutuante-novidades" onclick="openNovidades()" aria-label="Novidades">
     <span class="material-symbols-outlined animar-sino" id="sinoIcon">notifications</span>
     Novidades
@@ -1174,9 +769,7 @@
         <button onclick="marcarTodasNovidadesLidas()" style="background:none;border:none;color:var(--primary);font-weight:700;font-size:0.8em;cursor:pointer;">Marcar todas como lidas</button>
     </div>
     <div class="cartilha-sub">Fique por dentro das últimas atualizações e conteúdos.</div>
-    <div id="novidadesLista" class="novidades-timeline">
-        <!-- renderizado via JS -->
-    </div>
+    <div id="novidadesLista" class="novidades-timeline"></div>
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
 </div>
 
@@ -1187,8 +780,6 @@
         <span style="font-size:0.75em; opacity:0.5; font-weight:600;" id="cartilhaVersao">v1.0</span>
     </div>
     <div class="cartilha-sub">Aprenda sobre melhorias contínuas, qualidade, segurança, compliance, incêndio e muito mais.</div>
-
-    <!-- Progresso -->
     <div class="cartilha-progresso">
         <span style="font-weight:600; font-size:0.85em;">Progresso</span>
         <div class="cartilha-progresso-bar">
@@ -1196,21 +787,12 @@
         </div>
         <span class="cartilha-progresso-text" id="progressoTexto">0/9</span>
     </div>
-
-    <!-- Abas -->
-    <div class="cartilha-tabs" id="cartilhaTabs">
-        <!-- Gerado via JS -->
-    </div>
-
-    <!-- Painéis -->
-    <div id="cartilhaPanels">
-        <!-- Gerado via JS -->
-    </div>
-
+    <div class="cartilha-tabs" id="cartilhaTabs"></div>
+    <div id="cartilhaPanels"></div>
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
 </div>
 
-<!-- ============ MODAIS EXISTENTES (mantidos) ============ -->
+<!-- ============ MODAIS EXISTENTES ============ -->
 <div id="infoCard" class="bottom-modal" role="dialog" aria-label="Informações do dia" aria-modal="true">
     <div id="card-data" style="font-weight:800;color:var(--primary);font-size:1.3em;margin-bottom:10px;"></div>
     <div class="lote-box">
@@ -1277,6 +859,7 @@
     <button onclick="closeAllModals()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;">VOLTAR</button>
 </div>
 
+<!-- ============ RAMAIS (mantido igual, omitido por brevidade) ============ -->
 <div id="ramaisCard" class="bottom-modal" role="dialog" aria-label="Ramais úteis" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:10px;">Ramais Úteis</h2>
     <div class="ramal-secao">URGÊNCIAS & SERVIÇOS</div>
@@ -1384,7 +967,6 @@
 
 <div id="meusPedidosCard" class="bottom-modal" role="dialog" aria-label="Meus Pedidos" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">📦 Meus Pedidos</h2>
-    
     <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
         <div style="display:flex;flex-direction:column;gap:5px;">
             <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="pedidoNome" style="font-weight:800;">---</span></div>
@@ -1393,61 +975,50 @@
             <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="pedidoAno" style="font-weight:800;">---</span></div>
         </div>
     </div>
-
     <div style="margin-bottom:15px;">
         <label for="pedidoItem" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Item desejado</label>
         <input type="text" id="pedidoItem" placeholder="Ex: Uniforme completo, Camisa, Calça..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
     </div>
-
     <div style="margin-bottom:15px;">
         <label for="pedidoTamanho" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Tamanho</label>
         <input type="text" id="pedidoTamanho" placeholder="Ex: M, G, GG..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
     </div>
-
     <div style="margin-bottom:15px;">
         <label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Observações</label>
         <textarea id="pedidoObs" placeholder="Digite qualquer observação..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea>
     </div>
-
     <button onclick="enviarPedidoEmail()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(0,169,122,0.3);">
         <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">send</span>
         ENVIAR POR E-MAIL
     </button>
-
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;">FECHAR</button>
 </div>
 
 <!-- ============ MODAL DE PESQUISA ============ -->
 <div id="pesquisaCard" class="bottom-modal" role="dialog" aria-label="Pesquisar escala" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🔍 Pesquisar data</h2>
-    
     <div style="display:flex;flex-direction:column;gap:14px;">
         <div style="width:100%;">
             <input type="date" id="pesquisaData" class="input-date" style="width:100%;box-sizing:border-box;">
         </div>
-
         <div style="display:flex;gap:10px;align-items:center;width:100%;">
             <input type="text" id="pesquisaDataTexto" placeholder="dd/mm/aaaa ou fale a data" 
                    style="flex:1;min-width:60px;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:600;font-size:0.9em;">
-            
             <button onclick="iniciarReconhecimentoVoz()" class="btn-mic" aria-label="Pesquisar por voz">
                 <span class="material-symbols-outlined">mic</span>
             </button>
-            
             <button onclick="pesquisarData()" 
                     style="background:var(--primary);color:white;border:none;padding:0 22px;border-radius:18px;font-weight:800;height:54px;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0;">
                 <span class="material-symbols-outlined" style="font-size:20px;">search</span> Buscar
             </button>
         </div>
     </div>
-
     <div id="resultadoPesquisa" style="background:var(--bg);border-radius:16px;padding:15px;border:1px solid var(--border);min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;margin-top:15px;">
         <div id="resultadoTexto" style="font-weight:800;font-size:1.2em;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:8px;">
             Nenhuma pesquisa realizada.
         </div>
         <div id="resultadoDetalhe" style="font-size:0.85em;opacity:0.7;"></div>
     </div>
-
     <div style="display:flex;gap:10px;margin-top:15px;">
         <button onclick="lerResultado()" id="btnOuvirResultado" style="background:var(--primary);color:white;border:none;padding:12px 16px;border-radius:18px;font-weight:800;display:flex;align-items:center;gap:6px;cursor:pointer;flex:1;">
             <span class="material-symbols-outlined">volume_up</span> Ouvir resposta
@@ -1465,40 +1036,9 @@
 
 <script>
     // ==============================================================
-    // CONTROLE DE VERSÃO - FORÇA ATUALIZAÇÃO
+    // CONTROLE DE VERSÃO (já no head, mas mantido por segurança)
     // ==============================================================
-    const APP_VERSION = '2026.08.31';
-
-    function getStorageValue(key) {
-        try { return localStorage.getItem(key); } catch (e) {
-            try { return sessionStorage.getItem(key); } catch (f) { return null; }
-        }
-    }
-    function setStorageValue(key, value) {
-        try { localStorage.setItem(key, value); } catch (e) {
-            try { sessionStorage.setItem(key, value); } catch (f) {}
-        }
-    }
-    function removeStorageValue(key) {
-        try { localStorage.removeItem(key); } catch (e) {
-            try { sessionStorage.removeItem(key); } catch (f) {}
-        }
-    }
-
-    const storedVersion = getStorageValue('braun_app_version');
-    if (storedVersion !== APP_VERSION) {
-        console.log('🔄 Nova versão detectada. Atualizando...');
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(registrations => {
-                for (let reg of registrations) {
-                    reg.unregister();
-                    console.log('✅ Service Worker desregistrado.');
-                }
-            });
-        }
-        setStorageValue('braun_app_version', APP_VERSION);
-        window.location.reload();
-    }
+    // O código do head já trata a versão.
 
     // ==============================================================
     // ACESSIBILIDADE E DEMAIS FUNÇÕES
@@ -1653,16 +1193,9 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js?v=' + APP_VERSION)
                     .then(reg => {
-                        reg.onupdatefound = () => {
-                            const iw = reg.installing;
-                            iw.onstatechange = () => {
-                                if (iw.state === 'installed' && navigator.serviceWorker.controller) {
-                                    console.log('Nova versão pronta.');
-                                }
-                            };
-                        };
+                        console.log('PWA pronto!', reg.scope);
                     })
-                    .catch(err => console.log('Erro SW:', err));
+                    .catch(err => console.error('Erro no SW:', err));
             });
         }
     }
@@ -1670,7 +1203,10 @@
         navigator.serviceWorker.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'SW_UPDATED') {
                 console.log('Nova versão detectada. Atualizando...');
-                window.location.reload();
+                if (!sessionStorage.getItem('braun_reloaded')) {
+                    sessionStorage.setItem('braun_reloaded', 'true');
+                    window.location.reload();
+                }
             }
         });
     }
@@ -1827,7 +1363,7 @@
         box.innerHTML = '';
         let currentMonth = 0;
         const totalMonths = 12;
-        const ano = anoAtualVisivel; // usa o ano atual da navegação
+        const ano = anoAtualVisivel;
 
         function construirProximoMes() {
             if (currentMonth >= totalMonths) {
@@ -2042,7 +1578,7 @@
     function openConfig() {
         document.getElementById('minimalGreetingToggle').checked = (getStorageValue('braun_minimal_greeting') === 'true');
         const voiceResponse = getStorageValue('braun_voice_response');
-        document.getElementById('voiceResponseToggle').checked = (voiceResponse !== 'false'); // default true
+        document.getElementById('voiceResponseToggle').checked = (voiceResponse !== 'false');
         focusModal('configCard');
     }
     function toggleMinimalGreeting() {
@@ -2129,7 +1665,6 @@
         setStorageValue('braun_last_region', region);
         setStorageValue(`braun_turma_${region}`, grupo);
         
-        // Atualiza o ano da navegação
         currentAno = parseInt(ano) || 2026;
         anoAtualVisivel = currentAno;
         mesAtualVisivel = new Date().getMonth();
@@ -2257,7 +1792,6 @@
     function scrollParaMes(mes, ano) {
         let container = document.querySelector(`.mes-container[data-mes="${mes}"][data-ano="${ano}"]`);
         if (!container) {
-            // tenta recarregar o calendário se não encontrou
             currentAno = ano;
             setStorageValue('braun_ano', String(currentAno));
             _escalaCache.clear();
