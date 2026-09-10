@@ -10,7 +10,7 @@
       }
     } catch(e) {}
   })();
-  const APP_VERSION = '2026.09.04';
+  const APP_VERSION = '2026.09.05';
   function getStorageValue(key) {
     try { return localStorage.getItem(key); } catch (e) {
       try { return sessionStorage.getItem(key); } catch (f) { return null; }
@@ -28,7 +28,6 @@
   }
   const storedVersion = getStorageValue('braun_app_version');
   if (storedVersion !== APP_VERSION) {
-    console.log(' Nova versão detectada. Atualizando...');
     setStorageValue('braun_app_version', APP_VERSION);
     if (!sessionStorage.getItem('braun_reloaded')) {
       sessionStorage.setItem('braun_reloaded', 'true');
@@ -40,8 +39,8 @@
     if (!isIOS) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js?v=' + APP_VERSION)
-          .then(reg => console.log('PWA pronto!', reg.scope))
-          .catch(err => console.error('Erro no SW:', err));
+          .then(reg => console.log('PWA ready!', reg.scope))
+          .catch(err => console.error('SW error:', err));
       });
     }
   }
@@ -50,7 +49,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#00A97A">
     <title>Braun OnLine 2026/2027</title>
-    <meta name="description" content="Aplicativo de escala para colaboradores Braun - ECOFLAC e MANUTENÇÃO">
+    <meta name="description" content="Aplicativo de escala para colaboradores Braun - ECOFLAC e MANUTEN&#199;&#195;O">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -152,7 +151,6 @@
         .turma-badge:active { background: rgba(255,255,255,0.35); transform: scale(0.96); }
         .turma-badge .material-symbols-outlined { font-size: 16px; }
 
-        /* ===== BLOCO FIXO: RELÓGIO + NAVEGAÇÃO + BANNER ===== */
         .sticky-header-block {
             position: sticky;
             top: 85px;
@@ -185,7 +183,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             margin: 0;
         }
-        /* Quando NÃO há banner, mes-nav recebe cantos inferiores arredondados */
         .mes-nav.sem-banner {
             border-radius: 0 0 25px 25px;
             border-bottom: 1px solid var(--border);
@@ -229,7 +226,6 @@
         }
         .btn-hoje:active { transform: scale(0.95); }
 
-        /* ===== BANNER DE AVISOS (integrado ao cartão) ===== */
         #banner-avisos {
             display: none;
             background: linear-gradient(90deg, var(--accent), #9b4dca);
@@ -440,8 +436,6 @@
         .cartilha-sub { font-size: 0.9em; opacity: 0.7; margin-bottom: 18px; font-weight: 600; }
         .cartilha-conteudo { line-height: 1.7; font-size: 0.95em; }
         .cartilha-conteudo strong { color: var(--primary); }
-        .cartilha-conteudo ul { padding-left: 20px; }
-        .cartilha-conteudo li { margin-bottom: 8px; }
         .cartilha-destaque { background: var(--bg); border-left: 5px solid var(--primary); padding: 15px; border-radius: 10px; margin: 15px 0; }
         .cartilha-exemplo { background: var(--bg); border-radius: 12px; padding: 15px; margin: 15px 0; border: 1px dashed var(--border); }
         .cartilha-progresso { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -505,14 +499,14 @@
 </head>
 <body>
 
-<a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+<a href="#main-content" class="skip-link">Pular para o conte&uacute;do principal</a>
 
 <div id="welcomeScreen" class="welcome-screen">
     <img src="maskable_icon_x512.png" class="welcome-logo" alt="Logo Braun OnLine">
     <h1>Braun OnLine</h1>
-    <p>Sua escala na palma da mão.</p>
+    <p>Sua escala na palma da m&atilde;o.</p>
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
-    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERSÃO 3.8 / 2026 / 2027</div>
+    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERS&Atilde;O 3.8 / 2026 / 2027</div>
 </div>
 
 <button id="install-button" onclick="installPWA()">
@@ -572,7 +566,7 @@
             <div id="status-msg" class="status-msg">---</div>
         </div>
         <div class="mes-nav sem-banner" id="mesNav">
-            <button class="mes-nav-btn" onclick="mudarMes(-1)" aria-label="Mês anterior">
+            <button class="mes-nav-btn" onclick="mudarMes(-1)" aria-label="M&ecirc;s anterior">
                 <span class="material-symbols-outlined">chevron_left</span>
             </button>
             <div class="mes-nav-title" id="mesNavTitle">Janeiro 2026</div>
@@ -580,7 +574,7 @@
                 <span class="material-symbols-outlined" style="font-size:18px;">today</span>
                 HOJE
             </button>
-            <button class="mes-nav-btn" onclick="mudarMes(1)" aria-label="Próximo mês">
+            <button class="mes-nav-btn" onclick="mudarMes(1)" aria-label="Pr&oacute;ximo m&ecirc;s">
                 <span class="material-symbols-outlined">chevron_right</span>
             </button>
         </div>
@@ -598,9 +592,9 @@
     <div id="calendario-box"></div>
 </main>
 
-<div class="tab-bar" role="tablist" aria-label="Selecionar região">
+<div class="tab-bar" role="tablist" aria-label="Selecionar regi&atilde;o">
     <button class="tab" onclick="setRegion('BR')" id="tab-BR" role="tab" aria-selected="true"><span class="material-symbols-outlined" aria-hidden="true">factory</span>ECOFLAC</button>
-    <button class="tab" onclick="setRegion('MNT')" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUTENÇÃO</button>
+    <button class="tab" onclick="setRegion('MNT')" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUTEN&Ccedil;&Atilde;O</button>
     <button class="tab" onclick="openPesquisa()" id="tab-SEARCH" role="tab" aria-selected="false">
         <span class="material-symbols-outlined search-icon">search</span>
         <span>BUSCAR</span>
@@ -616,7 +610,7 @@
         </div>
         <div>
             <div class="drawer-brand-text">Braun OnLine</div>
-            <div class="drawer-brand-sub">v3.8 · 2026/2027</div>
+            <div class="drawer-brand-sub">v3.8 &middot; 2026/2027</div>
         </div>
         <button class="drawer-close-btn" onclick="closeHamburger()" aria-label="Fechar menu">
             <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -625,33 +619,33 @@
     <div class="drawer-menu">
         <div class="drawer-section-label">Perfil</div>
         <button class="drawer-item" onclick="openMeuPerfil()">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128100;</div>
             <div>
                 <div class="drawer-item-label">Meu Perfil</div>
-                <div class="drawer-item-sub">Nome · Matrícula · Turma · Ano · Setor</div>
+                <div class="drawer-item-sub">Nome &middot; Matr&iacute;cula &middot; Turma &middot; Ano &middot; Setor</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Contatos</div>
         <button class="drawer-item" onclick="closeHamburger(); openRamais();">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128222;</div>
             <div>
-                <div class="drawer-item-label">Ramais Úteis</div>
+                <div class="drawer-item-label">Ramais &Uacute;teis</div>
                 <div class="drawer-item-sub">Contatos internos</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Colaborador</div>
         <button class="drawer-item" onclick="openColaboradorDoMes()">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127942;</div>
             <div>
-                <div class="drawer-item-label">Colaborador do Mês</div>
-                <div class="drawer-item-sub">Votação mensal</div>
+                <div class="drawer-item-label">Colaborador do M&ecirc;s</div>
+                <div class="drawer-item-sub">Vota&ccedil;&atilde;o mensal</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" onclick="openMeusPedidos()">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128230;</div>
             <div>
                 <div class="drawer-item-label">Meus Pedidos</div>
                 <div class="drawer-item-sub">Uniformes e requisitos</div>
@@ -660,16 +654,16 @@
         </button>
         <div class="drawer-section-label">Aprendizado</div>
         <button class="drawer-item highlight" onclick="closeHamburger(); openCartilhas();">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128216;</div>
             <div>
                 <div class="drawer-item-label">Cartilhas</div>
-                <div class="drawer-item-sub">Kaizen · 5S · PDCA · Qualidade · Segurança · BPF · Sustentabilidade · Compliance · Incêndio</div>
+                <div class="drawer-item-sub">Kaizen &middot; 5S &middot; PDCA &middot; Qualidade &middot; Seguran&ccedil;a &middot; BPF &middot; Sustentabilidade &middot; Compliance &middot; Inc&ecirc;ndio</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Conquistas</div>
         <button class="drawer-item" onclick="closeHamburger(); openConquistas();">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127885;</div>
             <div>
                 <div class="drawer-item-label">Minhas Conquistas</div>
                 <div class="drawer-item-sub">Selos e progresso</div>
@@ -678,15 +672,15 @@
         </button>
         <div class="drawer-section-label">Ferramentas</div>
         <button class="drawer-item" onclick="closeHamburger(); openConfig();">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#9881;&#65039;</div>
             <div>
-                <div class="drawer-item-label">Configurações</div>
-                <div class="drawer-item-sub">Férias · Tema · Estatísticas · Splash</div>
+                <div class="drawer-item-label">Configura&ccedil;&otilde;es</div>
+                <div class="drawer-item-sub">F&eacute;rias &middot; Tema &middot; Estat&iacute;sticas &middot; Splash</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item no-arrow" onclick="toggleDarkMode(); closeHamburger();">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127763;</div>
             <div>
                 <div class="drawer-item-label">Modo Escuro</div>
                 <div class="drawer-item-sub">Alterna o tema</div>
@@ -694,10 +688,10 @@
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" onclick="closeHamburger(); openPrivacy();">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;"></div>
+            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128737;&#65039;</div>
             <div>
                 <div class="drawer-item-label">Privacidade</div>
-                <div class="drawer-item-sub">Política de dados</div>
+                <div class="drawer-item-sub">Pol&iacute;tica de dados</div>
             </div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
@@ -707,7 +701,7 @@
             <div style="font-size: 0.8rem; opacity: 0.7; font-weight: 600;">Escaneie para acessar</div>
         </div>
     </div>
-    <div class="drawer-footer">© 2026 Braun OnLine · Todos os direitos reservados</div>
+    <div class="drawer-footer">&copy; 2026 Braun OnLine &middot; Todos os direitos reservados</div>
 </div>
 
 <div id="overlay" onclick="closeAllModals()" aria-hidden="true"></div>
@@ -721,10 +715,10 @@
 <!-- MODAL NOVIDADES -->
 <div id="novidadesCard" class="bottom-modal" role="dialog" aria-label="Novidades" aria-modal="true">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <h2 style="font-weight:800;color:var(--primary);margin:0;"> Novidades</h2>
+        <h2 style="font-weight:800;color:var(--primary);margin:0;">&#128276; Novidades</h2>
         <button onclick="marcarTodasNovidadesLidas()" style="background:none;border:none;color:var(--primary);font-weight:700;font-size:0.8em;cursor:pointer;">Marcar todas como lidas</button>
     </div>
-    <div class="cartilha-sub">Fique por dentro das últimas atualizações e conteúdos.</div>
+    <div class="cartilha-sub">Fique por dentro das &uacute;ltimas atualiza&ccedil;&otilde;es e conte&uacute;dos.</div>
     <div id="novidadesLista" class="novidades-timeline"></div>
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
 </div>
@@ -732,10 +726,10 @@
 <!-- MODAL CARTILHAS -->
 <div id="cartilhasCard" class="bottom-modal" role="dialog" aria-label="Cartilhas" aria-modal="true">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <h2 style="font-weight:800;color:var(--primary);margin:0;"> Cartilhas</h2>
+        <h2 style="font-weight:800;color:var(--primary);margin:0;">&#128216; Cartilhas</h2>
         <span style="font-size:0.75em; opacity:0.5; font-weight:600;" id="cartilhaVersao">v1.0</span>
     </div>
-    <div class="cartilha-sub">Aprenda sobre melhorias contínuas, qualidade, segurança, compliance, incêndio e muito mais.</div>
+    <div class="cartilha-sub">Aprenda sobre melhorias cont&iacute;nuas, qualidade, seguran&ccedil;a, compliance, inc&ecirc;ndio e muito mais.</div>
     <div class="cartilha-progresso">
         <span style="font-weight:600; font-size:0.85em;">Progresso</span>
         <div class="cartilha-progresso-bar"><div class="cartilha-progresso-bar-fill" id="progressoFill" style="width:0%;"></div></div>
@@ -747,34 +741,34 @@
 </div>
 
 <!-- MODAL INFO -->
-<div id="infoCard" class="bottom-modal" role="dialog" aria-label="Informações do dia" aria-modal="true">
+<div id="infoCard" class="bottom-modal" role="dialog" aria-label="Informa&ccedil;&otilde;es do dia" aria-modal="true">
     <div id="card-data" style="font-weight:800;color:var(--primary);font-size:1.3em;margin-bottom:10px;"></div>
     <div class="lote-box">
         <span class="lote-label">Lote Sugerido (YYWWD)</span>
         <div id="lote-display" class="lote-value">------</div>
         <button class="material-symbols-outlined lote-copy" onclick="copyLote()" aria-label="Copiar lote">content_copy</button>
     </div>
-    <label for="noteInput" class="sr-only">Anotação</label>
-    <textarea id="noteInput" placeholder="Sua anotação..." rows="5" style="width:100%;border-radius:20px;padding:18px;box-sizing:border-box;border:2.5px solid var(--border);font-family:inherit;background:var(--bg);color:var(--text);outline:none;"></textarea>
+    <label for="noteInput" class="sr-only">Anota&ccedil;&atilde;o</label>
+    <textarea id="noteInput" placeholder="Sua anota&ccedil;&atilde;o..." rows="5" style="width:100%;border-radius:20px;padding:18px;box-sizing:border-box;border:2.5px solid var(--border);font-family:inherit;background:var(--bg);color:var(--text);outline:none;"></textarea>
     <button onclick="saveNota()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;">SALVAR</button>
 </div>
 
 <!-- MODAL CONFIG -->
-<div id="configCard" class="bottom-modal" role="dialog" aria-label="Configurações" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Configurações</h2>
+<div id="configCard" class="bottom-modal" role="dialog" aria-label="Configura&ccedil;&otilde;es" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Configura&ccedil;&otilde;es</h2>
     <div class="config-item">
-        <span class="config-label">Saudação Minimalista<br><small style="font-weight:400;opacity:0.7;">Não exibe trabalho/folga ao entrar.</small></span>
-        <label class="switch"><input type="checkbox" id="minimalGreetingToggle" onchange="toggleMinimalGreeting()" aria-label="Ativar saudação minimalista"><span class="slider" aria-hidden="true"></span></label>
+        <span class="config-label">Sauda&ccedil;&atilde;o Minimalista<br><small style="font-weight:400;opacity:0.7;">N&atilde;o exibe trabalho/folga ao entrar.</small></span>
+        <label class="switch"><input type="checkbox" id="minimalGreetingToggle" onchange="toggleMinimalGreeting()" aria-label="Ativar sauda&ccedil;&atilde;o minimalista"><span class="slider" aria-hidden="true"></span></label>
     </div>
     <div class="config-item">
         <span class="config-label">Resposta por voz<br><small style="font-weight:400;opacity:0.7;">Ler resultado automaticamente.</small></span>
         <label class="switch"><input type="checkbox" id="voiceResponseToggle" onchange="toggleVoiceResponse()" aria-label="Ativar resposta por voz" checked><span class="slider" aria-hidden="true"></span></label>
     </div>
     <button onclick="openFerias()" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;display:flex;align-items:center;justify-content:center;gap:10px;">
-        <span class="material-symbols-outlined" aria-hidden="true" style="animation:plane-fly 2s infinite ease-in-out;color:#7030A0;">flight</span> PROGRAMAR FÉRIAS
+        <span class="material-symbols-outlined" aria-hidden="true" style="animation:plane-fly 2s infinite ease-in-out;color:#7030A0;">flight</span> PROGRAMAR F&Eacute;RIAS
     </button>
     <button onclick="openStats()" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;">
-        <span class="material-symbols-outlined" aria-hidden="true">analytics</span> ESTATÍSTICAS DA ESCALA
+        <span class="material-symbols-outlined" aria-hidden="true">analytics</span> ESTAT&Iacute;STICAS DA ESCALA
     </button>
     <button onclick="exportarEscalaICS()" style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;">
         <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span> EXPORTAR ESCALA (.ICS)
@@ -786,58 +780,58 @@
 </div>
 
 <!-- MODAL FERIAS -->
-<div id="feriasCard" class="bottom-modal" role="dialog" aria-label="Programar férias" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Programar Férias</h2>
+<div id="feriasCard" class="bottom-modal" role="dialog" aria-label="Programar f&eacute;rias" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Programar F&eacute;rias</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
-        <div><label for="feriasInicio" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE INÍCIO</label><input type="date" id="feriasInicio" class="input-date" style="width:100%;box-sizing:border-box;"></div>
-        <div><label for="feriasFim" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE TÉRMINO</label><input type="date" id="feriasFim" class="input-date" style="width:100%;box-sizing:border-box;"></div>
-        <button onclick="saveFerias()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;">SALVAR PERÍODO</button>
-        <button onclick="clearFerias()" style="background:#ffefef;color:#ff6b6b;border:1px solid #ff6b6b;padding:12px;border-radius:18px;font-weight:800;width:100%;">LIMPAR FÉRIAS</button>
+        <div><label for="feriasInicio" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE IN&Iacute;CIO</label><input type="date" id="feriasInicio" class="input-date" style="width:100%;box-sizing:border-box;"></div>
+        <div><label for="feriasFim" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE T&Eacute;RMINO</label><input type="date" id="feriasFim" class="input-date" style="width:100%;box-sizing:border-box;"></div>
+        <button onclick="saveFerias()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;">SALVAR PER&Iacute;ODO</button>
+        <button onclick="clearFerias()" style="background:#ffefef;color:#ff6b6b;border:1px solid #ff6b6b;padding:12px;border-radius:18px;font-weight:800;width:100%;">LIMPAR F&Eacute;RIAS</button>
     </div>
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:22px;font-weight:800;width:100%;margin-top:20px;">VOLTAR</button>
 </div>
 
 <!-- MODAL STATS -->
-<div id="statsCard" class="bottom-modal" role="dialog" aria-label="Estatísticas" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Estatísticas Detalhadas</h2>
+<div id="statsCard" class="bottom-modal" role="dialog" aria-label="Estat&iacute;sticas" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Estat&iacute;sticas Detalhadas</h2>
     <div id="stats-content"></div>
     <button onclick="closeAllModals()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;">VOLTAR</button>
 </div>
 
 <!-- MODAL RAMAIS -->
-<div id="ramaisCard" class="bottom-modal" role="dialog" aria-label="Ramais úteis" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:10px;">Ramais Úteis</h2>
-    <div class="ramal-secao">URGÊNCIAS & SERVIÇOS</div>
+<div id="ramaisCard" class="bottom-modal" role="dialog" aria-label="Ramais &uacute;teis" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:10px;">Ramais &Uacute;teis</h2>
+    <div class="ramal-secao">URG&Ecirc;NCIAS &amp; SERVI&Ccedil;OS</div>
     <div class="ramal-item"><span class="ramal-nome">Portaria Frente / Lateral</span><div class="ramal-numeros-container"><a href="tel:26023211" class="ramal-badge">3211</a> <a href="tel:26023214" class="ramal-badge">3214</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Enfermaria / Emergência</span><div class="ramal-numeros-container"><a href="tel:26023358" class="ramal-badge">3358</a> <a href="tel:26023359" class="ramal-badge">3359</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Serviço Médico</span><div class="ramal-numeros-container"><a href="tel:26023160" class="ramal-badge">3160</a> <a href="tel:26023245" class="ramal-badge">3245</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Segurança do Trabalho</span><div class="ramal-numeros-container"><a href="tel:26023356" class="ramal-badge">3356</a> <a href="tel:26023144" class="ramal-badge">3144</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Enfermaria / Emerg&ecirc;ncia</span><div class="ramal-numeros-container"><a href="tel:26023358" class="ramal-badge">3358</a> <a href="tel:26023359" class="ramal-badge">3359</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Servi&ccedil;o M&eacute;dico</span><div class="ramal-numeros-container"><a href="tel:26023160" class="ramal-badge">3160</a> <a href="tel:26023245" class="ramal-badge">3245</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Seguran&ccedil;a do Trabalho</span><div class="ramal-numeros-container"><a href="tel:26023356" class="ramal-badge">3356</a> <a href="tel:26023144" class="ramal-badge">3144</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Cozinha / Padaria / Restaurante</span><div class="ramal-numeros-container"><a href="tel:26023297" class="ramal-badge">3297</a> <a href="tel:26023532" class="ramal-badge">3532</a> <a href="tel:26023470" class="ramal-badge">3470</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Banco Itaú</span><div class="ramal-numeros-container"><a href="tel:26023110" class="ramal-badge">3110</a></div></div>
-    <div class="ramal-secao">ADMINISTRAÇÃO & RH</div>
+    <div class="ramal-item"><span class="ramal-nome">Banco Ita&uacute;</span><div class="ramal-numeros-container"><a href="tel:26023110" class="ramal-badge">3110</a></div></div>
+    <div class="ramal-secao">ADMINISTRA&Ccedil;&Atilde;O &amp; RH</div>
     <div class="ramal-item"><span class="ramal-nome">DP (Depto Pessoal)</span><div class="ramal-numeros-container"><a href="tel:26023357" class="ramal-badge">3357</a> <a href="tel:26023396" class="ramal-badge">3396</a> <a href="tel:26023521" class="ramal-badge">3521</a> <a href="tel:26023397" class="ramal-badge">3397</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">RH Geral / Nanda / Figueredo</span><div class="ramal-numeros-container"><a href="tel:26023123" class="ramal-badge">3123</a> <a href="tel:26023279" class="ramal-badge">3279</a> <a href="tel:26023483" class="ramal-badge">3483</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Administração (Rosimar/Rubens)</span><div class="ramal-numeros-container"><a href="tel:26023436" class="ramal-badge">3436</a> <a href="tel:26023269" class="ramal-badge">3269</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Administra&ccedil;&atilde;o (Rosimar/Rubens)</span><div class="ramal-numeros-container"><a href="tel:26023436" class="ramal-badge">3436</a> <a href="tel:26023269" class="ramal-badge">3269</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Administr. (Adriana/Rafael)</span><div class="ramal-numeros-container"><a href="tel:26023467" class="ramal-badge">3467</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Bradesco Saúde / CoopBraun</span><div class="ramal-numeros-container"><a href="tel:26023180" class="ramal-badge">3180</a> <a href="tel:26023284" class="ramal-badge">3284</a> <a href="tel:26023298" class="ramal-badge">3298</a> <a href="tel:976218473" class="ramal-badge" style="background:#25D366;color:white;border-color:#25D366;">97621-8473</a></div></div>
-    <div class="ramal-secao">ECOFLAC - PRODUÇÃO & QUALIDADE</div>
-    <div class="ramal-item"><span class="ramal-nome">Eng. de Produção / Ricardo</span><div class="ramal-numeros-container"><a href="tel:26023174" class="ramal-badge">3174</a> <a href="tel:26023237" class="ramal-badge">3237</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Bradesco Sa&uacute;de / CoopBraun</span><div class="ramal-numeros-container"><a href="tel:26023180" class="ramal-badge">3180</a> <a href="tel:26023284" class="ramal-badge">3284</a> <a href="tel:26023298" class="ramal-badge">3298</a> <a href="tel:976218473" class="ramal-badge" style="background:#25D366;color:white;border-color:#25D366;">97621-8473</a></div></div>
+    <div class="ramal-secao">ECOFLAC - PRODU&Ccedil;&Atilde;O &amp; QUALIDADE</div>
+    <div class="ramal-item"><span class="ramal-nome">Eng. de Produ&ccedil;&atilde;o / Ricardo</span><div class="ramal-numeros-container"><a href="tel:26023174" class="ramal-badge">3174</a> <a href="tel:26023237" class="ramal-badge">3237</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Controle (Biol/Fis/Quim)</span><div class="ramal-numeros-container"><a href="tel:26023430" class="ramal-badge">3430</a> <a href="tel:26023343" class="ramal-badge">3343</a> <a href="tel:26023429" class="ramal-badge">3429</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Envasamento 1 ao 5</span><div class="ramal-numeros-container"><a href="tel:26023431" class="ramal-badge">3431</a> <a href="tel:26023422" class="ramal-badge">3422</a> <a href="tel:26023434" class="ramal-badge">3434</a> <a href="tel:26023561" class="ramal-badge">3561</a> <a href="tel:26023713" class="ramal-badge">3713</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Esterilização / Farmacêuticos</span><div class="ramal-numeros-container"><a href="tel:26023432" class="ramal-badge">3432</a> <a href="tel:26023408" class="ramal-badge">3408</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Rotulagem / Robô</span><div class="ramal-numeros-container"><a href="tel:26023423" class="ramal-badge">3423</a> <a href="tel:26023571" class="ramal-badge">3571</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Área Branca Fábrica 2</span><div class="ramal-numeros-container"><a href="tel:26023270" class="ramal-badge">3270</a> <a href="tel:26023267" class="ramal-badge">3267</a> <a href="tel:26023260" class="ramal-badge">3260</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Área Branca Fábrica 3</span><div class="ramal-numeros-container"><a href="tel:26023164" class="ramal-badge">3164</a> <a href="tel:26023273" class="ramal-badge">3273</a></div></div>
-    <div class="ramal-secao">MANUTENÇÃO & APOIO</div>
-    <div class="ramal-item"><span class="ramal-nome">Manutenção (Central/Injeção)</span><div class="ramal-numeros-container"><a href="tel:26023426" class="ramal-badge">3426</a> <a href="tel:26023363" class="ramal-badge">3363</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Mnt Elétrica / Mecânica</span><div class="ramal-numeros-container"><a href="tel:26023364" class="ramal-badge">3364</a> <a href="tel:26023365" class="ramal-badge">3365</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Esteriliza&ccedil;&atilde;o / Farmac&ecirc;uticos</span><div class="ramal-numeros-container"><a href="tel:26023432" class="ramal-badge">3432</a> <a href="tel:26023408" class="ramal-badge">3408</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Rotulagem / Rob&ocirc;</span><div class="ramal-numeros-container"><a href="tel:26023423" class="ramal-badge">3423</a> <a href="tel:26023571" class="ramal-badge">3571</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">&Aacute;rea Branca F&aacute;brica 2</span><div class="ramal-numeros-container"><a href="tel:26023270" class="ramal-badge">3270</a> <a href="tel:26023267" class="ramal-badge">3267</a> <a href="tel:26023260" class="ramal-badge">3260</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">&Aacute;rea Branca F&aacute;brica 3</span><div class="ramal-numeros-container"><a href="tel:26023164" class="ramal-badge">3164</a> <a href="tel:26023273" class="ramal-badge">3273</a></div></div>
+    <div class="ramal-secao">MANUTEN&Ccedil;&Atilde;O &amp; APOIO</div>
+    <div class="ramal-item"><span class="ramal-nome">Manuten&ccedil;&atilde;o (Central/Inje&ccedil;&atilde;o)</span><div class="ramal-numeros-container"><a href="tel:26023426" class="ramal-badge">3426</a> <a href="tel:26023363" class="ramal-badge">3363</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Mnt El&eacute;trica / Mec&acirc;nica</span><div class="ramal-numeros-container"><a href="tel:26023364" class="ramal-badge">3364</a> <a href="tel:26023365" class="ramal-badge">3365</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Utilidades / Osmose / Moinho</span><div class="ramal-numeros-container"><a href="tel:26023427" class="ramal-badge">3427</a> <a href="tel:26023529" class="ramal-badge">3529</a> <a href="tel:26023433" class="ramal-badge">3433</a><a href="tel:26023506" class="ramal-badge">3506</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Preparo / Ferramentaria</span><div class="ramal-numeros-container"><a href="tel:26023421" class="ramal-badge">3421</a> <a href="tel:26023165" class="ramal-badge">3165</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Almoxarifado / Calibração</span><div class="ramal-numeros-container"><a href="tel:26023210" class="ramal-badge">3210</a> <a href="tel:26023186" class="ramal-badge">3186</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Expedição 2 / Quarentena</span><div class="ramal-numeros-container"><a href="tel:26023438" class="ramal-badge">3438</a> <a href="tel:26023342" class="ramal-badge">3342</a></div></div>
-    <div class="ramal-secao">CONTATOS NOMINAIS & OUTROS</div>
+    <div class="ramal-item"><span class="ramal-nome">Almoxarifado / Calibra&ccedil;&atilde;o</span><div class="ramal-numeros-container"><a href="tel:26023210" class="ramal-badge">3210</a> <a href="tel:26023186" class="ramal-badge">3186</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Expedi&ccedil;&atilde;o 2 / Quarentena</span><div class="ramal-numeros-container"><a href="tel:26023438" class="ramal-badge">3438</a> <a href="tel:26023342" class="ramal-badge">3342</a></div></div>
+    <div class="ramal-secao">CONTATOS NOMINAIS &amp; OUTROS</div>
     <div class="ramal-item"><span class="ramal-nome">Guido Gerente / Davis</span><div class="ramal-numeros-container"><a href="tel:26023361" class="ramal-badge">3361</a> <a href="tel:26023478" class="ramal-badge">3478</a></div></div>
-    <div class="ramal-item"><span class="ramal-nome">Idael / Leandro ou Hélio</span><div class="ramal-numeros-container"><a href="tel:26023165" class="ramal-badge">3165</a> <a href="tel:26023241" class="ramal-badge">3241</a></div></div>
+    <div class="ramal-item"><span class="ramal-nome">Idael / Leandro ou H&eacute;lio</span><div class="ramal-numeros-container"><a href="tel:26023165" class="ramal-badge">3165</a> <a href="tel:26023241" class="ramal-badge">3241</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Alexandre / Alexandre Senna</span><div class="ramal-numeros-container"><a href="tel:26023423" class="ramal-badge">3423</a> <a href="tel:26023525" class="ramal-badge">3525</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Doraci / Universal</span><div class="ramal-numeros-container"><a href="tel:26023155" class="ramal-badge">3155</a> <a href="tel:26023261" class="ramal-badge">3261</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Empilhadeira (Ramal/Celular)</span><div class="ramal-numeros-container"><a href="tel:26023406" class="ramal-badge">3406</a> <a href="tel:982294329" class="ramal-badge">98229-4329</a></div></div>
@@ -845,12 +839,12 @@
 </div>
 
 <!-- MODAL PRIVACIDADE -->
-<div id="privacyCard" class="bottom-modal" role="dialog" aria-label="Política de Privacidade" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;">Política de Privacidade</h2>
+<div id="privacyCard" class="bottom-modal" role="dialog" aria-label="Pol&iacute;tica de Privacidade" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;">Pol&iacute;tica de Privacidade</h2>
     <p style="font-size:0.9em;line-height:1.6;opacity:0.8;">
-        Este aplicativo (Braun OnLine) é uma ferramenta de uso pessoal e informativo para gestão de escalas e calendários.
-        <br><br><b>Coleta de Dados:</b> Não coletamos, não transmitimos e não compartilhamos nenhum dado pessoal ou sensível.
-        <br><br><b>Armazenamento:</b> Todas as suas configurações e anotações pessoais são salvas exclusivamente no seu dispositivo (localStorage).
+        Este aplicativo (Braun OnLine) &eacute; uma ferramenta de uso pessoal e informativo para gest&atilde;o de escalas e calend&aacute;rios.
+        <br><br><b>Coleta de Dados:</b> N&atilde;o coletamos, n&atilde;o transmitimos e n&atilde;o compartilhamos nenhum dado pessoal ou sens&iacute;vel.
+        <br><br><b>Armazenamento:</b> Todas as suas configura&ccedil;&otilde;es e anota&ccedil;&otilde;es pessoais s&atilde;o salvas exclusivamente no seu dispositivo (localStorage).
     </p>
     <button onclick="closeAllModals()" style="background:var(--primary);color:white;border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">ENTENDI</button>
 </div>
@@ -860,18 +854,18 @@
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Meu Perfil</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
         <div><label for="nomePerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Nome Completo</label><input type="text" id="nomePerfil" placeholder="Digite seu nome completo" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
-        <div><label for="matriculaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Matrícula</label><input type="text" id="matriculaPerfil" placeholder="Digite sua matrícula" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
+        <div><label for="matriculaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Matr&iacute;cula</label><input type="text" id="matriculaPerfil" placeholder="Digite sua matr&iacute;cula" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
         <div>
             <label for="turmaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Turma</label>
             <select id="turmaPerfil" onchange="salvarDadosPerfil()" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
-                <option value="A">Turma A (Manhã - ECOFLAC)</option>
-                <option value="B">Turma B (Manhã - ECOFLAC)</option>
+                <option value="A">Turma A (Manh&atilde; - ECOFLAC)</option>
+                <option value="B">Turma B (Manh&atilde; - ECOFLAC)</option>
                 <option value="C">Turma C (Noite - ECOFLAC)</option>
                 <option value="D">Turma D (Noite - ECOFLAC)</option>
-                <option value="E">Turma E (Manhã - Manutenção)</option>
-                <option value="F">Turma F (Manhã - Manutenção)</option>
-                <option value="G">Turma G (Noite - Manutenção)</option>
-                <option value="H">Turma H (Noite - Manutenção)</option>
+                <option value="E">Turma E (Manh&atilde; - Manuten&ccedil;&atilde;o)</option>
+                <option value="F">Turma F (Manh&atilde; - Manuten&ccedil;&atilde;o)</option>
+                <option value="G">Turma G (Noite - Manuten&ccedil;&atilde;o)</option>
+                <option value="H">Turma H (Noite - Manuten&ccedil;&atilde;o)</option>
             </select>
         </div>
         <div>
@@ -886,17 +880,17 @@
     <button onclick="salvarDadosPerfil(); closeAllModals();" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;">SALVAR E FECHAR</button>
 </div>
 
-<!-- MODAL COLABORADOR DO MÊS -->
-<div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;"> Colaborador do Mês</h2>
+<!-- MODAL COLABORADOR DO MES -->
+<div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do M&ecirc;s" aria-modal="true">
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">&#127942; Colaborador do M&ecirc;s</h2>
     <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
         <div style="display:flex;flex-direction:column;gap:8px;">
             <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="votacaoNome" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Matrícula:</span> <span id="votacaoMatricula" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Matr&iacute;cula:</span> <span id="votacaoMatricula" style="font-weight:800;">---</span></div>
             <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="votacaoAno" style="font-weight:800;">---</span></div>
         </div>
     </div>
-    <p style="font-size:0.9em;opacity:0.7;margin-bottom:15px;">Seus dados já estão pré-preenchidos. Clique abaixo para votar.</p>
+    <p style="font-size:0.9em;opacity:0.7;margin-bottom:15px;">Seus dados j&aacute; est&atilde;o pr&eacute;-preenchidos. Clique abaixo para votar.</p>
     <button onclick="abrirFormularioVotacao()" style="background:linear-gradient(135deg, #FFD700, #EBC13D);color:#1A1A1A;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(235,193,61,0.3);">
         <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">how_to_vote</span>
         VOTAR AGORA
@@ -906,18 +900,18 @@
 
 <!-- MODAL PEDIDOS -->
 <div id="meusPedidosCard" class="bottom-modal" role="dialog" aria-label="Meus Pedidos" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;"> Meus Pedidos</h2>
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">&#128230; Meus Pedidos</h2>
     <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
         <div style="display:flex;flex-direction:column;gap:5px;">
             <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="pedidoNome" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Matrícula:</span> <span id="pedidoMatricula" style="font-weight:800;">---</span></div>
+            <div><span style="font-weight:600;opacity:0.6;">Matr&iacute;cula:</span> <span id="pedidoMatricula" style="font-weight:800;">---</span></div>
             <div><span style="font-weight:600;opacity:0.6;">Turma:</span> <span id="pedidoTurma" style="font-weight:800;">---</span></div>
             <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="pedidoAno" style="font-weight:800;">---</span></div>
         </div>
     </div>
-    <div style="margin-bottom:15px;"><label for="pedidoItem" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Item desejado</label><input type="text" id="pedidoItem" placeholder="Ex: Uniforme completo, Camisa, Calça..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;"></div>
+    <div style="margin-bottom:15px;"><label for="pedidoItem" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Item desejado</label><input type="text" id="pedidoItem" placeholder="Ex: Uniforme completo, Camisa, Cal&ccedil;a..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;"></div>
     <div style="margin-bottom:15px;"><label for="pedidoTamanho" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Tamanho</label><input type="text" id="pedidoTamanho" placeholder="Ex: M, G, GG..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;"></div>
-    <div style="margin-bottom:15px;"><label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Observações</label><textarea id="pedidoObs" placeholder="Digite qualquer observação..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea></div>
+    <div style="margin-bottom:15px;"><label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Observa&ccedil;&otilde;es</label><textarea id="pedidoObs" placeholder="Digite qualquer observa&ccedil;&atilde;o..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea></div>
     <button onclick="enviarPedidoEmail()" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(0,169,122,0.3);">
         <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">send</span> ENVIAR POR E-MAIL
     </button>
@@ -926,7 +920,7 @@
 
 <!-- MODAL PESQUISA -->
 <div id="pesquisaCard" class="bottom-modal" role="dialog" aria-label="Pesquisar escala" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;"> Pesquisar data</h2>
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">&#128269; Pesquisar data</h2>
     <div style="display:flex;flex-direction:column;gap:14px;">
         <div style="width:100%;"><input type="date" id="pesquisaData" class="input-date" style="width:100%;box-sizing:border-box;"></div>
         <div style="display:flex;gap:10px;align-items:center;width:100%;">
@@ -949,12 +943,24 @@
 
 <!-- MODAL CONQUISTAS -->
 <div id="conquistasCard" class="bottom-modal" role="dialog" aria-label="Conquistas" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;"> Minhas Conquistas</h2>
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;">&#127885; Minhas Conquistas</h2>
     <div id="listaConquistas" style="display:flex;flex-direction:column;gap:12px;margin-top:15px;"></div>
     <button onclick="closeAllModals()" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;">FECHAR</button>
 </div>
 
 <script>
+    // ============================================================
+    // FUNÇÕES BASE (sem acentos para evitar problemas de encoding)
+    // ============================================================
+
+    // Decodifica entidades HTML — usado nas strings JS que contêm acentos
+    function dec(str) {
+        if (!str) return '';
+        var txt = document.createElement('textarea');
+        txt.innerHTML = str;
+        return txt.value;
+    }
+
     let activeModalElement = null;
     let lastFocusedElement = null;
     const focusableElementsSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -1011,17 +1017,24 @@
     function getFeriados(ano) {
         if (feriadosCache[ano]) return feriadosCache[ano];
         const f = {
-            '01-01':'Ano Novo','04-21':'Tiradentes','04-23':'São Jorge','05-01':'Dia do Trabalho',
-            '09-07':'Independência','09-22':'Aniv. São Gonçalo','10-12':'N. S. Aparecida',
-            '11-02':'Finados','11-15':'Proclamação da República','12-25':'Natal'
+            '01-01': dec('Ano Novo'),
+            '04-21': dec('Tiradentes'),
+            '04-23': dec('S&atilde;o Jorge'),
+            '05-01': dec('Dia do Trabalho'),
+            '09-07': dec('Independ&ecirc;ncia'),
+            '09-22': dec('Aniv. S&atilde;o Gon&ccedil;alo'),
+            '10-12': dec('N. S. Aparecida'),
+            '11-02': dec('Finados'),
+            '11-15': dec('Proclama&ccedil;&atilde;o da Rep&uacute;blica'),
+            '12-25': dec('Natal')
         };
         const pascoa = calculaPascoa(ano);
         const carnaval = new Date(pascoa.getTime() - (47 * 86400000));
         const sextaSanta = new Date(pascoa.getTime() - (2 * 86400000));
         const chaveCarnaval = `${String(carnaval.getMonth()+1).padStart(2,'0')}-${String(carnaval.getDate()).padStart(2,'0')}`;
         const chaveSexta = `${String(sextaSanta.getMonth()+1).padStart(2,'0')}-${String(sextaSanta.getDate()).padStart(2,'0')}`;
-        if (!f[chaveCarnaval]) f[chaveCarnaval] = 'Carnaval';
-        if (!f[chaveSexta]) f[chaveSexta] = 'SextaFeira Santa';
+        if (!f[chaveCarnaval]) f[chaveCarnaval] = dec('Carnaval');
+        if (!f[chaveSexta]) f[chaveSexta] = dec('Sexta-Feira Santa');
         feriadosCache[ano] = f;
         return f;
     }
@@ -1061,8 +1074,8 @@
         if (!isIOS) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js?v=' + APP_VERSION)
-                    .then(reg => console.log('PWA pronto!', reg.scope))
-                    .catch(err => console.error('Erro SW:', err));
+                  .then(reg => console.log('PWA ready!', reg.scope))
+                  .catch(err => console.error('SW error:', err));
             });
         }
     }
@@ -1201,7 +1214,7 @@
     }
 
     function diaDaSemanaPorExtenso(data) {
-        const dias = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+        const dias = ['domingo', 'segunda-feira', dec('ter&ccedil;a-feira'), 'quarta-feira', 'quinta-feira', 'sexta-feira', dec('s&aacute;bado')];
         return dias[data.getDay()];
     }
 
@@ -1210,7 +1223,6 @@
         return turma.split('').join(' e ');
     }
 
-    // ==================== BANNER DE AVISOS ====================
     function atualizarBannerAvisos() {
         const banner = document.getElementById('banner-avisos');
         const content = document.getElementById('bannerContent');
@@ -1241,7 +1253,7 @@
             const texto = escapeHtml(logs[iso]);
             html += `<span class="banner-item">
                 <span class="material-symbols-outlined">event</span>
-                <strong>${dataFmt}</strong> — ${texto}
+                <strong>${dataFmt}</strong> &mdash; ${texto}
             </span>`;
         });
 
@@ -1254,7 +1266,6 @@
         content.style.animation = '';
     }
 
-    // ================= RENDERIZAÇÃO DO CALENDÁRIO =================
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
         box.innerHTML = '';
@@ -1295,7 +1306,7 @@
                             <span style="font-weight:800;text-transform:capitalize;font-size:1.1em;">${nomeM}</span>
                             <span style="font-weight:800;font-size:1.1em;">${ano}</span>
                         </div>
-                        <div style="font-weight:800;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:5px;margin-bottom:10px;">Eventos do mês</div>`;
+                        <div style="font-weight:800;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:5px;margin-bottom:10px;">Eventos do m&ecirc;s</div>`;
 
             let hasEv = false;
             const diasNoMes = new Date(ano, m + 1, 0).getDate();
@@ -1330,7 +1341,7 @@
                 if (isFerias(at)) cls += 'FERIAS ';
                 if (f || nt) { 
                     hasEv = true; 
-                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? ` ${escapeHtml(nt)}` : ''}</div>`; 
+                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `&#128221; ${escapeHtml(nt)}` : ''}</div>`; 
                 }
                 
                 hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')">${d}</div>`;
@@ -1357,7 +1368,7 @@
         const msg = document.getElementById('status-msg');
         if (!msg) return;
         if (isFerias(now)) {
-            msg.innerText = 'EM FÉRIAS ';
+            msg.innerText = dec('EM F&Eacute;RIAS') + ' \u2708\uFE0F';
             msg.style.color = '#7030A0';
         } else {
             const trab = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
@@ -1367,8 +1378,8 @@
     }
 
     function abrirFormularioVotacao() {
-        const nome = getStorageValue('braun_nome_completo') || 'Não informado';
-        const matricula = getStorageValue('braun_matricula') || 'Não informado';
+        const nome = getStorageValue('braun_nome_completo') || dec('N&atilde;o informado');
+        const matricula = getStorageValue('braun_matricula') || dec('N&atilde;o informado');
         const ano = getStorageValue('braun_ano') || '2026';
         const link = `https://forms.gle/KfS9XFv9UseZyqnS7?entry.1=${encodeURIComponent(nome)}&entry.2=${encodeURIComponent(matricula)}&entry.3=${encodeURIComponent(ano)}`;
         window.open(link, '_blank');
@@ -1417,7 +1428,7 @@
         setStorageValue('logs_v26', JSON.stringify(logs));
         closeAllModals();
         gerarCalendario();
-        atualizarBannerAvisos();  //  ATUALIZA O BANNER
+        atualizarBannerAvisos();
     }
 
     function openHamburger() {
@@ -1446,8 +1457,8 @@
     function saveFerias() {
         const ini = document.getElementById('feriasInicio').value;
         const fim = document.getElementById('feriasFim').value;
-        if (!ini || !fim) { alert('Preencha as duas datas.'); return; }
-        if (ini > fim) { alert('A data de início não pode ser após o término.'); return; }
+        if (!ini || !fim) { alert(dec('Preencha as duas datas.')); return; }
+        if (ini > fim) { alert(dec('A data de in&iacute;cio n&atilde;o pode ser ap&oacute;s o t&eacute;rmino.')); return; }
         setStorageValue('braun_ferias_inicio', ini);
         setStorageValue('braun_ferias_fim', fim);
         clearFeriasCache();
@@ -1692,52 +1703,48 @@
 
     // ==================== CARTILHAS ====================
     const cartilhasData = [
-        { id: 'kaizen', icone: 'trending_up', titulo: 'Kaizen – Melhoria Contínua',
-          conteudo: `<p><strong>Kaizen</strong> é uma filosofia japonesa que significa "mudança para melhor". No ambiente industrial, ela se traduz em <strong>pequenas melhorias diárias</strong> realizadas por todos os colaboradores.</p><div class="cartilha-destaque"><strong>Princípios do Kaizen:</strong><br> • Eliminar desperdícios (Muda)<br> • Padronizar processos<br> • Envolver todos os níveis hierárquicos<br> • Focar em dados e fatos</div><div class="cartilha-exemplo"><strong>Exemplo prático:</strong> Um operador percebe que a troca de ferramenta em uma máquina demora 15 minutos. Ele sugere uma nova disposição das ferramentas, reduzindo o tempo para 8 minutos.</div><p><strong>Benefícios:</strong> Aumento da eficiência, redução de custos, maior engajamento da equipe e melhoria da qualidade.</p>`,
-          quiz: [ { pergunta: 'O que significa a palavra Kaizen?', opcoes: ['Grande revolução', 'Mudança para melhor', 'Padronização total', 'Controle de qualidade'], certa: 1 }, { pergunta: 'Qual é um dos princípios do Kaizen?', opcoes: ['Focar apenas em grandes mudanças', 'Eliminar desperdícios', 'Centralizar decisões na diretoria', 'Ignorar dados'], certa: 1 }, { pergunta: 'O Kaizen busca melhorias:', opcoes: ['Apenas na produção', 'Somente na gestão', 'Pequenas e diárias', 'Apenas em crises'], certa: 2 } ]
+        { id: 'kaizen', icone: 'trending_up', titulo: dec('Kaizen &ndash; Melhoria Cont&iacute;nua'),
+          conteudo: `<p><strong>Kaizen</strong> ${dec('&eacute; uma filosofia japonesa que significa &quot;mudan&ccedil;a para melhor&quot;. No ambiente industrial, ela se traduz em')} <strong>${dec('pequenas melhorias di&aacute;rias')}</strong> ${dec('realizadas por todos os colaboradores.')}</p><div class="cartilha-destaque"><strong>${dec('Princ&iacute;pios do Kaizen:')}</strong><br> &bull; ${dec('Eliminar desperd&iacute;cios (Muda)')}<br> &bull; ${dec('Padronizar processos')}<br> &bull; ${dec('Envolver todos os n&iacute;veis hier&aacute;rquicos')}<br> &bull; ${dec('Focar em dados e fatos')}</div>`,
+          quiz: [ { pergunta: dec('O que significa a palavra Kaizen?'), opcoes: [dec('Grande revolu&ccedil;&atilde;o'), dec('Mudan&ccedil;a para melhor'), dec('Padroniza&ccedil;&atilde;o total'), dec('Controle de qualidade')], certa: 1 }, { pergunta: dec('Qual &eacute; um dos princ&iacute;pios do Kaizen?'), opcoes: [dec('Focar apenas em grandes mudan&ccedil;as'), dec('Eliminar desperd&iacute;cios'), dec('Centralizar decis&otilde;es na diretoria'), dec('Ignorar dados')], certa: 1 }, { pergunta: dec('O Kaizen busca melhorias:'), opcoes: [dec('Apenas na produ&ccedil;&atilde;o'), dec('Somente na gest&atilde;o'), dec('Pequenas e di&aacute;rias'), dec('Apenas em crises')], certa: 2 } ]
         },
-        { id: '5s', icone: 'cleaning_services', titulo: 'Os 5S – Organização e Limpeza',
-          conteudo: `<p>Os <strong>5S</strong> são cinco sensos que promovem um ambiente de trabalho organizado, limpo e seguro. Eles são a base para a qualidade e produtividade.</p><div class="cartilha-destaque"><strong>Os 5S:</strong><br><b>1. Seiri (Utilização):</b> Separar o que é útil do que não é.<br><b>2. Seiton (Ordenação):</b> Organizar cada coisa em seu lugar.<br><b>3. Seiso (Limpeza):</b> Manter o ambiente limpo.<br><b>4. Seiketsu (Padronização):</b> Criar regras para manter os três primeiros.<br><b>5. Shitsuke (Disciplina):</b> Seguir os padrões com disciplina.</div>`,
-          quiz: [ { pergunta: 'Quantos sensos compõem os 5S?', opcoes: ['3', '5', '7', '10'], certa: 1 }, { pergunta: 'O Seiri (Utilização) consiste em:', opcoes: ['Limpar o ambiente', 'Organizar ferramentas', 'Separar o útil do inútil', 'Criar padrões'], certa: 2 }, { pergunta: 'Qual senso trata da "Disciplina" para manter os padrões?', opcoes: ['Seiso', 'Seiketsu', 'Shitsuke', 'Seiton'], certa: 2 } ]
+        { id: '5s', icone: 'cleaning_services', titulo: dec('Os 5S &ndash; Organiza&ccedil;&atilde;o e Limpeza'),
+          conteudo: `<p>${dec('Os')} <strong>5S</strong> ${dec('s&atilde;o cinco sensos que promovem um ambiente de trabalho organizado, limpo e seguro.')}</p><div class="cartilha-destaque"><strong>${dec('Os 5S:')}</strong><br><b>1. Seiri (${dec('Utiliza&ccedil;&atilde;o')}):</b> ${dec('Separar o que &eacute; &uacute;til do que n&atilde;o &eacute;.')}<br><b>2. Seiton (${dec('Ordena&ccedil;&atilde;o')}):</b> ${dec('Organizar cada coisa em seu lugar.')}<br><b>3. Seiso (${dec('Limpeza')}):</b> ${dec('Manter o ambiente limpo.')}<br><b>4. Seiketsu (${dec('Padroniza&ccedil;&atilde;o')}):</b> ${dec('Criar regras para manter os tr&ecirc;s primeiros.')}<br><b>5. Shitsuke (${dec('Disciplina')}):</b> ${dec('Seguir os padr&otilde;es com disciplina.')}</div>`,
+          quiz: [ { pergunta: dec('Quantos sensos comp&otilde;em os 5S?'), opcoes: ['3', '5', '7', '10'], certa: 1 }, { pergunta: dec('O Seiri (Utiliza&ccedil;&atilde;o) consiste em:'), opcoes: [dec('Limpar o ambiente'), dec('Organizar ferramentas'), dec('Separar o &uacute;til do in&uacute;til'), dec('Criar padr&otilde;es')], certa: 2 }, { pergunta: dec('Qual senso trata da &quot;Disciplina&quot;?'), opcoes: ['Seiso', 'Seiketsu', 'Shitsuke', 'Seiton'], certa: 2 } ]
         },
-        { id: 'pdca', icone: 'cycle', titulo: 'PDCA – Planejar, Fazer, Checar, Agir',
-          conteudo: `<p>O <strong>PDCA</strong> é um método de gestão para resolver problemas e implementar melhorias de forma estruturada. É um ciclo contínuo.</p><div class="cartilha-destaque"><strong>Etapas do PDCA:</strong><br><b>P (Plan – Planejar):</b> Definir metas e plano de ação.<br><b>D (Do – Fazer):</b> Executar o plano.<br><b>C (Check – Checar):</b> Verificar os resultados.<br><b>A (Act – Agir):</b> Padronizar ou corrigir.</div>`,
-          quiz: [ { pergunta: 'O que significa a sigla PDCA?', opcoes: ['Planejar, Definir, Controlar, Aplicar', 'Planejar, Fazer, Checar, Agir', 'Produzir, Distribuir, Controlar, Avaliar', 'Padronizar, Dirigir, Controlar, Ajustar'], certa: 1 }, { pergunta: 'Na etapa "C" (Check), o que deve ser feito?', opcoes: ['Executar o plano', 'Verificar os resultados', 'Padronizar a solução', 'Definir metas'], certa: 1 }, { pergunta: 'O PDCA é um ciclo:', opcoes: ['Linear', 'Contínuo', 'Apenas para gestores', 'Somente para produção'], certa: 1 } ]
+        { id: 'pdca', icone: 'cycle', titulo: dec('PDCA &ndash; Planejar, Fazer, Checar, Agir'),
+          conteudo: `<p>${dec('O')} <strong>PDCA</strong> ${dec('&eacute; um m&eacute;todo de gest&atilde;o para resolver problemas e implementar melhorias de forma estruturada.')}</p><div class="cartilha-destaque"><strong>${dec('Etapas do PDCA:')}</strong><br><b>P (Plan &ndash; ${dec('Planejar')}):</b> ${dec('Definir metas e plano de a&ccedil;&atilde;o.')}<br><b>D (Do &ndash; ${dec('Fazer')}):</b> ${dec('Executar o plano.')}<br><b>C (Check &ndash; ${dec('Checar')}):</b> ${dec('Verificar os resultados.')}<br><b>A (Act &ndash; ${dec('Agir')}):</b> ${dec('Padronizar ou corrigir.')}</div>`,
+          quiz: [ { pergunta: dec('O que significa a sigla PDCA?'), opcoes: [dec('Planejar, Definir, Controlar, Aplicar'), dec('Planejar, Fazer, Checar, Agir'), dec('Produzir, Distribuir, Controlar, Avaliar'), dec('Padronizar, Dirigir, Controlar, Ajustar')], certa: 1 }, { pergunta: dec('Na etapa &quot;C&quot; (Check), o que fazer?'), opcoes: [dec('Executar o plano'), dec('Verificar os resultados'), dec('Padronizar a solu&ccedil;&atilde;o'), dec('Definir metas')], certa: 1 }, { pergunta: dec('O PDCA &eacute; um ciclo:'), opcoes: [dec('Linear'), dec('Cont&iacute;nuo'), dec('Apenas para gestores'), dec('Somente para produ&ccedil;&atilde;o')], certa: 1 } ]
         },
-        { id: 'ferramentas', icone: 'build', titulo: 'Ferramentas da Qualidade',
-          conteudo: `<p>Existem diversas ferramentas para identificar e resolver problemas de qualidade.</p><div class="cartilha-destaque"><strong>Principais ferramentas:</strong><br> • <b>Diagrama de Ishikawa</b> – causas raiz.<br> • <b>5 Porquês</b> – perguntar sucessivamente.<br> • <b>Fluxograma</b> – mapeia o processo.<br> • <b>Gráfico de Pareto</b> – prioriza problemas.</div>`,
-          quiz: [ { pergunta: 'Qual ferramenta é usada para encontrar causas raiz?', opcoes: ['Gráfico de Pareto', 'Diagrama de Ishikawa', 'Fluxograma', '5 Porquês'], certa: 1 }, { pergunta: 'O Diagrama de Ishikawa também é chamado de:', opcoes: ['Diagrama de Causa e Efeito', 'Diagrama de Pareto', 'Gráfico de Controle', 'Fluxograma'], certa: 0 }, { pergunta: 'Para priorizar problemas, qual ferramenta é recomendada?', opcoes: ['5 Porquês', 'Fluxograma', 'Gráfico de Pareto', 'Ishikawa'], certa: 2 } ]
+        { id: 'ferramentas', icone: 'build', titulo: dec('Ferramentas da Qualidade'),
+          conteudo: `<p>${dec('Existem diversas ferramentas para identificar e resolver problemas de qualidade.')}</p><div class="cartilha-destaque"><strong>${dec('Principais ferramentas:')}</strong><br> &bull; <b>Diagrama de Ishikawa</b> &ndash; ${dec('causas raiz.')}<br> &bull; <b>5 ${dec('Porqu&ecirc;s')}</b> &ndash; ${dec('perguntar sucessivamente.')}<br> &bull; <b>Fluxograma</b> &ndash; ${dec('mapeia o processo.')}<br> &bull; <b>${dec('Gr&aacute;fico de Pareto')}</b> &ndash; ${dec('prioriza problemas.')}</div>`,
+          quiz: [ { pergunta: dec('Qual ferramenta &eacute; usada para encontrar causas raiz?'), opcoes: [dec('Gr&aacute;fico de Pareto'), dec('Diagrama de Ishikawa'), 'Fluxograma', dec('5 Porqu&ecirc;s')], certa: 1 }, { pergunta: dec('O Diagrama de Ishikawa tamb&eacute;m &eacute; chamado de:'), opcoes: [dec('Diagrama de Causa e Efeito'), dec('Diagrama de Pareto'), dec('Gr&aacute;fico de Controle'), 'Fluxograma'], certa: 0 }, { pergunta: dec('Para priorizar problemas, qual ferramenta &eacute; recomendada?'), opcoes: [dec('5 Porqu&ecirc;s'), 'Fluxograma', dec('Gr&aacute;fico de Pareto'), 'Ishikawa'], certa: 2 } ]
         },
-        { id: 'seguranca', icone: 'security', titulo: 'Segurança do Trabalho',
-          conteudo: `<p>A segurança é prioridade na Braun. Todos devem conhecer e aplicar as normas de prevenção.</p><div class="cartilha-destaque"><strong>Pilares da Segurança:</strong><br> • Usar <b>EPIs</b> corretamente.<br> • Manter a área organizada (5S).<br> • Conhecer os <b>procedimentos de emergência</b>.<br> • Reportar qualquer <b>condição insegura</b>.</div>`,
-          quiz: [ { pergunta: 'Qual a primeira ação ao identificar um risco?', opcoes: ['Ignorar', 'Sinalizar e comunicar', 'Continuar trabalhando', 'Aguardar o supervisor'], certa: 1 }, { pergunta: 'EPI significa:', opcoes: ['Equipamento de Proteção Individual', 'Equipamento de Produção Interna', 'Estação de Proteção Integrada', 'Equipamento Preventivo Industrial'], certa: 0 }, { pergunta: 'O que deve ser feito em caso de emergência?', opcoes: ['Correr para a saída', 'Seguir o plano de emergência', 'Aguardar instruções', 'Filmar o ocorrido'], certa: 1 } ]
+        { id: 'seguranca', icone: 'security', titulo: dec('Seguran&ccedil;a do Trabalho'),
+          conteudo: `<p>${dec('A seguran&ccedil;a &eacute; prioridade na Braun. Todos devem conhecer e aplicar as normas de preven&ccedil;&atilde;o.')}</p><div class="cartilha-destaque"><strong>${dec('Pilares da Seguran&ccedil;a:')}</strong><br> &bull; ${dec('Usar')} <b>EPIs</b> ${dec('corretamente.')}<br> &bull; ${dec('Manter a &aacute;rea organizada (5S).')}<br> &bull; ${dec('Conhecer os')} <b>${dec('procedimentos de emerg&ecirc;ncia')}</b>.<br> &bull; ${dec('Reportar qualquer')} <b>${dec('condi&ccedil;&atilde;o insegura')}</b>.</div>`,
+          quiz: [ { pergunta: dec('Qual a primeira a&ccedil;&atilde;o ao identificar um risco?'), opcoes: ['Ignorar', dec('Sinalizar e comunicar'), dec('Continuar trabalhando'), dec('Aguardar o supervisor')], certa: 1 }, { pergunta: 'EPI significa:', opcoes: [dec('Equipamento de Prote&ccedil;&atilde;o Individual'), dec('Equipamento de Produ&ccedil;&atilde;o Interna'), dec('Esta&ccedil;&atilde;o de Prote&ccedil;&atilde;o Integrada'), dec('Equipamento Preventivo Industrial')], certa: 0 }, { pergunta: dec('O que deve ser feito em caso de emerg&ecirc;ncia?'), opcoes: [dec('Correr para a sa&iacute;da'), dec('Seguir o plano de emerg&ecirc;ncia'), dec('Aguardar instru&ccedil;&otilde;es'), dec('Filmar o ocorrido')], certa: 1 } ]
         },
-        { id: 'bpf', icone: 'medication', titulo: 'Boas Práticas de Fabricação (BPF)',
-          conteudo: `<p>As <strong>BPF</strong> garantem a qualidade e segurança dos produtos na indústria farmacêutica.</p><div class="cartilha-destaque"><strong>Princípios das BPF:</strong><br> • <b>Higiene</b> – manter-se limpo.<br> • <b>Controle de processos</b> – monitorar cada etapa.<br> • <b>Rastreabilidade</b> – identificar materiais e produtos.<br> • <b>Documentação</b> – registrar atividades.</div>`,
-          quiz: [ { pergunta: 'O que as BPF garantem?', opcoes: ['Apenas a produtividade', 'Qualidade e segurança do produto', 'Redução de custos', 'Aumento de vendas'], certa: 1 }, { pergunta: 'Um princípio fundamental das BPF é:', opcoes: ['Usar qualquer roupa', 'Não registrar atividades', 'Manter a higiene pessoal', 'Trabalhar sem supervisão'], certa: 2 }, { pergunta: 'A rastreabilidade permite:', opcoes: ['Aumentar a velocidade', 'Identificar a origem de um lote', 'Reduzir colaboradores', 'Eliminar a documentação'], certa: 1 } ]
+        { id: 'bpf', icone: 'medication', titulo: dec('Boas Pr&aacute;ticas de Fabrica&ccedil;&atilde;o (BPF)'),
+          conteudo: `<p>${dec('As')} <strong>BPF</strong> ${dec('garantem a qualidade e seguran&ccedil;a dos produtos na ind&uacute;stria farmac&ecirc;utica.')}</p><div class="cartilha-destaque"><strong>${dec('Princ&iacute;pios das BPF:')}</strong><br> &bull; <b>${dec('Higiene')}</b> &ndash; ${dec('manter-se limpo.')}<br> &bull; <b>${dec('Controle de processos')}</b> &ndash; ${dec('monitorar cada etapa.')}<br> &bull; <b>${dec('Rastreabilidade')}</b> &ndash; ${dec('identificar materiais e produtos.')}<br> &bull; <b>${dec('Documenta&ccedil;&atilde;o')}</b> &ndash; ${dec('registrar atividades.')}</div>`,
+          quiz: [ { pergunta: dec('O que as BPF garantem?'), opcoes: [dec('Apenas a produtividade'), dec('Qualidade e seguran&ccedil;a do produto'), dec('Redu&ccedil;&atilde;o de custos'), dec('Aumento de vendas')], certa: 1 }, { pergunta: dec('Um princ&iacute;pio fundamental das BPF &eacute;:'), opcoes: [dec('Usar qualquer roupa'), dec('N&atilde;o registrar atividades'), dec('Manter a higiene pessoal'), dec('Trabalhar sem supervis&atilde;o')], certa: 2 }, { pergunta: dec('A rastreabilidade permite:'), opcoes: [dec('Aumentar a velocidade'), dec('Identificar a origem de um lote'), dec('Reduzir colaboradores'), dec('Eliminar a documenta&ccedil;&atilde;o')], certa: 1 } ]
         },
-        { id: 'sustentabilidade', icone: 'eco', titulo: 'Sustentabilidade e Redução de Desperdícios',
-          conteudo: `<p>A Braun está comprometida com a sustentabilidade. Todos podemos contribuir.</p><div class="cartilha-destaque"><strong>Ações sustentáveis:</strong><br> • <b>Economia de energia</b> – apagar luzes e desligar máquinas.<br> • <b>Uso racional de água</b> – evitar vazamentos.<br> • <b>Separação de resíduos</b> – reciclar.<br> • <b>Redução de materiais</b> – evitar impressões.</div>`,
-          quiz: [ { pergunta: 'Qual atitude contribui para a sustentabilidade?', opcoes: ['Deixar luzes acesas', 'Descartar resíduos corretamente', 'Usar água em excesso', 'Imprimir documentos desnecessários'], certa: 1 }, { pergunta: 'A redução de desperdícios beneficia:', opcoes: ['Apenas o meio ambiente', 'Apenas a empresa', 'Todos', 'Nenhum'], certa: 2 }, { pergunta: 'Qual atitude NÃO é sustentável?', opcoes: ['Desligar equipamentos', 'Reciclar materiais', 'Deixar torneira pingando', 'Reutilizar papel'], certa: 2 } ]
+        { id: 'sustentabilidade', icone: 'eco', titulo: dec('Sustentabilidade e Redu&ccedil;&atilde;o de Desperd&iacute;cios'),
+          conteudo: `<p>${dec('A Braun est&aacute; comprometida com a sustentabilidade. Todos podemos contribuir.')}</p><div class="cartilha-destaque"><strong>${dec('A&ccedil;&otilde;es sustent&aacute;veis:')}</strong><br> &bull; <b>${dec('Economia de energia')}</b> &ndash; ${dec('apagar luzes e desligar m&aacute;quinas.')}<br> &bull; <b>${dec('Uso racional de &aacute;gua')}</b> &ndash; ${dec('evitar vazamentos.')}<br> &bull; <b>${dec('Separa&ccedil;&atilde;o de res&iacute;duos')}</b> &ndash; ${dec('reciclar.')}<br> &bull; <b>${dec('Redu&ccedil;&atilde;o de materiais')}</b> &ndash; ${dec('evitar impress&otilde;es.')}</div>`,
+          quiz: [ { pergunta: dec('Qual atitude contribui para a sustentabilidade?'), opcoes: [dec('Deixar luzes acesas'), dec('Descartar res&iacute;duos corretamente'), dec('Usar &aacute;gua em excesso'), dec('Imprimir documentos desnecess&aacute;rios')], certa: 1 }, { pergunta: dec('A redu&ccedil;&atilde;o de desperd&iacute;cios beneficia:'), opcoes: [dec('Apenas o meio ambiente'), dec('Apenas a empresa'), 'Todos', 'Nenhum'], certa: 2 }, { pergunta: dec('Qual atitude N&Atilde;O &eacute; sustent&aacute;vel?'), opcoes: [dec('Desligar equipamentos'), dec('Reciclar materiais'), dec('Deixar torneira pingando'), dec('Reutilizar papel')], certa: 2 } ]
         },
-        { id: 'compliance', icone: 'gavel', titulo: 'Compliance – Ética e Integridade',
-          conteudo: `<p><strong>Compliance</strong> significa agir de acordo com as leis e princípios éticos da empresa.</p><div class="cartilha-destaque"><strong>Pilares do Compliance na Braun:</strong><br> • <b>Código de Conduta</b><br> • <b>Conflito de Interesses</b><br> • <b>Anticorrupção</b><br> • <b>Proteção de Dados (LGPD)</b><br> • <b>Canal de Denúncia</b></div>`,
-          quiz: [ { pergunta: 'O que é Compliance?', opcoes: ['Um cargo na diretoria', 'Regras para garantir ética e conformidade', 'Treinamento técnico', 'Ferramenta de produção'], certa: 1 }, { pergunta: 'Ao receber um presente de um fornecedor, o correto é:', opcoes: ['Aceitar normalmente', 'Recusar e reportar', 'Aceitar se for pequeno', 'Dividir com a equipe'], certa: 1 }, { pergunta: 'Quem deve seguir as regras de Compliance?', opcoes: ['Apenas a diretoria', 'Apenas o RH', 'Todos os colaboradores', 'Apenas fornecedores'], certa: 2 } ]
+        { id: 'compliance', icone: 'gavel', titulo: dec('Compliance &ndash; &Eacute;tica e Integridade'),
+          conteudo: `<p><strong>Compliance</strong> ${dec('significa agir de acordo com as leis e princ&iacute;pios &eacute;ticos da empresa.')}</p><div class="cartilha-destaque"><strong>${dec('Pilares do Compliance na Braun:')}</strong><br> &bull; <b>${dec('C&oacute;digo de Conduta')}</b><br> &bull; <b>${dec('Conflito de Interesses')}</b><br> &bull; <b>${dec('Anticorrup&ccedil;&atilde;o')}</b><br> &bull; <b>${dec('Prote&ccedil;&atilde;o de Dados (LGPD)')}</b><br> &bull; <b>${dec('Canal de Den&uacute;ncia')}</b></div>`,
+          quiz: [ { pergunta: dec('O que &eacute; Compliance?'), opcoes: [dec('Um cargo na diretoria'), dec('Regras para garantir &eacute;tica e conformidade'), dec('Treinamento t&eacute;cnico'), dec('Ferramenta de produ&ccedil;&atilde;o')], certa: 1 }, { pergunta: dec('Ao receber um presente de um fornecedor, o correto &eacute;:'), opcoes: [dec('Aceitar normalmente'), dec('Recusar e reportar'), dec('Aceitar se for pequeno'), dec('Dividir com a equipe')], certa: 1 }, { pergunta: dec('Quem deve seguir as regras de Compliance?'), opcoes: [dec('Apenas a diretoria'), dec('Apenas o RH'), dec('Todos os colaboradores'), dec('Apenas fornecedores')], certa: 2 } ]
         },
-        { id: 'incendio', icone: 'local_fire_department', titulo: 'Prevenção de Incêndios e Uso de Extintores',
-          conteudo: `<p>Em uma indústria farmacêutica, os riscos de incêndio são elevados devido a <strong>solventes inflamáveis</strong>, <strong>produtos oxidantes</strong> e <strong>materiais combustíveis</strong>.</p><div class="cartilha-destaque"><strong>Classes de Incêndio:</strong><br> • <b>Classe A</b> – sólidos<br> • <b>Classe B</b> – líquidos inflamáveis<br> • <b>Classe C</b> – elétricos (NUNCA água)<br> • <b>Classe D</b> – metais<br> • <b>Classe K</b> – gorduras</div><div class="cartilha-exemplo"><strong>Método PASS:</strong> Puxar, Apontar, Apertar, Varrer.</div>`,
-          quiz: [ { pergunta: 'Qual extintor NUNCA deve ser usado em incêndios elétricos (Classe C)?', opcoes: ['CO', 'Pó Químico', 'Água', 'Pó Especial'], certa: 2 }, { pergunta: 'O que significa a sigla PASS?', opcoes: ['Puxar, Apontar, Apertar, Varrer', 'Parar, Avaliar, Segurar, Sair', 'Prevenir, Atuar, Salvar, Sinalizar', 'Pegar, Arremessar, Soprar, Seguir'], certa: 0 }, { pergunta: 'Em uma área estéril, qual extintor é mais recomendado?', opcoes: ['Pó Químico', 'Água', 'CO', 'Espuma'], certa: 2 } ]
+        { id: 'incendio', icone: 'local_fire_department', titulo: dec('Preven&ccedil;&atilde;o de Inc&ecirc;ndios e Uso de Extintores'),
+          conteudo: `<p>${dec('Em uma ind&uacute;stria farmac&ecirc;utica, os riscos de inc&ecirc;ndio s&atilde;o elevados devido a')} <strong>${dec('solventes inflam&aacute;veis')}</strong>, <strong>${dec('produtos oxidantes')}</strong> ${dec('e')} <strong>${dec('materiais combust&iacute;veis')}</strong>.</p><div class="cartilha-destaque"><strong>${dec('Classes de Inc&ecirc;ndio:')}</strong><br> &bull; <b>Classe A</b> &ndash; ${dec('s&oacute;lidos')}<br> &bull; <b>Classe B</b> &ndash; ${dec('l&iacute;quidos inflam&aacute;veis')}<br> &bull; <b>Classe C</b> &ndash; ${dec('el&eacute;tricos (NUNCA &aacute;gua)')}<br> &bull; <b>Classe D</b> &ndash; ${dec('metais')}<br> &bull; <b>Classe K</b> &ndash; ${dec('gorduras')}</div><div class="cartilha-exemplo"><strong>${dec('M&eacute;todo PASS:')}</strong> ${dec('Puxar, Apontar, Apertar, Varrer.')}</div>`,
+          quiz: [ { pergunta: dec('Qual extintor NUNCA deve ser usado em inc&ecirc;ndios el&eacute;tricos (Classe C)?'), opcoes: ['CO&#8322;', dec('P&oacute; Qu&iacute;mico'), dec('&Aacute;gua'), dec('P&oacute; Especial')], certa: 2 }, { pergunta: dec('O que significa a sigla PASS?'), opcoes: [dec('Puxar, Apontar, Apertar, Varrer'), dec('Parar, Avaliar, Segurar, Sair'), dec('Prevenir, Atuar, Salvar, Sinalizar'), dec('Pegar, Arremessar, Soprar, Seguir')], certa: 0 }, { pergunta: dec('Em uma &aacute;rea est&eacute;ril, qual extintor &eacute; mais recomendado?'), opcoes: [dec('P&oacute; Qu&iacute;mico'), dec('&Aacute;gua'), 'CO&#8322;', 'Espuma'], certa: 2 } ]
         }
     ];
 
     let cartilhaAtiva = 'kaizen';
     let cartilhasLidas = JSON.parse(getStorageValue('braun_cartilhas_lidas') || '[]');
 
-    function openCartilhas() {
-        closeHamburger();
-        renderCartilhas();
-        focusModal('cartilhasCard');
-    }
+    function openCartilhas() { closeHamburger(); renderCartilhas(); focusModal('cartilhasCard'); }
 
     function renderCartilhas() {
         const tabsContainer = document.getElementById('cartilhaTabs');
@@ -1755,7 +1762,7 @@
             const btn = document.createElement('button');
             btn.className = `cartilha-tab-btn${isActive ? ' active' : ''}${estaLida ? ' lida' : ''}`;
             btn.setAttribute('data-target', cart.id);
-            const tituloCurto = cart.titulo.split('–')[0].trim() || cart.titulo.split('-')[0].trim() || cart.titulo;
+            const tituloCurto = cart.titulo.split('&ndash;')[0].trim() || cart.titulo.split('-')[0].trim() || cart.titulo;
             btn.innerHTML = `<span class="material-symbols-outlined">${cart.icone}</span> ${tituloCurto}`;
             btn.onclick = () => { cartilhaAtiva = cart.id; renderCartilhas(); };
             tabsContainer.appendChild(btn);
@@ -1767,10 +1774,10 @@
                 <div class="cartilha-conteudo">${cart.conteudo}</div>
                 <button class="cartilha-btn-marcar ${estaLida ? 'marcado' : ''}" onclick="toggleCartilhaLida('${cart.id}')">
                     <span class="material-symbols-outlined">${estaLida ? 'check_circle' : 'circle'}</span>
-                    ${estaLida ? 'MARCADA COMO LIDA' : 'MARCAR COMO LIDA'}
+                    ${estaLida ? dec('MARCADA COMO LIDA') : dec('MARCAR COMO LIDA')}
                 </button>
                 <div class="cartilha-quiz">
-                    <h4> Teste seu conhecimento</h4>
+                    <h4>&#128221; ${dec('Teste seu conhecimento')}</h4>
                     ${cart.quiz.map((q, qi) => `
                         <div class="quiz-pergunta">${qi+1}. ${q.pergunta}</div>
                         <div class="quiz-opcoes" id="quiz-${cart.id}-${qi}">
@@ -1823,34 +1830,30 @@
             else if (i === opIndex && opIndex !== q.certa) el.classList.add('errada');
         });
         if (opIndex === q.certa) {
-            feedback.innerHTML = ' Correto!';
+            feedback.innerHTML = '&#9989; ' + dec('Correto!');
             feedback.className = 'quiz-feedback certo';
             quizzesAcertados++;
             setStorageValue('braun_quizzes_acertados', quizzesAcertados);
             if (quizzesAcertados === 10) salvarConquista('quiz_master');
         } else {
-            feedback.innerHTML = ' Incorreto. A resposta certa é: ' + q.opcoes[q.certa];
+            feedback.innerHTML = '&#10060; ' + dec('Incorreto. A resposta certa &eacute;:') + ' ' + q.opcoes[q.certa];
             feedback.className = 'quiz-feedback errado';
         }
     }
 
     // ==================== NOVIDADES ====================
     const novidadesData = [
-        { id: 'nov9', titulo: ' Banner de Avisos Rotativo!', descricao: 'Suas marcações futuras agora aparecem em um banner rolando logo abaixo do seletor de meses. Agende algo em qualquer dia do calendário e o aviso aparecerá automaticamente como num letreiro.', data: '2026-09-10', cartilhaId: null },
-        { id: 'nov7', titulo: ' Nova lupa de pesquisa no rodapé', descricao: 'O microfone foi substituído por uma lupa  para facilitar o acesso à pesquisa.', data: '2026-08-23', cartilhaId: null },
-        { id: 'nov5', titulo: ' Nova Cartilha: Prevenção de Incêndios e Extintores', descricao: 'Aprenda sobre classes de incêndio, método PASS, cuidados em áreas farmacêuticas e muito mais.', data: '2026-07-05', cartilhaId: 'incendio' },
-        { id: 'nov1', titulo: ' Nova Cartilha: Compliance', descricao: 'Aprenda sobre Ética, Código de Conduta, Conflito de Interesses, Anticorrupção, LGPD e Canal de Denúncia.', data: '2026-07-04', cartilhaId: 'compliance' },
-        { id: 'nov2', titulo: ' Conheça as 9 Cartilhas de Melhorias', descricao: 'Kaizen, 5S, PDCA, Ferramentas da Qualidade, Segurança, BPF, Sustentabilidade, Compliance e Incêndio.', data: '2026-07-03', cartilhaId: null },
-        { id: 'nov3', titulo: ' App atualizado para versão 3.8', descricao: 'Novo sistema de Novidades, navegação entre anos aprimorada e melhorias gerais.', data: '2026-09-02', cartilhaId: null }
+        { id: 'nov10', titulo: dec('&#128227; Banner de Avisos Rotativo!'), descricao: dec('Suas marca&ccedil;&otilde;es futuras agora aparecem em um banner rolando logo abaixo do seletor de meses. Agende algo em qualquer dia do calend&aacute;rio e o aviso aparecer&aacute; automaticamente como num letreiro.'), data: '2026-09-10', cartilhaId: null },
+        { id: 'nov7', titulo: dec('&#128269; Nova lupa de pesquisa no rodap&eacute;'), descricao: dec('O microfone foi substitu&iacute;do por uma lupa para facilitar o acesso &agrave; pesquisa.'), data: '2026-08-23', cartilhaId: null },
+        { id: 'nov5', titulo: dec('&#129675; Nova Cartilha: Preven&ccedil;&atilde;o de Inc&ecirc;ndios e Extintores'), descricao: dec('Aprenda sobre classes de inc&ecirc;ndio, m&eacute;todo PASS, cuidados em &aacute;reas farmac&ecirc;uticas e muito mais.'), data: '2026-07-05', cartilhaId: 'incendio' },
+        { id: 'nov1', titulo: dec('&#128216; Nova Cartilha: Compliance'), descricao: dec('Aprenda sobre &Eacute;tica, C&oacute;digo de Conduta, Conflito de Interesses, Anticorrup&ccedil;&atilde;o, LGPD e Canal de Den&uacute;ncia.'), data: '2026-07-04', cartilhaId: 'compliance' },
+        { id: 'nov2', titulo: dec('&#128216; Conhe&ccedil;a as 9 Cartilhas de Melhorias'), descricao: dec('Kaizen, 5S, PDCA, Ferramentas da Qualidade, Seguran&ccedil;a, BPF, Sustentabilidade, Compliance e Inc&ecirc;ndio.'), data: '2026-07-03', cartilhaId: null },
+        { id: 'nov3', titulo: dec('&#128276; App atualizado para vers&atilde;o 3.8'), descricao: dec('Novo sistema de Novidades, navega&ccedil;&atilde;o entre anos aprimorada e melhorias gerais.'), data: '2026-09-02', cartilhaId: null }
     ];
 
     let novidadesLidas = JSON.parse(getStorageValue('braun_novidades_lidas') || '[]');
 
-    function openNovidades() {
-        closeAllModals();
-        renderNovidades();
-        focusModal('novidadesCard');
-    }
+    function openNovidades() { closeAllModals(); renderNovidades(); focusModal('novidadesCard'); }
 
     function renderNovidades() {
         const container = document.getElementById('novidadesLista');
@@ -1863,9 +1866,9 @@
             let badgeHtml = !lida ? `<span class="badge-novo">NOVO</span>` : '';
             let linkHtml = '';
             if (nov.cartilhaId) {
-                linkHtml = `<span class="link-cartilha" onclick="event.stopPropagation(); abrirCartilhaPorId('${nov.cartilhaId}')">Abrir cartilha </span>`;
+                linkHtml = `<span class="link-cartilha" onclick="event.stopPropagation(); abrirCartilhaPorId('${nov.cartilhaId}')">${dec('Abrir cartilha')} &rarr;</span>`;
             } else if (nov.id === 'nov2') {
-                linkHtml = `<span class="link-cartilha" onclick="event.stopPropagation(); abrirListaCartilhas()">Ver todas </span>`;
+                linkHtml = `<span class="link-cartilha" onclick="event.stopPropagation(); abrirListaCartilhas()">${dec('Ver todas')} &rarr;</span>`;
             }
             card.innerHTML = `
                 <div class="novidade-titulo">${nov.titulo} ${badgeHtml}</div>
@@ -1938,7 +1941,7 @@
         const hoje = new Date();
         document.getElementById('pesquisaData').value = hoje.toISOString().split('T')[0];
         document.getElementById('pesquisaDataTexto').value = '';
-        document.getElementById('resultadoTexto').innerHTML = 'Nenhuma pesquisa realizada.';
+        document.getElementById('resultadoTexto').innerHTML = dec('Nenhuma pesquisa realizada.');
         document.getElementById('resultadoDetalhe').innerText = '';
         resultadoPesquisaAtual = null;
     }
@@ -1964,8 +1967,8 @@
         const resultadoDiv = document.getElementById('resultadoTexto');
         const detalheDiv = document.getElementById('resultadoDetalhe');
         if (!dataObj || isNaN(dataObj.getTime())) {
-            resultadoDiv.innerHTML = ' Data inválida.';
-            detalheDiv.innerText = 'Use dd/mm/aaaa ou escreva por extenso.';
+            resultadoDiv.innerHTML = '&#10060; ' + dec('Data inv&aacute;lida.');
+            detalheDiv.innerText = dec('Use dd/mm/aaaa ou escreva por extenso.');
             resultadoPesquisaAtual = null;
             return;
         }
@@ -1974,23 +1977,27 @@
         const trabalhando = isTrabalhando(dataObj, region, turma);
         const ferias = isFerias(dataObj);
         let status, cor, iconeHtml, detalhes;
-        const regiaoNome = region === 'BR' ? 'ECOFLAC' : 'MANUTENÇÃO';
+        const regiaoNome = region === 'BR' ? 'ECOFLAC' : dec('MANUTEN&Ccedil;&Atilde;O');
         const turmaFalada = formatarTurmaParaVoz(turma);
-        detalhes = `Região: ${regiaoNome} · Turmas ${turmaFalada}`;
-        if (ferias) { status = 'EM FÉRIAS '; cor = 'var(--ferias)'; iconeHtml = `<span class="icone-ferias"></span>`; }
-        else if (trabalhando) { status = 'TRABALHANDO '; cor = 'var(--accent)'; iconeHtml = `<span class="icone-trabalho"></span>`; }
-        else { status = 'DE FOLGA '; cor = 'var(--primary)'; iconeHtml = `<span class="icone-folga"></span>`; }
+        detalhes = `${dec('Regi&atilde;o')}: ${regiaoNome} &middot; ${dec('Turmas')} ${turmaFalada}`;
+        if (ferias) { status = dec('EM F&Eacute;RIAS'); cor = 'var(--ferias)'; iconeHtml = `<span class="icone-ferias">&#9992;&#65039;</span>`; }
+        else if (trabalhando) { status = 'TRABALHANDO'; cor = 'var(--accent)'; iconeHtml = `<span class="icone-trabalho">&#9881;&#65039;</span>`; }
+        else { status = 'DE FOLGA'; cor = 'var(--primary)'; iconeHtml = `<span class="icone-folga">&#127754;</span>`; }
         const diaSemana = diaDaSemanaPorExtenso(dataObj);
         const dataStr = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
         resultadoDiv.style.color = cor;
         resultadoDiv.innerHTML = `${iconeHtml}<div><strong>${diaSemana}, ${dataStr}</strong></div><div style="font-size:1.1em;">${status}</div>`;
         detalheDiv.innerText = detalhes;
-        resultadoPesquisaAtual = { data: dataObj, status: status.replace(/[]/g, '').trim(), detalhes: detalhes, ferias: ferias, trabalhando: trabalhando };
+        resultadoPesquisaAtual = { data: dataObj, status: status, detalhes: detalhes, ferias: ferias, trabalhando: trabalhando };
         if (getStorageValue('braun_voice_response') !== 'false') lerResultado();
     }
 
     function parseDataTexto(texto) {
-        const meses = { 'janeiro':0,'fevereiro':1,'março':2,'abril':3,'maio':4,'junho':5,'julho':6,'agosto':7,'setembro':8,'outubro':9,'novembro':10,'dezembro':11,'jan':0,'fev':1,'mar':2,'abr':3,'mai':4,'jun':5,'jul':6,'ago':7,'set':8,'out':9,'nov':10,'dez':11 };
+        const meses = {
+            'janeiro':0,'fevereiro':1,'marco':2,'mar\u00e7o':2,'abril':3,'maio':4,'junho':5,
+            'julho':6,'agosto':7,'setembro':8,'outubro':9,'novembro':10,'dezembro':11,
+            'jan':0,'fev':1,'mar':2,'abr':3,'mai':4,'jun':5,'jul':6,'ago':7,'set':8,'out':9,'nov':10,'dez':11
+        };
         texto = texto.toLowerCase().trim();
         let match = texto.match(/^(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{2,4})$/);
         if (match) {
@@ -1999,7 +2006,7 @@
             const d = new Date(ano, mes, dia);
             if (!isNaN(d.getTime())) return d;
         }
-        match = texto.match(/^(\d{1,2})\s*(?:de\s*)?([a-zç]+)\s*(?:de\s*)?(\d{2,4})$/);
+        match = texto.match(/^(\d{1,2})\s*(?:de\s*)?([a-z\u00e7\u00e3\u00e1\u00e9]+)\s*(?:de\s*)?(\d{2,4})$/);
         if (match) {
             let dia = parseInt(match[1]), mesNome = match[2], ano = parseInt(match[3]);
             if (ano<100) ano+=2000;
@@ -2008,7 +2015,7 @@
                 if (!isNaN(d.getTime())) return d;
             }
         }
-        match = texto.match(/^([a-zç]+)\s*(?:de\s*)?(\d{2,4})$/);
+        match = texto.match(/^([a-z\u00e7\u00e3\u00e1\u00e9]+)\s*(?:de\s*)?(\d{2,4})$/);
         if (match) {
             let mesNome = match[1], ano = parseInt(match[2]);
             if (ano<100) ano+=2000;
@@ -2024,7 +2031,7 @@
         const campoTexto = document.getElementById('pesquisaDataTexto');
         if (!campoTexto) return;
         if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            campoTexto.placeholder = 'Seu navegador não suporta voz. Digite manualmente.';
+            campoTexto.placeholder = dec('Seu navegador n&atilde;o suporta voz.');
             return;
         }
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2033,22 +2040,22 @@
         recognition.lang = 'pt-BR';
         recognition.continuous = false;
         recognition.interimResults = false;
-        recognition.onstart = () => { campoTexto.placeholder = ' Ouvindo...'; campoTexto.style.borderColor = 'var(--accent)'; };
+        recognition.onstart = () => { campoTexto.placeholder = dec('Ouvindo...'); campoTexto.style.borderColor = 'var(--accent)'; };
         recognition.onerror = (event) => {
-            campoTexto.placeholder = ' Clique no microfone e fale a data...';
+            campoTexto.placeholder = dec('Clique no microfone e fale a data...');
             campoTexto.style.borderColor = '';
             recognitionInstance = null;
-            if (event.error === 'not-allowed') alert('Permissão de microfone negada.');
+            if (event.error === 'not-allowed') alert(dec('Permiss&atilde;o de microfone negada.'));
         };
         recognition.onresult = (event) => {
             campoTexto.value = event.results[0][0].transcript;
-            campoTexto.placeholder = ' Clique no microfone e fale a data...';
+            campoTexto.placeholder = dec('Clique no microfone e fale a data...');
             campoTexto.style.borderColor = '';
             recognitionInstance = null;
             pesquisarData();
         };
         recognition.onend = () => {
-            campoTexto.placeholder = ' Clique no microfone e fale a data...';
+            campoTexto.placeholder = dec('Clique no microfone e fale a data...');
             campoTexto.style.borderColor = '';
             recognitionInstance = null;
         };
@@ -2056,7 +2063,7 @@
     }
 
     function lerResultado() {
-        if (!resultadoPesquisaAtual) { alert('Faça uma pesquisa primeiro.'); return; }
+        if (!resultadoPesquisaAtual) { alert(dec('Fa&ccedil;a uma pesquisa primeiro.')); return; }
         const voz = new SpeechSynthesisUtterance();
         voz.lang = 'pt-BR';
         voz.rate = 1.1;
@@ -2066,8 +2073,8 @@
         const status = resultadoPesquisaAtual.status;
         const turma = currentTurma;
         const turmaFalada = formatarTurmaParaVoz(turma);
-        const regiaoNome = currentRegion === 'BR' ? 'ECOFLAC' : 'MANUTENÇÃO';
-        voz.text = `${diaSemana}, ${dataStr}. ${status}. Região ${regiaoNome}, turmas ${turmaFalada}.`;
+        const regiaoNome = currentRegion === 'BR' ? 'ECOFLAC' : dec('MANUTEN&Ccedil;&Atilde;O');
+        voz.text = `${diaSemana}, ${dataStr}. ${status}. ${dec('Regi&atilde;o')} ${regiaoNome}, turmas ${turmaFalada}.`;
         if (window.speechSynthesis) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(voz); }
     }
 
@@ -2091,8 +2098,8 @@
                 const endDate = new Date(data);
                 endDate.setDate(endDate.getDate() + 1);
                 const endStr = `${endDate.getFullYear()}${String(endDate.getMonth() + 1).padStart(2, '0')}${String(endDate.getDate()).padStart(2, '0')}`;
-                let titulo = ferias ? ' Férias' : ' Trabalho';
-                let descricao = ferias ? 'Período de férias programado' : `Dia de trabalho - Turma ${nomeTurma}`;
+                let titulo = ferias ? 'FERIAS' : 'TRABALHO';
+                let descricao = ferias ? 'Periodo de ferias programado' : `Dia de trabalho - Turma ${nomeTurma}`;
                 ics.push('BEGIN:VEVENT');
                 ics.push(`UID:${dataStr}-braun-${turma}@braunonline`);
                 ics.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`);
@@ -2113,11 +2120,11 @@
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        alert('Arquivo .ics gerado! Abra no seu aplicativo de calendário para importar.');
+        alert(dec('Arquivo .ics gerado! Abra no seu app de calend&aacute;rio.'));
     }
 
     async function solicitarPermissaoNotificacao() {
-        if (!('Notification' in window)) { alert('Seu navegador não suporta notificações.'); return false; }
+        if (!('Notification' in window)) { alert(dec('Navegador sem suporte a notifica&ccedil;&otilde;es.')); return false; }
         if (Notification.permission === 'granted') return true;
         if (Notification.permission !== 'denied') {
             const permission = await Notification.requestPermission();
@@ -2138,9 +2145,9 @@
         amanha.setHours(0, 0, 0, 0);
         const trabalhando = isTrabalhando(amanha, currentRegion, currentTurma);
         const ferias = isFerias(amanha);
-        if (ferias) mostrarNotificacaoLocal(' Férias amanhã', 'Aproveite seu descanso!');
-        else if (trabalhando) mostrarNotificacaoLocal(' Trabalho amanhã', `Você está escalado para trabalhar amanhã (${amanha.toLocaleDateString('pt-BR')}).`);
-        else mostrarNotificacaoLocal(' Folga amanhã', 'Aproveite seu dia de folga!');
+        if (ferias) mostrarNotificacaoLocal(dec('F&eacute;rias amanh&atilde;'), dec('Aproveite seu descanso!'));
+        else if (trabalhando) mostrarNotificacaoLocal(dec('Trabalho amanh&atilde;'), dec('Voc&ecirc; est&aacute; escalado para trabalhar amanh&atilde;.'));
+        else mostrarNotificacaoLocal(dec('Folga amanh&atilde;'), dec('Aproveite seu dia de folga!'));
     }
 
     function verificarNovidadesParaNotificar() {
@@ -2148,7 +2155,7 @@
         const lidas = novidadesLidas.length;
         const naoLidas = total - lidas;
         if (naoLidas > 0 && Notification.permission === 'granted') {
-            mostrarNotificacaoLocal(` ${naoLidas} novidade${naoLidas > 1 ? 's' : ''} no Braun OnLine`, 'Toque para ver as atualizações.');
+            mostrarNotificacaoLocal(`${naoLidas} novidade${naoLidas > 1 ? 's' : ''} no Braun OnLine`, dec('Toque para ver as atualiza&ccedil;&otilde;es.'));
         }
     }
 
@@ -2162,17 +2169,17 @@
                 verificarNovidadesParaNotificar();
                 setStorageValue('braun_ultima_notificacao', hoje);
             }
-            alert('Lembretes ativados com sucesso!');
+            alert(dec('Lembretes ativados com sucesso!'));
         } else {
-            alert('Permissão negada. Ative nas configurações do navegador.');
+            alert(dec('Permiss&atilde;o negada.'));
         }
     }
 
     const conquistas = {
-        primeiro_passo: { id: 'primeiro_passo', titulo: 'Primeiro Passo', descricao: 'Marcou a primeira cartilha como lida', icone: '' },
-        leitor_dedicado: { id: 'leitor_dedicado', titulo: 'Leitor Dedicado', descricao: 'Leu 5 cartilhas', icone: '' },
-        expert_braun: { id: 'expert_braun', titulo: 'Expert Braun', descricao: 'Completou todas as 9 cartilhas', icone: '' },
-        quiz_master: { id: 'quiz_master', titulo: 'Quiz Master', descricao: 'Acertou 10 perguntas de quiz', icone: '' }
+        primeiro_passo: { id: 'primeiro_passo', titulo: dec('Primeiro Passo'), descricao: dec('Marcou a primeira cartilha como lida'), icone: '&#127937;' },
+        leitor_dedicado: { id: 'leitor_dedicado', titulo: dec('Leitor Dedicado'), descricao: dec('Leu 5 cartilhas'), icone: '&#128218;' },
+        expert_braun: { id: 'expert_braun', titulo: 'Expert Braun', descricao: dec('Completou todas as 9 cartilhas'), icone: '&#127942;' },
+        quiz_master: { id: 'quiz_master', titulo: 'Quiz Master', descricao: dec('Acertou 10 perguntas de quiz'), icone: '&#127919;' }
     };
 
     function getConquistas() { return JSON.parse(getStorageValue('braun_conquistas') || '[]'); }
@@ -2191,7 +2198,7 @@
         if (!c) return;
         const toast = document.createElement('div');
         toast.style.cssText = `position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7030A0,#00A97A);color:white;padding:16px 24px;border-radius:20px;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:3000;display:flex;align-items:center;gap:12px;animation:bounceIn 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);max-width:90%;`;
-        toast.innerHTML = `<span style="font-size:2em;">${c.icone}</span><div><div style="font-size:0.75em;opacity:0.85;">CONQUISTA DESBLOQUEADA</div><div style="font-size:1.1em;">${c.titulo}</div></div>`;
+        toast.innerHTML = `<span style="font-size:2em;">${c.icone}</span><div><div style="font-size:0.75em;opacity:0.85;">${dec('CONQUISTA DESBLOQUEADA')}</div><div style="font-size:1.1em;">${c.titulo}</div></div>`;
         document.body.appendChild(toast);
         setTimeout(() => {
             toast.style.opacity = '0';
@@ -2213,7 +2220,7 @@
                 <div>
                     <div style="font-weight:800;font-size:1.05em;">${c.titulo}</div>
                     <div style="font-size:0.85em;opacity:0.7;">${c.descricao}</div>
-                    ${desbloqueada ? '<div style="font-size:0.75em;color:var(--primary);font-weight:700;margin-top:4px;"> Desbloqueada</div>' : '<div style="font-size:0.75em;opacity:0.5;margin-top:4px;">Bloqueada</div>'}
+                    ${desbloqueada ? `<div style="font-size:0.75em;color:var(--primary);font-weight:700;margin-top:4px;">&#10003; ${dec('Desbloqueada')}</div>` : `<div style="font-size:0.75em;opacity:0.5;margin-top:4px;">${dec('Bloqueada')}</div>`}
                 </div>
             `;
             container.appendChild(card);
@@ -2238,7 +2245,7 @@
         preencherDadosModais();
         atualizarNovidadesUI();
         atualizarTituloMes();
-        atualizarBannerAvisos();  //  INICIA O BANNER
+        atualizarBannerAvisos();
 
         document.getElementById('pesquisaDataTexto').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') { e.preventDefault(); pesquisarData(); }
