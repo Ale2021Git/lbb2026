@@ -10,7 +10,7 @@
       }
     } catch(e) {}
   })();
-  const APP_VERSION = '2026.09.06';
+  const APP_VERSION = '2026.09.07';
   function getStorageValue(key) {
     try { return localStorage.getItem(key); } catch (e) {
       try { return sessionStorage.getItem(key); } catch (f) { return null; }
@@ -49,7 +49,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#00A97A">
     <title>Braun OnLine 2026/2027</title>
-    <meta name="description" content="Aplicativo de escala para colaboradores Braun - ECOFLAC e MANUTEN&#199;&#195;O">
+    <meta name="description" content="Aplicativo de escala para colaboradores Braun - ECOFLAC, MANUTEN&#199;&#195;O e 1x1">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -73,6 +73,7 @@
             --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
             --accent: #7030A0; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
             --semana-w: #00A97A; --azul-mnt: #2196F3; --ferias: #7030A0;
+            --laranja-1x1: #FF9800;
         }
         body.dark-mode {
             --bg: #121212; --card: #1E1E1E; --text: #E0E0E0; --border: #333333;
@@ -327,11 +328,13 @@
         .AMARELO  { background: var(--amarelo) !important; color: #1a1a1a !important; }
         .VERDE    { background: var(--verde)   !important; color: #fff     !important; }
         .AZUL     { background: var(--azul-mnt)!important; color: #fff     !important; }
+        .LARANJA  { background: var(--laranja-1x1) !important; color: #fff !important; }
         .TRABALHO { border-color: rgba(168,0,196,0.4) !important; }
         .HAS_NOTE::after { content: ''; position: absolute; bottom: 5px; right: 5px; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; border: 1.5px solid white; }
         .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); display: flex; height: 75px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-        .tab { flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.75em; font-weight: 700; background: none; border: none; cursor: pointer; }
+        .tab { flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.68em; font-weight: 700; background: none; border: none; cursor: pointer; padding: 0 2px; }
         .tab.active { color: #FFFFFF; }
+        .tab .material-symbols-outlined { font-size: 26px; }
         #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; backdrop-filter: blur(5px); }
         .bottom-modal { position: fixed; bottom: -110%; left: 0; right: 0; background: var(--card); border-radius: 35px 35px 0 0; padding: 30px 25px; z-index: 2000; transition: 0.5s; max-height: 85vh; overflow-y: auto; }
         .bottom-modal.show { bottom: 0; }
@@ -351,7 +354,6 @@
         .ramal-badge:active { transform: scale(0.95); background: var(--primary); color: white; }
         .ramal-secao { background: var(--primary); color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.75em; font-weight: 800; margin: 20px 0 5px 0; }
 
-        /* ===== DESTAQUE EMERGENCIA ===== */
         .ramal-item.emergencia-destaque {
             background: linear-gradient(90deg, rgba(231,76,60,0.12), rgba(231,76,60,0.03));
             border-left: 4px solid #e74c3c;
@@ -424,9 +426,9 @@
             padding: 2px 8px;
             margin-left: 4px;
         }
-        #tab-SEARCH { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 0.75em; font-weight: 700; cursor: pointer; }
+        #tab-SEARCH { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 0.68em; font-weight: 700; cursor: pointer; padding: 0 2px; }
         #tab-SEARCH.active { color: #FFFFFF; }
-        #tab-SEARCH .search-icon { font-size: 28px; transition: transform 0.2s; }
+        #tab-SEARCH .search-icon { font-size: 26px; transition: transform 0.2s; }
         #tab-SEARCH:active .search-icon { transform: scale(0.9); }
         @keyframes bounceIn { from { opacity: 0; transform: scale(0.5) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes shake-bell {
@@ -546,7 +548,7 @@
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da m&atilde;o.</p>
     <button class="btn-comecar" onclick="goToGreeting()">ENTRAR NO APP</button>
-    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERS&Atilde;O 3.8 / 2026 / 2027</div>
+    <div style="position:absolute;bottom:40px;font-size:0.75em;opacity:0.7;font-weight:600;letter-spacing:1px;">VERS&Atilde;O 3.9 / 2026 / 2027</div>
 </div>
 
 <button id="install-button" onclick="installPWA()">
@@ -632,9 +634,10 @@
     <div id="calendario-box"></div>
 </main>
 
-<div class="tab-bar" role="tablist" aria-label="Selecionar regi&atilde;o">
+<div class="tab-bar" role="tablist" aria-label="Selecionar escala">
     <button class="tab" onclick="setRegion('BR')" id="tab-BR" role="tab" aria-selected="true"><span class="material-symbols-outlined" aria-hidden="true">factory</span>ECOFLAC</button>
-    <button class="tab" onclick="setRegion('MNT')" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUTEN&Ccedil;&Atilde;O</button>
+    <button class="tab" onclick="setRegion('MNT')" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUT.</button>
+    <button class="tab" onclick="setRegion('1x1')" id="tab-1x1" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">swap_horiz</span>1x1</button>
     <button class="tab" onclick="openPesquisa()" id="tab-SEARCH" role="tab" aria-selected="false">
         <span class="material-symbols-outlined search-icon">search</span>
         <span>BUSCAR</span>
@@ -650,7 +653,7 @@
         </div>
         <div>
             <div class="drawer-brand-text">Braun OnLine</div>
-            <div class="drawer-brand-sub">v3.8 &middot; 2026/2027</div>
+            <div class="drawer-brand-sub">v3.9 &middot; 2026/2027</div>
         </div>
         <button class="drawer-close-btn" onclick="closeHamburger()" aria-label="Fechar menu">
             <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -896,16 +899,23 @@
         <div><label for="nomePerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Nome Completo</label><input type="text" id="nomePerfil" placeholder="Digite seu nome completo" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
         <div><label for="matriculaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Matr&iacute;cula</label><input type="text" id="matriculaPerfil" placeholder="Digite sua matr&iacute;cula" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
         <div>
-            <label for="turmaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Turma</label>
+            <label for="turmaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Turma / Escala</label>
             <select id="turmaPerfil" onchange="salvarDadosPerfil()" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
-                <option value="A">Turma A (Manh&atilde; - ECOFLAC)</option>
-                <option value="B">Turma B (Manh&atilde; - ECOFLAC)</option>
-                <option value="C">Turma C (Noite - ECOFLAC)</option>
-                <option value="D">Turma D (Noite - ECOFLAC)</option>
-                <option value="E">Turma E (Manh&atilde; - Manuten&ccedil;&atilde;o)</option>
-                <option value="F">Turma F (Manh&atilde; - Manuten&ccedil;&atilde;o)</option>
-                <option value="G">Turma G (Noite - Manuten&ccedil;&atilde;o)</option>
-                <option value="H">Turma H (Noite - Manuten&ccedil;&atilde;o)</option>
+                <optgroup label="ECOFLAC">
+                    <option value="A">Turma A (Manh&atilde; - ECOFLAC)</option>
+                    <option value="B">Turma B (Manh&atilde; - ECOFLAC)</option>
+                    <option value="C">Turma C (Noite - ECOFLAC)</option>
+                    <option value="D">Turma D (Noite - ECOFLAC)</option>
+                </optgroup>
+                <optgroup label="MANUTEN&Ccedil;&Atilde;O">
+                    <option value="E">Turma E (Manh&atilde; - Manuten&ccedil;&atilde;o)</option>
+                    <option value="F">Turma F (Manh&atilde; - Manuten&ccedil;&atilde;o)</option>
+                    <option value="G">Turma G (Noite - Manuten&ccedil;&atilde;o)</option>
+                    <option value="H">Turma H (Noite - Manuten&ccedil;&atilde;o)</option>
+                </optgroup>
+                <optgroup label="1x1">
+                    <option value="1x1">Escala 1x1 (1 dia trabalho / 1 dia folga)</option>
+                </optgroup>
             </select>
         </div>
         <div>
@@ -1138,8 +1148,9 @@
     const _escalaCache = new Map();
 
     const translations = {
-        BR:  { statusTrab: 'TRABALHANDO', statusFolga: 'DE FOLGA',  days: ['S','T','Q','Q','S','S','D'] },
-        MNT: { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA MNT', days: ['S','T','Q','Q','S','S','D'] }
+        BR:   { statusTrab: 'TRABALHANDO', statusFolga: 'DE FOLGA',  days: ['S','T','Q','Q','S','S','D'] },
+        MNT:  { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA MNT', days: ['S','T','Q','Q','S','S','D'] },
+        '1x1':{ statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA 1x1', days: ['S','T','Q','Q','S','S','D'] }
     };
 
     let currentAno = parseInt(getStorageValue('braun_ano')) || 2026;
@@ -1154,6 +1165,9 @@
             if (['A','B','C','D'].includes(savedTurma)) {
                 region = 'BR';
                 grupo = (savedTurma === 'A' || savedTurma === 'C') ? 'AC' : 'BD';
+            } else if (savedTurma === '1x1') {
+                region = '1x1';
+                grupo = '1x1';
             } else {
                 region = 'MNT';
                 grupo = (savedTurma === 'E' || savedTurma === 'G') ? 'EG' : 'FH';
@@ -1165,7 +1179,11 @@
         } else {
             const savedRegion = getStorageValue('braun_last_region') || 'BR';
             currentRegion = savedRegion;
-            currentTurma = getStorageValue(`braun_turma_${savedRegion}`) || (savedRegion === 'BR' ? 'AC' : 'EG');
+            if (savedRegion === '1x1') {
+                currentTurma = '1x1';
+            } else {
+                currentTurma = getStorageValue(`braun_turma_${savedRegion}`) || (savedRegion === 'BR' ? 'AC' : 'EG');
+            }
         }
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         const activeTab = document.getElementById(`tab-${currentRegion}`);
@@ -1185,7 +1203,13 @@
     function atualizarBadgeTurma() {
         const turmaLetra = getStorageValue('braun_turma_perfil') || 'A';
         const badgeText = document.getElementById('turmaBadgeText');
-        if (badgeText) { badgeText.innerText = `Turma ${turmaLetra}`; }
+        if (badgeText) {
+            if (turmaLetra === '1x1') {
+                badgeText.innerText = 'Escala 1x1';
+            } else {
+                badgeText.innerText = `Turma ${turmaLetra}`;
+            }
+        }
     }
 
     function setRegion(r) {
@@ -1198,9 +1222,14 @@
         const activeTab = document.getElementById(`tab-${r}`);
         activeTab.classList.add('active');
         activeTab.setAttribute('aria-selected', 'true');
-        const savedTurma = getStorageValue(`braun_turma_${r}`);
-        if (savedTurma) { currentTurma = savedTurma; }
-        else { currentTurma = r === 'BR' ? 'AC' : 'EG'; }
+        if (r === '1x1') {
+            currentTurma = '1x1';
+            setStorageValue('braun_turma_1x1', '1x1');
+        } else {
+            const savedTurma = getStorageValue(`braun_turma_${r}`);
+            if (savedTurma) { currentTurma = savedTurma; }
+            else { currentTurma = r === 'BR' ? 'AC' : 'EG'; }
+        }
         _escalaCache.clear();
         gerarCalendario();
         tick();
@@ -1230,8 +1259,21 @@
         return result;
     }
 
+    function check1x1(dt) {
+        const key = `1x1_${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}`;
+        if (_escalaCache.has(key)) return _escalaCache.get(key);
+        const baseDate = new Date(2026, 0, 1);
+        const diff = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
+        const trab = (((diff % 2) + 2) % 2) === 0;
+        const result = { trab };
+        _escalaCache.set(key, result);
+        return result;
+    }
+
     function isTrabalhando(dt, region, turma) {
-        return region === 'BR' ? checkBR(dt, turma).trab : checkMnt(dt, turma).trab;
+        if (region === 'BR') return checkBR(dt, turma).trab;
+        if (region === '1x1') return check1x1(dt).trab;
+        return checkMnt(dt, turma).trab;
     }
 
     function isFerias(dt) {
@@ -1254,8 +1296,16 @@
     }
 
     function formatarTurmaParaVoz(turma) {
-        if (!turma || turma.length !== 2) return turma;
+        if (!turma) return '';
+        if (turma === '1x1') return '1 por 1';
+        if (turma.length !== 2) return turma;
         return turma.split('').join(' e ');
+    }
+
+    function nomeRegiao(region) {
+        if (region === 'BR') return 'ECOFLAC';
+        if (region === '1x1') return '1x1';
+        return dec('MANUTEN&Ccedil;&Atilde;O');
     }
 
     function atualizarBannerAvisos() {
@@ -1366,6 +1416,10 @@
                     const r = checkBR(at, t);
                     cls += (r.isA ? 'AMARELO ' : 'VERDE ');
                     cls += (r.trab ? 'TRABALHO ' : 'FOLGA ');
+                } else if (currentRegion === '1x1') {
+                    const r = check1x1(at);
+                    cls += (r.trab ? 'LARANJA ' : 'VERDE ');
+                    cls += (r.trab ? 'TRABALHO ' : 'FOLGA ');
                 } else {
                     const mnt = checkMnt(at, t);
                     cls += (mnt.isEG ? 'AZUL ' : 'VERDE ');
@@ -1406,7 +1460,7 @@
             msg.innerText = dec('EM F&Eacute;RIAS') + ' \u2708\uFE0F';
             msg.style.color = '#7030A0';
         } else {
-            const trab = (currentRegion === 'BR') ? checkBR(now, currentTurma).trab : checkMnt(now, currentTurma).trab;
+            const trab = isTrabalhando(now, currentRegion, currentTurma);
             msg.innerText = trab ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
             msg.style.color = trab ? 'var(--accent)' : 'var(--primary)';
         }
@@ -1534,7 +1588,7 @@
             for (let d = 1; d <= new Date(ano, m + 1, 0).getDate(); d++) {
                 const dataTeste = new Date(ano, m, d);
                 const isoS = `${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const res = (currentRegion === 'BR') ? checkBR(dataTeste, turma).trab : checkMnt(dataTeste, turma).trab;
+                const res = isTrabalhando(dataTeste, currentRegion, turma);
                 if (res) diasTrabalho++; else diasFolga++;
                 if (feriados[isoS]) {
                     if (res) feriadosTrab++; else feriadosFolga++;
@@ -1578,6 +1632,9 @@
         if (['A','B','C','D'].includes(turma)) {
             region = 'BR';
             grupo = (turma === 'A' || turma === 'C') ? 'AC' : 'BD';
+        } else if (turma === '1x1') {
+            region = '1x1';
+            grupo = '1x1';
         } else {
             region = 'MNT';
             grupo = (turma === 'E' || turma === 'G') ? 'EG' : 'FH';
@@ -1593,6 +1650,7 @@
         gerarCalendario();
         tick();
         atualizarBannerAvisos();
+        atualizarBadgeTurma();
         preencherDadosModais();
     }
 
@@ -1876,13 +1934,14 @@
     }
 
     const novidadesData = [
-        { id: 'nov11', titulo: dec('&#128680; Ramal de Emerg&ecirc;ncia em Destaque!'), descricao: dec('O ramal de Emerg&ecirc;ncia agora aparece com destaque visual (borda vermelha, fundo pulsante). Agora est&aacute; muito mais f&aacute;cil de encontrar em caso de urg&ecirc;ncia.'), data: '2026-09-12', cartilhaId: null },
+        { id: 'nov12', titulo: dec('&#128260; Nova escala 1x1!'), descricao: dec('Agora voc&ecirc; pode escolher a escala 1x1 (1 dia de trabalho / 1 dia de folga) na barra inferior. Os dias de trabalho aparecem em laranja. Configure no seu perfil: Turma / Escala &gt; 1x1.'), data: '2026-09-12', cartilhaId: null },
+        { id: 'nov11', titulo: dec('&#128680; Ramal de Emerg&ecirc;ncia em Destaque!'), descricao: dec('O ramal de Emerg&ecirc;ncia agora aparece com destaque visual (borda vermelha, fundo pulsante).'), data: '2026-09-12', cartilhaId: null },
         { id: 'nov10', titulo: dec('&#128227; Banner de Avisos Rotativo!'), descricao: dec('Suas marca&ccedil;&otilde;es futuras agora aparecem em um banner rolando logo abaixo do seletor de meses.'), data: '2026-09-10', cartilhaId: null },
         { id: 'nov7', titulo: dec('&#128269; Nova lupa de pesquisa no rodap&eacute;'), descricao: dec('O microfone foi substitu&iacute;do por uma lupa para facilitar o acesso &agrave; pesquisa.'), data: '2026-08-23', cartilhaId: null },
         { id: 'nov5', titulo: dec('&#129675; Nova Cartilha: Preven&ccedil;&atilde;o de Inc&ecirc;ndios e Extintores'), descricao: dec('Aprenda sobre classes de inc&ecirc;ndio, m&eacute;todo PASS, cuidados em &aacute;reas farmac&ecirc;uticas e muito mais.'), data: '2026-07-05', cartilhaId: 'incendio' },
         { id: 'nov1', titulo: dec('&#128216; Nova Cartilha: Compliance'), descricao: dec('Aprenda sobre &Eacute;tica, C&oacute;digo de Conduta, Conflito de Interesses, Anticorrup&ccedil;&atilde;o, LGPD e Canal de Den&uacute;ncia.'), data: '2026-07-04', cartilhaId: 'compliance' },
         { id: 'nov2', titulo: dec('&#128216; Conhe&ccedil;a as 9 Cartilhas de Melhorias'), descricao: dec('Kaizen, 5S, PDCA, Ferramentas da Qualidade, Seguran&ccedil;a, BPF, Sustentabilidade, Compliance e Inc&ecirc;ndio.'), data: '2026-07-03', cartilhaId: null },
-        { id: 'nov3', titulo: dec('&#128276; App atualizado para vers&atilde;o 3.8'), descricao: dec('Novo sistema de Novidades, navega&ccedil;&atilde;o entre anos aprimorada e melhorias gerais.'), data: '2026-09-02', cartilhaId: null }
+        { id: 'nov3', titulo: dec('&#128276; App atualizado para vers&atilde;o 3.9'), descricao: dec('Nova escala 1x1, destaque de Emerg&ecirc;ncia e melhorias gerais.'), data: '2026-09-12', cartilhaId: null }
     ];
 
     let novidadesLidas = JSON.parse(getStorageValue('braun_novidades_lidas') || '[]');
@@ -2010,9 +2069,13 @@
         const trabalhando = isTrabalhando(dataObj, region, turma);
         const ferias = isFerias(dataObj);
         let status, cor, iconeHtml, detalhes;
-        const regiaoNome = region === 'BR' ? 'ECOFLAC' : dec('MANUTEN&Ccedil;&Atilde;O');
+        const regiaoNome = nomeRegiao(region);
         const turmaFalada = formatarTurmaParaVoz(turma);
-        detalhes = `${dec('Regi&atilde;o')}: ${regiaoNome} ${dec('&middot;')} ${dec('Turmas')} ${turmaFalada}`;
+        if (region === '1x1') {
+            detalhes = `${dec('Regi&atilde;o')}: Escala 1x1`;
+        } else {
+            detalhes = `${dec('Regi&atilde;o')}: ${regiaoNome} ${dec('&middot;')} ${dec('Turmas')} ${turmaFalada}`;
+        }
         if (ferias) { status = dec('EM F&Eacute;RIAS'); cor = 'var(--ferias)'; iconeHtml = `<span class="icone-ferias">&#9992;&#65039;</span>`; }
         else if (trabalhando) { status = 'TRABALHANDO'; cor = 'var(--accent)'; iconeHtml = `<span class="icone-trabalho">&#9881;&#65039;</span>`; }
         else { status = 'DE FOLGA'; cor = 'var(--primary)'; iconeHtml = `<span class="icone-folga">&#127754;</span>`; }
@@ -2104,10 +2167,8 @@
         const diaSemana = diaDaSemanaPorExtenso(dataObj);
         const dataStr = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
         const status = resultadoPesquisaAtual.status;
-        const turma = currentTurma;
-        const turmaFalada = formatarTurmaParaVoz(turma);
-        const regiaoNome = currentRegion === 'BR' ? 'ECOFLAC' : dec('MANUTEN&Ccedil;&Atilde;O');
-        voz.text = `${diaSemana}, ${dataStr}. ${status}. ${dec('Regi&atilde;o')} ${regiaoNome}, turmas ${turmaFalada}.`;
+        const regiaoNome = nomeRegiao(currentRegion);
+        voz.text = `${diaSemana}, ${dataStr}. ${status}. ${resultadoPesquisaAtual.detalhes}.`;
         if (window.speechSynthesis) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(voz); }
     }
 
@@ -2116,7 +2177,7 @@
         const turma = currentTurma;
         const region = currentRegion;
         const nomeTurma = getStorageValue('braun_turma_perfil') || turma;
-        let ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Braun OnLine//Escala 2026-2027//PT','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:Escala Braun - Turma ${nomeTurma}`,'X-WR-TIMEZONE:America/Sao_Paulo'];
+        let ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Braun OnLine//Escala 2026-2027//PT','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:Escala Braun - ${nomeTurma}`,'X-WR-TIMEZONE:America/Sao_Paulo'];
         for (let m = 0; m < 12; m++) {
             const diasNoMes = new Date(ano, m + 1, 0).getDate();
             for (let d = 1; d <= diasNoMes; d++) {
@@ -2132,7 +2193,7 @@
                 endDate.setDate(endDate.getDate() + 1);
                 const endStr = `${endDate.getFullYear()}${String(endDate.getMonth() + 1).padStart(2, '0')}${String(endDate.getDate()).padStart(2, '0')}`;
                 let titulo = ferias ? 'FERIAS' : 'TRABALHO';
-                let descricao = ferias ? 'Periodo de ferias programado' : `Dia de trabalho - Turma ${nomeTurma}`;
+                let descricao = ferias ? 'Periodo de ferias programado' : `Dia de trabalho - ${nomeTurma}`;
                 ics.push('BEGIN:VEVENT');
                 ics.push(`UID:${dataStr}-braun-${turma}@braunonline`);
                 ics.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`);
@@ -2148,7 +2209,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Escala_Braun_Turma_${nomeTurma}_${ano}.ics`;
+        a.download = `Escala_Braun_${nomeTurma}_${ano}.ics`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
