@@ -10,7 +10,7 @@
       }
     } catch(e) {}
   })();
-  const APP_VERSION = '2026.09.07';
+  const APP_VERSION = '2026.09.11';
   function getStorageValue(key) {
     try { return localStorage.getItem(key); } catch (e) {
       try { return sessionStorage.getItem(key); } catch (f) { return null; }
@@ -73,7 +73,7 @@
             --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
             --accent: #7030A0; --amarelo: #EBC13D; --verde: #40C7A1; --border: #E0E0E0;
             --semana-w: #00A97A; --azul-mnt: #2196F3; --ferias: #7030A0;
-            --laranja-1x1: #FF9800;
+            --laranja-1x1: #FF9800; --roxo-1x1: #7B1FA2;
         }
         body.dark-mode {
             --bg: #121212; --card: #1E1E1E; --text: #E0E0E0; --border: #333333;
@@ -295,6 +295,48 @@
             100% { transform: translateX(-100%); }
         }
 
+        /* ===== LEGENDA 1x1 ===== */
+        #legenda-1x1 {
+            display: none;
+            background: var(--card);
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin: 0;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .sticky-header-block.com-legenda #legenda-1x1 { display: flex; }
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78em;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+        }
+        .legenda-cor {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            display: inline-block;
+            flex-shrink: 0;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+        .sticky-header-block.com-legenda .mes-nav,
+        .sticky-header-block.com-legenda .mes-nav.sem-banner {
+            border-radius: 0;
+            border-bottom: none;
+        }
+        .sticky-header-block.com-legenda #banner-avisos {
+            border-radius: 0;
+        }
+
         #calendario-box { margin-top: 0; padding-top: 0; }
         .mes-container {
             perspective: 1000px;
@@ -329,6 +371,7 @@
         .VERDE    { background: var(--verde)   !important; color: #fff     !important; }
         .AZUL     { background: var(--azul-mnt)!important; color: #fff     !important; }
         .LARANJA  { background: var(--laranja-1x1) !important; color: #fff !important; }
+        .ROXO     { background: var(--roxo-1x1) !important; color: #fff !important; }
         .TRABALHO { border-color: rgba(168,0,196,0.4) !important; }
         .HAS_NOTE::after { content: ''; position: absolute; bottom: 5px; right: 5px; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; border: 1.5px solid white; }
         .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--primary); display: flex; height: 75px; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
@@ -629,6 +672,21 @@
                 <div class="banner-content" id="bannerContent"></div>
             </div>
         </div>
+        <!-- LEGENDA 1x1 -->
+        <div id="legenda-1x1" aria-label="Legenda das cores">
+            <div class="legenda-item">
+                <span class="legenda-cor" style="background: var(--laranja-1x1);"></span>
+                <span>Trab. Manh&atilde;</span>
+            </div>
+            <div class="legenda-item">
+                <span class="legenda-cor" style="background: var(--roxo-1x1);"></span>
+                <span>Trab. Noite</span>
+            </div>
+            <div class="legenda-item">
+                <span class="legenda-cor" style="background: var(--verde);"></span>
+                <span>Folga</span>
+            </div>
+        </div>
     </div>
 
     <div id="calendario-box"></div>
@@ -914,7 +972,10 @@
                     <option value="H">Turma H (Noite - Manuten&ccedil;&atilde;o)</option>
                 </optgroup>
                 <optgroup label="1x1">
-                    <option value="1x1">Escala 1x1 (1 dia trabalho / 1 dia folga)</option>
+                    <option value="1x1A">1x1 Manh&atilde; - Equipe A</option>
+                    <option value="1x1B">1x1 Manh&atilde; - Equipe B</option>
+                    <option value="1x1C">1x1 Noite - Equipe A</option>
+                    <option value="1x1D">1x1 Noite - Equipe B</option>
                 </optgroup>
             </select>
         </div>
@@ -1165,9 +1226,9 @@
             if (['A','B','C','D'].includes(savedTurma)) {
                 region = 'BR';
                 grupo = (savedTurma === 'A' || savedTurma === 'C') ? 'AC' : 'BD';
-            } else if (savedTurma === '1x1') {
+            } else if (savedTurma.startsWith('1x1')) {
                 region = '1x1';
-                grupo = '1x1';
+                grupo = savedTurma;
             } else {
                 region = 'MNT';
                 grupo = (savedTurma === 'E' || savedTurma === 'G') ? 'EG' : 'FH';
@@ -1180,7 +1241,7 @@
             const savedRegion = getStorageValue('braun_last_region') || 'BR';
             currentRegion = savedRegion;
             if (savedRegion === '1x1') {
-                currentTurma = '1x1';
+                currentTurma = getStorageValue('braun_turma_1x1') || '1x1A';
             } else {
                 currentTurma = getStorageValue(`braun_turma_${savedRegion}`) || (savedRegion === 'BR' ? 'AC' : 'EG');
             }
@@ -1203,12 +1264,23 @@
     function atualizarBadgeTurma() {
         const turmaLetra = getStorageValue('braun_turma_perfil') || 'A';
         const badgeText = document.getElementById('turmaBadgeText');
-        if (badgeText) {
-            if (turmaLetra === '1x1') {
-                badgeText.innerText = 'Escala 1x1';
-            } else {
-                badgeText.innerText = `Turma ${turmaLetra}`;
-            }
+        if (!badgeText) return;
+        if (turmaLetra.startsWith('1x1')) {
+            const turno = (turmaLetra === '1x1A' || turmaLetra === '1x1B') ? 'M' : 'N';
+            const equipe = (turmaLetra === '1x1A' || turmaLetra === '1x1C') ? 'A' : 'B';
+            badgeText.innerText = `1x1 ${turno} ${equipe}`;
+        } else {
+            badgeText.innerText = `Turma ${turmaLetra}`;
+        }
+    }
+
+    function atualizarLegenda1x1() {
+        const block = document.querySelector('.sticky-header-block');
+        if (!block) return;
+        if (currentRegion === '1x1') {
+            block.classList.add('com-legenda');
+        } else {
+            block.classList.remove('com-legenda');
         }
     }
 
@@ -1223,14 +1295,15 @@
         activeTab.classList.add('active');
         activeTab.setAttribute('aria-selected', 'true');
         if (r === '1x1') {
-            currentTurma = '1x1';
-            setStorageValue('braun_turma_1x1', '1x1');
+            currentTurma = getStorageValue('braun_turma_1x1') || '1x1A';
+            setStorageValue('braun_turma_1x1', currentTurma);
         } else {
             const savedTurma = getStorageValue(`braun_turma_${r}`);
             if (savedTurma) { currentTurma = savedTurma; }
             else { currentTurma = r === 'BR' ? 'AC' : 'EG'; }
         }
         _escalaCache.clear();
+        atualizarLegenda1x1();
         gerarCalendario();
         tick();
         scrollParaMes(mesAtualVisivel, anoAtualVisivel);
@@ -1259,20 +1332,26 @@
         return result;
     }
 
-    function check1x1(dt) {
-        const key = `1x1_${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}`;
+    function check1x1(dt, turma) {
+        const key = `1x1_${dt.getFullYear()}_${dt.getMonth()}_${dt.getDate()}_${turma}`;
         if (_escalaCache.has(key)) return _escalaCache.get(key);
         const baseDate = new Date(2026, 0, 1);
         const diff = Math.floor((dt.getTime() - baseDate.getTime()) / 86400000);
-        const trab = (((diff % 2) + 2) % 2) === 0;
-        const result = { trab };
+        const isEquipeA = (turma === '1x1A' || turma === '1x1C');
+        const par = (((diff % 2) + 2) % 2) === 0;
+        const trab = isEquipeA ? par : !par;
+        const result = { trab, isEquipeA };
         _escalaCache.set(key, result);
         return result;
     }
 
+    function isTurnoNoite1x1(turma) {
+        return (turma === '1x1C' || turma === '1x1D');
+    }
+
     function isTrabalhando(dt, region, turma) {
         if (region === 'BR') return checkBR(dt, turma).trab;
-        if (region === '1x1') return check1x1(dt).trab;
+        if (region === '1x1') return check1x1(dt, turma).trab;
         return checkMnt(dt, turma).trab;
     }
 
@@ -1297,7 +1376,10 @@
 
     function formatarTurmaParaVoz(turma) {
         if (!turma) return '';
-        if (turma === '1x1') return '1 por 1';
+        if (turma === '1x1A') return dec('1x1 manh&atilde; equipe A');
+        if (turma === '1x1B') return dec('1x1 manh&atilde; equipe B');
+        if (turma === '1x1C') return '1x1 noite equipe A';
+        if (turma === '1x1D') return '1x1 noite equipe B';
         if (turma.length !== 2) return turma;
         return turma.split('').join(' e ');
     }
@@ -1417,9 +1499,14 @@
                     cls += (r.isA ? 'AMARELO ' : 'VERDE ');
                     cls += (r.trab ? 'TRABALHO ' : 'FOLGA ');
                 } else if (currentRegion === '1x1') {
-                    const r = check1x1(at);
-                    cls += (r.trab ? 'LARANJA ' : 'VERDE ');
-                    cls += (r.trab ? 'TRABALHO ' : 'FOLGA ');
+                    const r = check1x1(at, t);
+                    const noite = isTurnoNoite1x1(t);
+                    if (r.trab) {
+                        cls += (noite ? 'ROXO ' : 'LARANJA ');
+                        cls += 'TRABALHO ';
+                    } else {
+                        cls += 'VERDE FOLGA ';
+                    }
                 } else {
                     const mnt = checkMnt(at, t);
                     cls += (mnt.isEG ? 'AZUL ' : 'VERDE ');
@@ -1461,7 +1548,12 @@
             msg.style.color = '#7030A0';
         } else {
             const trab = isTrabalhando(now, currentRegion, currentTurma);
-            msg.innerText = trab ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
+            if (currentRegion === '1x1' && trab) {
+                const noite = isTurnoNoite1x1(currentTurma);
+                msg.innerText = noite ? 'TRABALHANDO (NOITE)' : dec('TRABALHANDO (MANH&Atilde;)');
+            } else {
+                msg.innerText = trab ? translations[currentRegion].statusTrab : translations[currentRegion].statusFolga;
+            }
             msg.style.color = trab ? 'var(--accent)' : 'var(--primary)';
         }
     }
@@ -1632,9 +1724,9 @@
         if (['A','B','C','D'].includes(turma)) {
             region = 'BR';
             grupo = (turma === 'A' || turma === 'C') ? 'AC' : 'BD';
-        } else if (turma === '1x1') {
+        } else if (turma.startsWith('1x1')) {
             region = '1x1';
-            grupo = '1x1';
+            grupo = turma;
         } else {
             region = 'MNT';
             grupo = (turma === 'E' || turma === 'G') ? 'EG' : 'FH';
@@ -1647,6 +1739,7 @@
         anoAtualVisivel = currentAno;
         mesAtualVisivel = new Date().getMonth();
         _escalaCache.clear();
+        atualizarLegenda1x1();
         gerarCalendario();
         tick();
         atualizarBannerAvisos();
@@ -1934,14 +2027,18 @@
     }
 
     const novidadesData = [
-        { id: 'nov12', titulo: dec('&#128260; Nova escala 1x1!'), descricao: dec('Agora voc&ecirc; pode escolher a escala 1x1 (1 dia de trabalho / 1 dia de folga) na barra inferior. Os dias de trabalho aparecem em laranja. Configure no seu perfil: Turma / Escala &gt; 1x1.'), data: '2026-09-12', cartilhaId: null },
-        { id: 'nov11', titulo: dec('&#128680; Ramal de Emerg&ecirc;ncia em Destaque!'), descricao: dec('O ramal de Emerg&ecirc;ncia agora aparece com destaque visual (borda vermelha, fundo pulsante).'), data: '2026-09-12', cartilhaId: null },
-        { id: 'nov10', titulo: dec('&#128227; Banner de Avisos Rotativo!'), descricao: dec('Suas marca&ccedil;&otilde;es futuras agora aparecem em um banner rolando logo abaixo do seletor de meses.'), data: '2026-09-10', cartilhaId: null },
+        { id: 'nov16', titulo: dec('&#128101; &quot;Fase&quot; virou &quot;Equipe&quot;'), descricao: dec('Na escala 1x1, trocamos o termo &quot;fase A / fase B&quot; por &quot;Equipe A / Equipe B&quot;. Fica mais claro e humano para identificar o grupo de trabalho.'), data: '2026-09-14', cartilhaId: null },
+        { id: 'nov15', titulo: dec('&#127912; Legenda das cores no 1x1'), descricao: dec('Adicionamos uma legenda abaixo do seletor de meses mostrando o significado das cores: Laranja = Trabalho Manh&atilde;, Roxo = Trabalho Noite, Verde = Folga.'), data: '2026-09-14', cartilhaId: null },
+        { id: 'nov14', titulo: dec('&#127991;&#65039; P&iacute;lula do cabe&ccedil;alho abreviada'), descricao: dec('Na escala 1x1, a p&iacute;lula do cabe&ccedil;alho agora mostra abreviado: M para Manh&atilde; e N para Noite.'), data: '2026-09-14', cartilhaId: null },
+        { id: 'nov13', titulo: dec('&#127760; Escala 1x1 agora com turnos e equipes!'), descricao: dec('A escala 1x1 foi dividida em 4 varia&ccedil;&otilde;es: Manh&atilde; Equipe A, Manh&atilde; Equipe B, Noite Equipe A e Noite Equipe B.'), data: '2026-09-12', cartilhaId: null },
+        { id: 'nov12', titulo: dec('&#128260; Nova escala 1x1!'), descricao: dec('Agora voc&ecirc; pode escolher a escala 1x1 na barra inferior.'), data: '2026-09-12', cartilhaId: null },
+        { id: 'nov11', titulo: dec('&#128680; Ramal de Emerg&ecirc;ncia em Destaque!'), descricao: dec('O ramal de Emerg&ecirc;ncia agora aparece com destaque visual.'), data: '2026-09-12', cartilhaId: null },
+        { id: 'nov10', titulo: dec('&#128227; Banner de Avisos Rotativo!'), descricao: dec('Suas marca&ccedil;&otilde;es futuras agora aparecem em um banner rolando no topo.'), data: '2026-09-10', cartilhaId: null },
         { id: 'nov7', titulo: dec('&#128269; Nova lupa de pesquisa no rodap&eacute;'), descricao: dec('O microfone foi substitu&iacute;do por uma lupa para facilitar o acesso &agrave; pesquisa.'), data: '2026-08-23', cartilhaId: null },
         { id: 'nov5', titulo: dec('&#129675; Nova Cartilha: Preven&ccedil;&atilde;o de Inc&ecirc;ndios e Extintores'), descricao: dec('Aprenda sobre classes de inc&ecirc;ndio, m&eacute;todo PASS, cuidados em &aacute;reas farmac&ecirc;uticas e muito mais.'), data: '2026-07-05', cartilhaId: 'incendio' },
         { id: 'nov1', titulo: dec('&#128216; Nova Cartilha: Compliance'), descricao: dec('Aprenda sobre &Eacute;tica, C&oacute;digo de Conduta, Conflito de Interesses, Anticorrup&ccedil;&atilde;o, LGPD e Canal de Den&uacute;ncia.'), data: '2026-07-04', cartilhaId: 'compliance' },
         { id: 'nov2', titulo: dec('&#128216; Conhe&ccedil;a as 9 Cartilhas de Melhorias'), descricao: dec('Kaizen, 5S, PDCA, Ferramentas da Qualidade, Seguran&ccedil;a, BPF, Sustentabilidade, Compliance e Inc&ecirc;ndio.'), data: '2026-07-03', cartilhaId: null },
-        { id: 'nov3', titulo: dec('&#128276; App atualizado para vers&atilde;o 3.9'), descricao: dec('Nova escala 1x1, destaque de Emerg&ecirc;ncia e melhorias gerais.'), data: '2026-09-12', cartilhaId: null }
+        { id: 'nov3', titulo: dec('&#128276; App atualizado para vers&atilde;o 3.9'), descricao: dec('Novas escalas 1x1 com turnos e destaque de Emerg&ecirc;ncia.'), data: '2026-09-12', cartilhaId: null }
     ];
 
     let novidadesLidas = JSON.parse(getStorageValue('braun_novidades_lidas') || '[]');
@@ -2072,19 +2169,28 @@
         const regiaoNome = nomeRegiao(region);
         const turmaFalada = formatarTurmaParaVoz(turma);
         if (region === '1x1') {
-            detalhes = `${dec('Regi&atilde;o')}: Escala 1x1`;
+            detalhes = `${dec('Regi&atilde;o')}: Escala ${turmaFalada}`;
         } else {
             detalhes = `${dec('Regi&atilde;o')}: ${regiaoNome} ${dec('&middot;')} ${dec('Turmas')} ${turmaFalada}`;
         }
         if (ferias) { status = dec('EM F&Eacute;RIAS'); cor = 'var(--ferias)'; iconeHtml = `<span class="icone-ferias">&#9992;&#65039;</span>`; }
-        else if (trabalhando) { status = 'TRABALHANDO'; cor = 'var(--accent)'; iconeHtml = `<span class="icone-trabalho">&#9881;&#65039;</span>`; }
+        else if (trabalhando) {
+            if (region === '1x1') {
+                const noite = isTurnoNoite1x1(turma);
+                status = noite ? 'TRABALHANDO (NOITE)' : dec('TRABALHANDO (MANH&Atilde;)');
+            } else {
+                status = 'TRABALHANDO';
+            }
+            cor = region === '1x1' && isTurnoNoite1x1(turma) ? 'var(--roxo-1x1)' : 'var(--accent)';
+            iconeHtml = `<span class="icone-trabalho">&#9881;&#65039;</span>`;
+        }
         else { status = 'DE FOLGA'; cor = 'var(--primary)'; iconeHtml = `<span class="icone-folga">&#127754;</span>`; }
         const diaSemana = diaDaSemanaPorExtenso(dataObj);
         const dataStr = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
         resultadoDiv.style.color = cor;
         resultadoDiv.innerHTML = `${iconeHtml}<div><strong>${diaSemana}, ${dataStr}</strong></div><div style="font-size:1.1em;">${status}</div>`;
         detalheDiv.innerText = detalhes;
-        resultadoPesquisaAtual = { data: dataObj, status: status, detalhes: detalhes, ferias: ferias, trabalhando: trabalhando };
+        resultadoPesquisaAtual = { data: dataObj, status: dec(status), detalhes: detalhes, ferias: ferias, trabalhando: trabalhando };
         if (getStorageValue('braun_voice_response') !== 'false') lerResultado();
     }
 
@@ -2167,7 +2273,6 @@
         const diaSemana = diaDaSemanaPorExtenso(dataObj);
         const dataStr = dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
         const status = resultadoPesquisaAtual.status;
-        const regiaoNome = nomeRegiao(currentRegion);
         voz.text = `${diaSemana}, ${dataStr}. ${status}. ${resultadoPesquisaAtual.detalhes}.`;
         if (window.speechSynthesis) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(voz); }
     }
@@ -2333,6 +2438,7 @@
         }
         startClock();
         tick();
+        atualizarLegenda1x1();
         gerarCalendario();
         atualizarBadgeTurma();
         preencherDadosModais();
