@@ -1433,16 +1433,31 @@
         content.style.animation = '';
     }
 
+    // ============================================================
+    // CORREÇÃO DE MESES DUPLICADOS: token de geração global
+    // ============================================================
+    let calendarioGeracao = 0;
+
     function gerarCalendario() {
         const box = document.getElementById('calendario-box');
         box.innerHTML = '';
+
+        // Incrementa o token: invalida qualquer cadeia antiga ainda em execução
+        const minhaGeracao = ++calendarioGeracao;
+
         let currentMonth = 0;
         const totalMonths = 12;
         const ano = anoAtualVisivel;
 
         function construirProximoMes() {
+            // Se uma nova geração começou, esta cadeia deve morrer imediatamente
+            if (minhaGeracao !== calendarioGeracao) return;
+
             if (currentMonth >= totalMonths) {
-                setTimeout(() => scrollParaMes(mesAtualVisivel, anoAtualVisivel), 100);
+                setTimeout(() => {
+                    if (minhaGeracao !== calendarioGeracao) return;
+                    scrollParaMes(mesAtualVisivel, anoAtualVisivel);
+                }, 100);
                 return;
             }
 
@@ -1492,7 +1507,7 @@
                 const nt = logs[isoF];
 
                 if (colAtual === 7) { colAtual = 0; hF += `<div class="dia-label-w">${getWeekNumberCached(at)}</div>`; }
-                
+
                 let cls = 'dia ';
                 if (currentRegion === 'BR') {
                     const r = checkBR(at, t);
@@ -1515,27 +1530,36 @@
                 if (hojeStr === at.toDateString()) cls += 'hoje ';
                 if (nt) cls += 'HAS_NOTE ';
                 if (isFerias(at)) cls += 'FERIAS ';
-                if (f || nt) { 
-                    hasEv = true; 
-                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `&#128221; ${escapeHtml(nt)}` : ''}</div>`; 
+                if (f || nt) {
+                    hasEv = true;
+                    hB += `<div style="font-size:0.9em;margin-bottom:8px;"><b>${d}:</b> ${f || ''} ${nt ? `&#128221; ${escapeHtml(nt)}` : ''}</div>`;
                 }
-                
+
                 hF += `<div class="${cls.trim()}" onclick="event.stopPropagation();openCard('${isoF}')">${d}</div>`;
                 colAtual++;
             }
 
             hF += `</div></div>`;
             hB += `${!hasEv ? '<div style="opacity:0.6;font-size:0.9em;">Sem registros.</div>' : ''}</div>`;
-            container.innerHTML = `<div class="mes-inner">${hF}${hB}</div>`;
 
+            // Checagem final antes de inserir no DOM (defesa extra)
+            if (minhaGeracao !== calendarioGeracao) return;
+
+            container.innerHTML = `<div class="mes-inner">${hF}${hB}</div>`;
             box.appendChild(container);
+
             currentMonth++;
-            requestAnimationFrame(() => setTimeout(construirProximoMes, 0));
+
+            requestAnimationFrame(() => {
+                if (minhaGeracao !== calendarioGeracao) return;
+                setTimeout(construirProximoMes, 0);
+            });
         }
 
         construirProximoMes();
         atualizarTituloMes();
     }
+    // ============================================================
 
     function tick() {
         const now = new Date();
