@@ -571,31 +571,26 @@ function gerarCalendario() {
         hF += '<div class="dia-label-w">' + getWeekNumberCached(at) + '</div>';
       }
       let cls = 'dia ';
-      let pista = '';
       let statusHumano = '';
       if (currentRegion === 'BR') {
         const r = checkBR(at, t);
         cls += (r.isA ? 'AMARELO ' : 'VERDE ');
         cls += (r.trab ? 'TRABALHO ' : 'FOLGA ');
-        pista = r.trab ? 'T' : 'F';
         statusHumano = r.trab ? 'trabalhando' : 'de folga';
       } else if (currentRegion === '1x1') {
         const r = check1x1(at, t);
         const noite = isTurnoNoite1x1(t);
         if (r.trab) {
           cls += (noite ? 'ROXO ' : 'LARANJA ') + 'TRABALHO ';
-          pista = noite ? 'N' : 'M';
           statusHumano = noite ? 'trabalhando no turno da noite' : 'trabalhando no turno da manhã';
         } else {
           cls += 'VERDE FOLGA ';
-          pista = 'F';
           statusHumano = 'de folga';
         }
       } else {
         const mnt = checkMnt(at, t);
         cls += (mnt.isEG ? 'AZUL ' : 'VERDE ');
         cls += (mnt.trab ? 'TRABALHO ' : 'FOLGA ');
-        pista = mnt.trab ? 'T' : 'F';
         statusHumano = mnt.trab ? 'trabalhando' : 'de folga';
       }
       if (hojeStr === at.toDateString()) cls += 'hoje ';
@@ -608,7 +603,7 @@ function gerarCalendario() {
       }
       const ariaLabel = d + ' de ' + nomeM + ' de ' + ano + ', ' + statusHumano +
         (f ? ', feriado: ' + f : '') + (nt ? ', com anotação' : '') + '. Toque para ver detalhes.';
-      hF += '<div class="' + cls.trim() + '" data-pista="' + pista + '" data-iso="' + isoF +
+      hF += '<div class="' + cls.trim() + '" data-iso="' + isoF +
             '" role="button" tabindex="0" aria-label="' + escapeHtml(ariaLabel) + '">' + d + '</div>';
       colAtual++;
     }
@@ -1673,6 +1668,7 @@ function mostrarConquistaDesbloqueada(id) {
   }, 3500);
 }
 function openConquistas() {
+  closeHamburger();
   const lista = getConquistas();
   const container = document.getElementById('listaConquistas');
   container.innerHTML = '';
@@ -1692,7 +1688,7 @@ function openConquistas() {
 }
 
 /* ============================================================
-   24) EVENT BINDING — SUBSTITUI TODOS OS onclick/onchange INLINE
+   24) EVENT BINDING
    ============================================================ */
 const ACTION_MAP = {
   'go-greeting':            goToGreeting,

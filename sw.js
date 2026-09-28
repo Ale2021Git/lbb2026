@@ -1,4 +1,4 @@
-const CACHE_NAME = 'braun-online-v3.11-20260928';
+const CACHE_NAME = 'braun-online-v3.11-20260928d';
 const OFFLINE_URL = './offline.html';
 
 const PRECACHE = [
@@ -72,3 +72,4 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
+
