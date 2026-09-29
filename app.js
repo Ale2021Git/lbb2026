@@ -1154,9 +1154,20 @@ function iniciarNotificacoes() {
 }
 
 /* ============================================================
-   20) CARTILHAS (ricas — mantidas do v3.8)
+   20) CARTILHAS (10 — "Como usar" + 9 originais)
    ============================================================ */
 const cartilhasData = [
+    {
+        id: 'comousar',
+        icone: 'help',
+        titulo: 'Como usar o Braun OnLine',
+        conteudo: '<p>Bem-vindo ao <strong>Braun OnLine</strong>! Este guia rápido mostra tudo o que você precisa para usar o app no dia a dia.</p><div class="cartilha-destaque"><strong>📅 Ver sua escala</strong><br>Os dias coloridos mostram sua escala do mês. Toque nas abas no rodapé para alternar entre <b>ECOFLAC</b>, <b>MANUT.</b> e <b>1x1</b>. Use as setas <b>&lt;</b> e <b>&gt;</b> para mudar de mês.</div><div class="cartilha-destaque"><strong>✏️ Fazer uma anotação</strong><br>Toque em qualquer dia do calendário. Vai abrir um modal onde você pode escrever um lembrete (ex: <i>"levar EPI novo"</i>) e copiar o <b>lote sugerido</b> com um toque.</div><div class="cartilha-destaque"><strong>☰ Menu principal</strong><br>Toque nas três linhas no canto superior direito. Lá você encontra: <b>Meu Perfil</b>, <b>Ramais Úteis</b>, <b>Colaborador do Mês</b>, <b>Meus Pedidos</b>, <b>Cartilhas</b>, <b>Minhas Conquistas</b> e <b>Configurações</b>.</div><div class="cartilha-destaque"><strong>🏖️ Programar férias</strong><br>Menu ☰ → <b>Configurações</b> → <b>PROGRAMAR FÉRIAS</b>. Informe a data de início e de término. Os dias aparecerão com o ícone ✈️ no calendário.</div><div class="cartilha-destaque"><strong>💾 Fazer backup dos seus dados</strong><br>Menu ☰ → <b>Configurações</b> → <b>EXPORTAR BACKUP (JSON)</b>. Guarde o arquivo no Google Drive ou no WhatsApp. Se trocar de celular, use <b>IMPORTAR BACKUP (JSON)</b> para restaurar tudo.</div><div class="cartilha-destaque"><strong>📆 Ver a escala no Google Calendar</strong><br>Menu ☰ → <b>Configurações</b> → <b>EXPORTAR ESCALA (.ICS)</b>. Abra o arquivo no PC e importe no Google Calendar para ver seus dias de trabalho junto com seus outros compromissos.</div><div class="cartilha-exemplo"><strong>🔍 Busca por voz</strong><br>Toque em <b>BUSCAR</b> no rodapé e depois no ícone do microfone 🎤. Fale a data (ex: <i>"20 de novembro"</i>) e o app responde se você trabalha ou folga.</div><p><strong>Dica final:</strong> Sempre que aparecer um banner roxo no topo dizendo <i>"Nova versão disponível"</i>, toque em <b>Atualizar</b>. Você estará sempre na versão mais recente.</p>',
+        quiz: [
+            { pergunta: 'Como você faz backup dos seus dados?', opcoes: ['Tocando no calendário', 'Menu ☰ → Configurações → Exportar Backup (JSON)', 'Reiniciando o celular', 'Falando com o supervisor'], certa: 1 },
+            { pergunta: 'Onde você programa suas férias?', opcoes: ['Nas Cartilhas', 'No Meu Perfil', 'No menu ☰ → Configurações', 'Não dá para programar'], certa: 2 },
+            { pergunta: 'O que fazer quando aparecer um banner roxo dizendo "Nova versão disponível"?', opcoes: ['Ignorar', 'Tocar em Atualizar', 'Desinstalar o app', 'Reiniciar o celular'], certa: 1 }
+        ]
+    },
     {
         id: 'kaizen',
         icone: 'trending_up',
@@ -1258,7 +1269,7 @@ const cartilhasData = [
     }
 ];
 
-let cartilhaAtiva = 'kaizen';
+let cartilhaAtiva = 'comousar';
 let cartilhasLidas = JSON.parse(getStorageValue('braun_cartilhas_lidas') || '[]');
 
 function openCartilhas() { closeHamburger(); renderCartilhas(); focusModal('cartilhasCard'); }
@@ -1374,6 +1385,7 @@ function responderQuiz(cartId, qIndex, opIndex) {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
+  { id: 'nov18', titulo: '&#128218; Nova Cartilha: Como usar o Braun OnLine', descricao: 'Guia rápido com tudo o que você precisa saber: escala, anotações, férias, backup e mais. Confira em Cartilhas!', data: '2026-09-28', cartilhaId: 'comousar' },
   { id: 'nov17', titulo: '&#128274; Backup e Restauração', descricao: 'Exporte e importe todos os seus dados em JSON. Troque de celular sem perder nada.', data: '2026-09-27', cartilhaId: null },
   { id: 'nov16', titulo: '&#128101; "Fase" virou "Equipe"', descricao: 'Na escala 1x1, trocamos "fase A / fase B" por "Equipe A / Equipe B".', data: '2026-09-14', cartilhaId: null },
   { id: 'nov15', titulo: '&#127912; Legenda das cores no 1x1', descricao: 'Legenda mostrando o significado das cores abaixo do seletor de meses.', data: '2026-09-14', cartilhaId: null },
@@ -1641,7 +1653,7 @@ function lerResultado() {
 const conquistas = {
   primeiro_passo: { id: 'primeiro_passo', titulo: 'Primeiro Passo', descricao: 'Marcou a primeira cartilha como lida', icone: '&#127937;' },
   leitor_dedicado: { id: 'leitor_dedicado', titulo: 'Leitor Dedicado', descricao: 'Leu 5 cartilhas', icone: '&#128218;' },
-  expert_braun:    { id: 'expert_braun', titulo: 'Expert Braun', descricao: 'Completou todas as 9 cartilhas', icone: '&#127942;' },
+  expert_braun:    { id: 'expert_braun', titulo: 'Expert Braun', descricao: 'Completou todas as 10 cartilhas', icone: '&#127942;' },
   quiz_master:     { id: 'quiz_master', titulo: 'Quiz Master', descricao: 'Acertou 10 perguntas de quiz', icone: '&#127919;' }
 };
 function getConquistas() { return JSON.parse(getStorageValue('braun_conquistas') || '[]'); }

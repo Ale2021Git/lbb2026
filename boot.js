@@ -13,7 +13,7 @@
   } catch (e) {}
 
   // 2) Versão + sinal de update pendente
-  var APP_VERSION = '2026.09.28c';
+  const CACHE_NAME = 'braun-online-v3.11-20260928f';
   window.APP_VERSION = APP_VERSION;
 
   var storedVersion = null;
