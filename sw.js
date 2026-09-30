@@ -1,4 +1,4 @@
-const CACHE_NAME = 'braun-online-v3.11-20260929a';
+const CACHE_NAME = 'braun-online-v3.11-20260929c';
 const OFFLINE_URL = './offline.html';
 
 const PRECACHE = [

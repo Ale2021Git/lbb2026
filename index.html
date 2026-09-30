@@ -304,8 +304,25 @@
     #btn-flutuante-novidades .animar-sino { display: inline-block; animation: shake-bell 1.2s ease-in-out infinite; transform-origin: top center; }
     .hamburger-btn { background: none; border: none; color: white; cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px; border-radius: 8px; }
     .hamburger-btn span { display: block; width: 22px; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s, opacity 0.3s; }
-    #hamburgerDrawer { position: fixed; top: 0; left: -100%; width: 82%; max-width: 320px; height: 100%; background: var(--card); z-index: 3600; transition: left 0.38s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; box-shadow: 6px 0 30px rgba(0,0,0,0.18); }
-    #hamburgerDrawer.open { left: 0; }
+
+    /* ===== MENU HAMBÚRGUER — usa transform (funciona em qualquer tamanho de tela) ===== */
+    #hamburgerDrawer {
+        position: fixed; top: 0; left: 0;
+        width: 82%; max-width: 320px; height: 100%;
+        background: var(--card); z-index: 3600;
+        transform: translateX(-100%);
+        transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+        display: flex; flex-direction: column;
+        box-shadow: 6px 0 30px rgba(0,0,0,0.18);
+    }
+    #hamburgerDrawer.open { transform: translateX(0); }
+    /* No desktop, posiciona o menu na borda esquerda da "coluna" do app */
+    @media (min-width: 481px) {
+        #hamburgerDrawer {
+            left: calc(50% - 240px);
+        }
+    }
+
     #drawerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 3500; backdrop-filter: blur(3px); }
     #drawerOverlay.show { display: block; }
     .drawer-brand { background: var(--primary); padding: 50px 20px 20px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; position: relative; }
@@ -446,11 +463,6 @@
     .btn-config { background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer; }
     .btn-config:first-of-type { margin-top:15px; }
 
-    /* Para telas grandes (PC), mostra o app como uma "coluna" centralizada */
-    @media (min-width: 481px) {
-        #hamburgerDrawer { left: 0; max-width: 320px; }
-        #hamburgerDrawer.open { left: calc(50% - 240px); }
-    }
     @media (max-width: 480px) {
         body { box-shadow: none; }
     }
