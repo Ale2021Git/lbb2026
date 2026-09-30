@@ -8,7 +8,7 @@
    0) CONFIGURAÇÕES EDITÁVEIS
    ============================================================ */
 // ✏️ EDITE AQUI o e-mail que vai receber os pedidos
-const EMAIL_PEDIDOS = 'alelacerd@gmail.com';
+const EMAIL_PEDIDOS = 'braun.online.app@gmail.com';
 
 /* ============================================================
    1) CONSTANTES DE CONFIGURAÇÃO
