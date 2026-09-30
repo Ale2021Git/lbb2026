@@ -29,22 +29,16 @@
         --bg: #121212; --card: #1E1E1E; --text: #E0E0E0; --border: #333333;
         --primary: #00C48D; --semana-w: #00C48D;
     }
-    html, body {
-        background: var(--bg);
-    }
+    html, body { background: var(--bg); }
     body {
         font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
         margin: 0 auto; padding-bottom: 90px; transition: 0.3s; overflow-x: hidden;
         -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
         touch-action: manipulation; -webkit-touch-callout: none;
-        max-width: 480px;
-        position: relative;
-        min-height: 100vh;
+        max-width: 480px; position: relative; min-height: 100vh;
         box-shadow: 0 0 40px rgba(0,0,0,0.08);
     }
-    html.dark-mode body {
-        box-shadow: 0 0 40px rgba(0,0,0,0.6);
-    }
+    html.dark-mode body { box-shadow: 0 0 40px rgba(0,0,0,0.6); }
     @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
             animation-duration: 0.01ms !important;
@@ -78,8 +72,7 @@
         background: rgba(0, 0, 0, 0.15);
         padding: 8px 18px; border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(4px);
-        -webkit-backdrop-filter: blur(4px);
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     }
     #install-button {
         display: none; position: fixed; top: 135px; left: 50%; transform: translateX(-50%);
@@ -304,8 +297,6 @@
     #btn-flutuante-novidades .animar-sino { display: inline-block; animation: shake-bell 1.2s ease-in-out infinite; transform-origin: top center; }
     .hamburger-btn { background: none; border: none; color: white; cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px; border-radius: 8px; }
     .hamburger-btn span { display: block; width: 22px; height: 2.5px; background: white; border-radius: 3px; transition: transform 0.3s, opacity 0.3s; }
-
-    /* ===== MENU HAMBÚRGUER — usa transform (funciona em qualquer tamanho de tela) ===== */
     #hamburgerDrawer {
         position: fixed; top: 0; left: 0;
         width: 82%; max-width: 320px; height: 100%;
@@ -316,13 +307,9 @@
         box-shadow: 6px 0 30px rgba(0,0,0,0.18);
     }
     #hamburgerDrawer.open { transform: translateX(0); }
-    /* No desktop, posiciona o menu na borda esquerda da "coluna" do app */
     @media (min-width: 481px) {
-        #hamburgerDrawer {
-            left: calc(50% - 240px);
-        }
+        #hamburgerDrawer { left: calc(50% - 240px); }
     }
-
     #drawerOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 3500; backdrop-filter: blur(3px); }
     #drawerOverlay.show { display: block; }
     .drawer-brand { background: var(--primary); padding: 50px 20px 20px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; position: relative; }
@@ -462,6 +449,63 @@
     .btn-modal-salvar { background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;margin-top:15px;cursor:pointer; }
     .btn-config { background:var(--bg);color:var(--text);border:1px solid var(--border);padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer; }
     .btn-config:first-of-type { margin-top:15px; }
+
+    /* ===== MEUS PEDIDOS ===== */
+    .pedido-info {
+        background: var(--bg); border-radius: 18px; padding: 14px 15px;
+        margin-bottom: 15px; border: 1px solid var(--border);
+        font-size: 0.88em; line-height: 1.7;
+    }
+    .pedido-info strong { color: var(--primary); }
+    .pedido-instrucao {
+        font-size: 0.82em; opacity: 0.75; margin: 0 0 15px 0;
+        line-height: 1.4;
+    }
+    .pedido-secao {
+        background: var(--primary); color: white;
+        padding: 6px 14px; border-radius: 10px;
+        font-size: 0.72em; font-weight: 900; letter-spacing: 1px;
+        display: inline-block; margin: 18px 0 10px 0;
+    }
+    .pedido-item-row {
+        display: grid;
+        grid-template-columns: 1fr 58px 66px;
+        gap: 8px; align-items: center;
+        margin-bottom: 8px;
+    }
+    .pedido-item-nome {
+        font-weight: 700; font-size: 0.88em;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .pedido-item-row input {
+        padding: 10px 6px; border-radius: 12px;
+        border: 2px solid var(--border);
+        background: var(--bg); color: var(--text);
+        font-family: inherit; font-weight: 700; font-size: 0.85em;
+        text-align: center; outline: none;
+        width: 100%; box-sizing: border-box;
+        transition: border-color 0.2s;
+    }
+    .pedido-item-row input:focus { border-color: var(--primary); }
+    .pedido-item-row input::placeholder { opacity: 0.5; font-weight: 600; }
+    .pedido-item-row input.pedido-nome-livre {
+        text-align: left; padding: 10px 12px;
+    }
+    .pedido-item-row input[type="number"]::-webkit-outer-spin-button,
+    .pedido-item-row input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none; margin: 0;
+    }
+    .pedido-item-row input[type="number"] {
+        -moz-appearance: textfield; appearance: textfield;
+    }
+    .pedido-botoes { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-pedido-limpar {
+        background: var(--bg); color: var(--text);
+        border: 1.5px solid var(--border);
+        padding: 15px 20px; border-radius: 18px;
+        font-weight: 800; font-size: 0.9em;
+        cursor: pointer; flex-shrink: 0;
+    }
 
     @media (max-width: 480px) {
         body { box-shadow: none; }
@@ -619,7 +663,7 @@
         </button>
         <button class="drawer-item" data-action="open-pedidos">
             <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128230;</div>
-            <div><div class="drawer-item-label">Meus Pedidos</div><div class="drawer-item-sub">Uniformes e requisitos</div></div>
+            <div><div class="drawer-item-label">Meus Pedidos</div><div class="drawer-item-sub">Uniformes e EPIs</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Aprendizado</div>
@@ -851,21 +895,87 @@
 </div>
 
 <div id="meusPedidosCard" class="bottom-modal" role="dialog" aria-label="Meus Pedidos" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">&#128230; Meus Pedidos</h2>
-    <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
-        <div style="display:flex;flex-direction:column;gap:5px;">
-            <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="pedidoNome" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Matrícula:</span> <span id="pedidoMatricula" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Turma:</span> <span id="pedidoTurma" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="pedidoAno" style="font-weight:800;">---</span></div>
-        </div>
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:15px;">&#128230; Meus Pedidos</h2>
+
+    <div class="pedido-info">
+        <div><strong>Nome:</strong> <span id="pedidoNome">---</span></div>
+        <div><strong>Matrícula:</strong> <span id="pedidoMatricula">---</span></div>
+        <div><strong>Turma:</strong> <span id="pedidoTurma">---</span> &middot; <strong>Ano:</strong> <span id="pedidoAno">---</span></div>
     </div>
-    <div style="margin-bottom:15px;"><label for="pedidoItem" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Item desejado</label><input type="text" id="pedidoItem" placeholder="Ex: Uniforme completo, Camisa, Calça..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;"></div>
-    <div style="margin-bottom:15px;"><label for="pedidoTamanho" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Tamanho</label><input type="text" id="pedidoTamanho" placeholder="Ex: M, G, GG..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;"></div>
-    <div style="margin-bottom:15px;"><label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Observações</label><textarea id="pedidoObs" placeholder="Digite qualquer observação..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea></div>
-    <button data-action="enviar-pedido" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(0,169,122,0.3);cursor:pointer;">
-        <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">send</span> ENVIAR POR E-MAIL
-    </button>
+
+    <p class="pedido-instrucao">Preencha a <strong>quantidade</strong> e o <strong>tamanho</strong> dos itens que precisa. Só os itens com quantidade serão enviados.</p>
+
+    <div class="pedido-secao">&#128085; UNIFORMES</div>
+
+    <div class="pedido-item-row" data-item="Camisa" data-secao="uniformes">
+        <span class="pedido-item-nome">Camisa</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Camisa">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Camisa">
+    </div>
+    <div class="pedido-item-row" data-item="Calça" data-secao="uniformes">
+        <span class="pedido-item-nome">Calça</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Calça">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Calça">
+    </div>
+    <div class="pedido-item-row" data-item="Jaleco" data-secao="uniformes">
+        <span class="pedido-item-nome">Jaleco</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Jaleco">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Jaleco">
+    </div>
+    <div class="pedido-item-row" data-item="Boné / Touca" data-secao="uniformes">
+        <span class="pedido-item-nome">Boné / Touca</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Boné ou Touca">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Boné ou Touca">
+    </div>
+    <div class="pedido-item-row" data-item="Meias" data-secao="uniformes">
+        <span class="pedido-item-nome">Meias</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Meias">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Meias">
+    </div>
+
+    <div class="pedido-secao">&#129509; EQUIPAMENTOS DE PROTEÇÃO</div>
+
+    <div class="pedido-item-row" data-item="Botina" data-secao="epis">
+        <span class="pedido-item-nome">Botina</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Botina">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Botina">
+    </div>
+    <div class="pedido-item-row" data-item="Luva" data-secao="epis">
+        <span class="pedido-item-nome">Luva</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Luva">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Luva">
+    </div>
+    <div class="pedido-item-row" data-item="Óculos de Proteção" data-secao="epis">
+        <span class="pedido-item-nome">Óculos Proteção</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Óculos de Proteção">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Óculos de Proteção">
+    </div>
+    <div class="pedido-item-row" data-item="Protetor Auricular" data-secao="epis">
+        <span class="pedido-item-nome">Protetor Auricular</span>
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade de Protetor Auricular">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Protetor Auricular">
+    </div>
+
+    <div class="pedido-secao">&#128230; OUTRO ITEM</div>
+
+    <div class="pedido-item-row pedido-item-livre" data-secao="outros">
+        <input type="text" maxlength="40" placeholder="Nome do item" class="pedido-nome-livre" aria-label="Nome do outro item">
+        <input type="number" min="0" max="99" inputmode="numeric" placeholder="Qtd" class="pedido-qtd" aria-label="Quantidade do outro item">
+        <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho do outro item">
+    </div>
+
+    <div style="margin-top:20px;">
+        <label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">OBSERVAÇÕES</label>
+        <textarea id="pedidoObs" placeholder="Escreva aqui alguma observação sobre o pedido..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea>
+    </div>
+
+    <div class="pedido-botoes">
+        <button data-action="limpar-pedido" class="btn-pedido-limpar" aria-label="Limpar todos os campos">Limpar</button>
+        <button data-action="enviar-pedido" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;flex:1;font-size:1.05em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(0,169,122,0.3);cursor:pointer;">
+            <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">send</span> ENVIAR POR E-MAIL
+        </button>
+    </div>
+
     <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
 </div>
 

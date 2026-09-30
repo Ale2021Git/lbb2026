@@ -5,6 +5,12 @@
 'use strict';
 
 /* ============================================================
+   0) CONFIGURAÇÕES EDITÁVEIS
+   ============================================================ */
+// ✏️ EDITE AQUI o e-mail que vai receber os pedidos
+const EMAIL_PEDIDOS = 'alelacerd@gmail.com';
+
+/* ============================================================
    1) CONSTANTES DE CONFIGURAÇÃO
    ============================================================ */
 const ESCALA_CONFIG = Object.freeze({
@@ -730,7 +736,12 @@ function openMeuPerfil() {
   focusModal('meuPerfilCard');
 }
 function openColaboradorDoMes() { closeHamburger(); preencherDadosModais(); focusModal('colaboradorDoMesCard'); }
-function openMeusPedidos() { closeHamburger(); preencherDadosModais(); focusModal('meusPedidosCard'); }
+function openMeusPedidos() {
+  closeHamburger();
+  preencherDadosModais();
+  limparPedido();
+  focusModal('meusPedidosCard');
+}
 function openConfig() {
   document.getElementById('minimalGreetingToggle').checked = (getStorageValue('braun_minimal_greeting') === 'true');
   const voiceResponse = getStorageValue('braun_voice_response');
@@ -846,21 +857,83 @@ function abrirFormularioVotacao() {
                '&entry.2=' + encodeURIComponent(matricula) + '&entry.3=' + encodeURIComponent(ano);
   window.open(link, '_blank');
 }
+
+/* ---------- MEUS PEDIDOS ---------- */
+function limparPedido() {
+  const card = document.getElementById('meusPedidosCard');
+  if (!card) return;
+  card.querySelectorAll('.pedido-qtd, .pedido-tam, .pedido-nome-livre').forEach(function (inp) {
+    inp.value = '';
+  });
+  const obs = document.getElementById('pedidoObs');
+  if (obs) obs.value = '';
+}
 function enviarPedidoEmail() {
   const nome = getStorageValue('braun_nome_completo') || '';
   const matricula = getStorageValue('braun_matricula') || '';
   const turma = getStorageValue('braun_turma_perfil') || '';
   const ano = getStorageValue('braun_ano') || '';
-  const item = document.getElementById('pedidoItem').value.trim();
-  const tamanho = document.getElementById('pedidoTamanho').value.trim();
+  const setor = getStorageValue('braun_setor') || '';
   const obs = document.getElementById('pedidoObs').value.trim();
-  if (!item) { toast('Preencha o item desejado.', 'aviso'); return; }
-  const assunto = 'Pedido de Uniforme - ' + nome;
-  const corpo = 'Nome: ' + nome + '\nMatrícula: ' + matricula + '\nTurma: ' + turma +
-                '\nAno: ' + ano + '\n\nItem: ' + item + '\nTamanho: ' + tamanho +
-                '\nObservações: ' + obs;
-  window.location.href = 'mailto:?subject=' + encodeURIComponent(assunto) +
-                        '&body=' + encodeURIComponent(corpo);
+
+  const linhasUniformes = [];
+  const linhasEPIs = [];
+  const linhasOutros = [];
+
+  document.querySelectorAll('#meusPedidosCard .pedido-item-row').forEach(function (row) {
+    const livreInput = row.querySelector('.pedido-nome-livre');
+    const nomeItem = livreInput ? livreInput.value.trim() : (row.dataset.item || '');
+    if (!nomeItem) return;
+
+    const qtdInput = row.querySelector('.pedido-qtd');
+    const tamInput = row.querySelector('.pedido-tam');
+    const qtd = qtdInput ? qtdInput.value.trim() : '';
+    const tam = tamInput ? tamInput.value.trim() : '';
+
+    if (!qtd || qtd === '0') return;
+
+    let linha = '• ' + nomeItem + ': ' + qtd + ' un.';
+    if (tam) linha += ' — Tamanho: ' + tam;
+
+    const secao = row.dataset.secao;
+    if (secao === 'uniformes') linhasUniformes.push(linha);
+    else if (secao === 'epis') linhasEPIs.push(linha);
+    else linhasOutros.push(linha);
+  });
+
+  if (linhasUniformes.length === 0 && linhasEPIs.length === 0 && linhasOutros.length === 0) {
+    toast('Preencha a quantidade de pelo menos um item.', 'aviso');
+    return;
+  }
+
+  let corpo = '';
+  corpo += 'Nome: ' + nome + '\n';
+  corpo += 'Matrícula: ' + matricula + '\n';
+  corpo += 'Turma: ' + turma + '\n';
+  if (setor) corpo += 'Setor: ' + setor + '\n';
+  corpo += 'Ano: ' + ano + '\n\n';
+  corpo += 'ITENS SOLICITADOS\n';
+  corpo += '=================\n\n';
+
+  if (linhasUniformes.length > 0) {
+    corpo += 'UNIFORMES:\n' + linhasUniformes.join('\n') + '\n\n';
+  }
+  if (linhasEPIs.length > 0) {
+    corpo += 'EQUIPAMENTOS DE PROTEÇÃO (EPIs):\n' + linhasEPIs.join('\n') + '\n\n';
+  }
+  if (linhasOutros.length > 0) {
+    corpo += 'OUTROS ITENS:\n' + linhasOutros.join('\n') + '\n\n';
+  }
+  if (obs) {
+    corpo += 'OBSERVAÇÕES:\n' + obs + '\n';
+  }
+
+  const assunto = 'Pedido de Materiais - ' + (nome || 'Colaborador') + (matricula ? ' (' + matricula + ')' : '');
+  const mailto = 'mailto:' + EMAIL_PEDIDOS +
+                 '?subject=' + encodeURIComponent(assunto) +
+                 '&body=' + encodeURIComponent(corpo);
+
+  window.location.href = mailto;
   toast('Abrindo seu e-mail...', 'info');
 }
 
@@ -1161,7 +1234,7 @@ const cartilhasData = [
         id: 'comousar',
         icone: 'help',
         titulo: 'Como usar o Braun OnLine',
-        conteudo: '<p>Bem-vindo ao <strong>Braun OnLine</strong>! Este guia rápido mostra tudo o que você precisa para usar o app no dia a dia.</p><div class="cartilha-destaque"><strong>📅 Ver sua escala</strong><br>Os dias coloridos mostram sua escala do mês. Toque nas abas no rodapé para alternar entre <b>ECOFLAC</b>, <b>MANUT.</b> e <b>1x1</b>. Use as setas <b>&lt;</b> e <b>&gt;</b> para mudar de mês.</div><div class="cartilha-destaque"><strong>✏️ Fazer uma anotação</strong><br>Toque em qualquer dia do calendário. Vai abrir um modal onde você pode escrever um lembrete (ex: <i>"levar EPI novo"</i>) e copiar o <b>lote sugerido</b> com um toque.</div><div class="cartilha-destaque"><strong>☰ Menu principal</strong><br>Toque nas três linhas no canto superior direito. Lá você encontra: <b>Meu Perfil</b>, <b>Ramais Úteis</b>, <b>Colaborador do Mês</b>, <b>Meus Pedidos</b>, <b>Cartilhas</b>, <b>Minhas Conquistas</b> e <b>Configurações</b>.</div><div class="cartilha-destaque"><strong>🏖️ Programar férias</strong><br>Menu ☰ → <b>Configurações</b> → <b>PROGRAMAR FÉRIAS</b>. Informe a data de início e de término. Os dias aparecerão com o ícone ✈️ no calendário.</div><div class="cartilha-destaque"><strong>💾 Fazer backup dos seus dados</strong><br>Menu ☰ → <b>Configurações</b> → <b>EXPORTAR BACKUP (JSON)</b>. Guarde o arquivo no Google Drive ou no WhatsApp. Se trocar de celular, use <b>IMPORTAR BACKUP (JSON)</b> para restaurar tudo.</div><div class="cartilha-destaque"><strong>📆 Ver a escala no Google Calendar</strong><br>Menu ☰ → <b>Configurações</b> → <b>EXPORTAR ESCALA (.ICS)</b>. Abra o arquivo no PC e importe no Google Calendar para ver seus dias de trabalho junto com seus outros compromissos.</div><div class="cartilha-exemplo"><strong>🔍 Busca por voz</strong><br>Toque em <b>BUSCAR</b> no rodapé e depois no ícone do microfone 🎤. Fale a data (ex: <i>"20 de novembro"</i>) e o app responde se você trabalha ou folga.</div><p><strong>Dica final:</strong> Sempre que aparecer um banner roxo no topo dizendo <i>"Nova versão disponível"</i>, toque em <b>Atualizar</b>. Você estará sempre na versão mais recente.</p>',
+        conteudo: '<p>Bem-vindo ao <strong>Braun OnLine</strong>! Este guia rápido mostra tudo o que você precisa para usar o app no dia a dia.</p><div class="cartilha-destaque"><strong>📅 Ver sua escala</strong><br>Os dias coloridos mostram sua escala do mês. Toque nas abas no rodapé para alternar entre <b>ECOFLAC</b>, <b>MANUT.</b> e <b>1x1</b>. Use as setas <b>&lt;</b> e <b>&gt;</b> para mudar de mês.</div><div class="cartilha-destaque"><strong>✏️ Fazer uma anotação</strong><br>Toque em qualquer dia do calendário. Vai abrir um modal onde você pode escrever um lembrete (ex: <i>"levar EPI novo"</i>) e copiar o <b>lote sugerido</b> com um toque.</div><div class="cartilha-destaque"><strong>☰ Menu principal</strong><br>Toque nas três linhas no canto superior direito. Lá você encontra: <b>Meu Perfil</b>, <b>Ramais Úteis</b>, <b>Colaborador do Mês</b>, <b>Meus Pedidos</b>, <b>Cartilhas</b>, <b>Minhas Conquistas</b> e <b>Configurações</b>.</div><div class="cartilha-destaque"><strong>🏖️ Programar férias</strong><br>Menu ☰ → <b>Configurações</b> → <b>PROGRAMAR FÉRIAS</b>. Informe a data de início e de término. Os dias aparecerão com o ícone ✈️ no calendário.</div><div class="cartilha-destaque"><strong>📦 Fazer um pedido de uniforme ou EPI</strong><br>Menu ☰ → <b>Meus Pedidos</b>. Preencha a quantidade e o tamanho dos itens que precisa e toque em <b>ENVIAR POR E-MAIL</b>. O pedido vai direto para o setor responsável.</div><div class="cartilha-destaque"><strong>💾 Fazer backup dos seus dados</strong><br>Menu ☰ → <b>Configurações</b> → <b>EXPORTAR BACKUP (JSON)</b>. Guarde o arquivo no Google Drive ou no WhatsApp. Se trocar de celular, use <b>IMPORTAR BACKUP (JSON)</b> para restaurar tudo.</div><div class="cartilha-destaque"><strong>📆 Ver a escala no Google Calendar</strong><br>Menu ☰ → <b>Configurações</b> → <b>EXPORTAR ESCALA (.ICS)</b>. Abra o arquivo no PC e importe no Google Calendar para ver seus dias de trabalho junto com seus outros compromissos.</div><div class="cartilha-exemplo"><strong>🔍 Busca por voz</strong><br>Toque em <b>BUSCAR</b> no rodapé e depois no ícone do microfone 🎤. Fale a data (ex: <i>"20 de novembro"</i>) e o app responde se você trabalha ou folga.</div><p><strong>Dica final:</strong> Sempre que aparecer um banner roxo no topo dizendo <i>"Nova versão disponível"</i>, toque em <b>Atualizar</b>. Você estará sempre na versão mais recente.</p>',
         quiz: [
             { pergunta: 'Como você faz backup dos seus dados?', opcoes: ['Tocando no calendário', 'Menu ☰ → Configurações → Exportar Backup (JSON)', 'Reiniciando o celular', 'Falando com o supervisor'], certa: 1 },
             { pergunta: 'Onde você programa suas férias?', opcoes: ['Nas Cartilhas', 'No Meu Perfil', 'No menu ☰ → Configurações', 'Não dá para programar'], certa: 2 },
@@ -1385,12 +1458,11 @@ function responderQuiz(cartId, qIndex, opIndex) {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
+  { id: 'nov19', titulo: '&#128230; Meus Pedidos reformulado!', descricao: 'Agora você preenche a quantidade e o tamanho de cada item (camisa, calça, jaleco, botina...). O pedido vai direto para o setor responsável por e-mail.', data: '2026-09-30', cartilhaId: null },
   { id: 'nov18', titulo: '&#128218; Nova Cartilha: Como usar o Braun OnLine', descricao: 'Guia rápido com tudo o que você precisa saber: escala, anotações, férias, backup e mais. Confira em Cartilhas!', data: '2026-09-28', cartilhaId: 'comousar' },
   { id: 'nov17', titulo: '&#128274; Backup e Restauração', descricao: 'Exporte e importe todos os seus dados em JSON. Troque de celular sem perder nada.', data: '2026-09-27', cartilhaId: null },
   { id: 'nov16', titulo: '&#128101; "Fase" virou "Equipe"', descricao: 'Na escala 1x1, trocamos "fase A / fase B" por "Equipe A / Equipe B".', data: '2026-09-14', cartilhaId: null },
   { id: 'nov15', titulo: '&#127912; Legenda das cores no 1x1', descricao: 'Legenda mostrando o significado das cores abaixo do seletor de meses.', data: '2026-09-14', cartilhaId: null },
-  { id: 'nov14', titulo: '&#127991;&#65039; Pílula do cabeçalho abreviada', descricao: 'Na escala 1x1, a pílula mostra M para Manhã e N para Noite.', data: '2026-09-14', cartilhaId: null },
-  { id: 'nov13', titulo: '&#127760; Escala 1x1 com turnos e equipes!', descricao: 'A escala 1x1 foi dividida em 4 variações: Manhã A, Manhã B, Noite A e Noite B.', data: '2026-09-12', cartilhaId: null },
   { id: 'nov5', titulo: '&#129675; Nova Cartilha: Prevenção de Incêndios', descricao: 'Aprenda sobre classes de incêndio, método PASS e cuidados em áreas farmacêuticas.', data: '2026-07-05', cartilhaId: 'incendio' },
   { id: 'nov1', titulo: '&#128216; Nova Cartilha: Compliance', descricao: 'Aprenda sobre Ética, Código de Conduta, Anticorrupção, LGPD e Canal de Denúncia.', data: '2026-07-04', cartilhaId: 'compliance' }
 ];
@@ -1737,6 +1809,7 @@ const ACTION_MAP = {
   'save-perfil-fechar':     function () { salvarDadosPerfil(); closeAllModals(); },
   'votar':                  abrirFormularioVotacao,
   'enviar-pedido':          enviarPedidoEmail,
+  'limpar-pedido':          limparPedido,
   'mic':                    iniciarReconhecimentoVoz,
   'pesquisar':              pesquisarData,
   'toggle-voz':             toggleLerResultado,
