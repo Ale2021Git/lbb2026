@@ -591,6 +591,7 @@
         <div class="status-panel" aria-live="polite">
             <div id="big-clock" class="clock">00:00:00</div>
             <div id="status-msg" class="status-msg">---</div>
+            <div id="dias-ferias" style="display:none;margin-top:8px;font-size:0.82em;font-weight:800;color:var(--ferias);padding:6px 14px;background:rgba(112,48,160,0.1);border-radius:12px;align-items:center;justify-content:center;gap:4px;"></div>
         </div>
         <div class="mes-nav sem-banner" id="mesNav">
             <button class="mes-nav-btn" data-action="mes-anterior" aria-label="Mês anterior">
@@ -759,10 +760,6 @@
         <span class="config-label">Resposta por voz<br><small style="font-weight:400;opacity:0.7;">Ler resultado automaticamente.</small></span>
         <label class="switch"><input type="checkbox" id="voiceResponseToggle" aria-label="Resposta por voz" checked><span class="slider" aria-hidden="true"></span></label>
     </div>
-    <div class="config-item">
-        <span class="config-label">Feedback háptico<br><small style="font-weight:400;opacity:0.7;">Vibração leve em ações.</small></span>
-        <label class="switch"><input type="checkbox" id="hapticToggle" aria-label="Feedback háptico" checked><span class="slider" aria-hidden="true"></span></label>
-    </div>
     <button data-action="open-ferias" class="btn-config"><span class="material-symbols-outlined" aria-hidden="true" style="animation:plane-fly 2s infinite ease-in-out;color:#7030A0;">flight</span> PROGRAMAR FÉRIAS</button>
     <button data-action="open-stats" class="btn-config"><span class="material-symbols-outlined" aria-hidden="true">analytics</span> ESTATÍSTICAS DA ESCALA</button>
     <button data-action="export-ics" class="btn-config"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span> EXPORTAR ESCALA (.ICS)</button>
@@ -773,13 +770,35 @@
 </div>
 
 <div id="feriasCard" class="bottom-modal" role="dialog" aria-label="Programar férias" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Programar Férias</h2>
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏖️ Programar Férias</h2>
     <div style="display:flex;flex-direction:column;gap:15px;">
-        <div><label for="feriasInicio" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE INÍCIO</label><input type="date" id="feriasInicio" class="input-date" style="width:100%;box-sizing:border-box;"></div>
-        <div><label for="feriasFim" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE TÉRMINO</label><input type="date" id="feriasFim" class="input-date" style="width:100%;box-sizing:border-box;"></div>
+        <div>
+            <label for="feriasInicio" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE INÍCIO</label>
+            <input type="date" id="feriasInicio" class="input-date" style="width:100%;box-sizing:border-box;">
+        </div>
+        <div>
+            <label for="feriasFim" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE TÉRMINO</label>
+            <input type="date" id="feriasFim" class="input-date" style="width:100%;box-sizing:border-box;">
+        </div>
         <button data-action="save-ferias" class="btn-modal-salvar">SALVAR PERÍODO</button>
         <button data-action="confirm-clear-ferias" style="background:#ffefef;color:#ff6b6b;border:1px solid #ff6b6b;padding:12px;border-radius:18px;font-weight:800;width:100%;cursor:pointer;">LIMPAR FÉRIAS</button>
     </div>
+
+    <div style="margin-top:25px;padding-top:20px;border-top:2px solid var(--border);">
+        <div style="font-weight:900;color:var(--primary);font-size:1.05em;margin-bottom:6px;">💡 Qual a melhor data?</div>
+        <p style="font-size:0.82em;opacity:0.75;margin:0 0 14px 0;line-height:1.5;">
+            Escolha o mês e quantos dias você tem. O app mostra as datas que rendem <strong>mais dias em casa</strong> respeitando sua escala.
+        </p>
+        <div style="margin-bottom:10px;">
+            <select id="feriasMes" style="width:100%;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-family:inherit;font-size:0.95em;"></select>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:14px;align-items:stretch;">
+            <input type="number" id="feriasDuracao" min="5" max="60" value="30" style="flex:1;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-family:inherit;text-align:center;font-size:1em;">
+            <button data-action="sugerir-ferias" style="background:var(--primary);color:white;border:none;padding:0 22px;border-radius:18px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:0.9em;">Sugerir</button>
+        </div>
+        <div id="sugestoesFerias"></div>
+    </div>
+
     <button data-action="close-modals" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:22px;font-weight:800;width:100%;margin-top:20px;cursor:pointer;">VOLTAR</button>
 </div>
 
