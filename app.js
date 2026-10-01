@@ -1019,7 +1019,6 @@ function responderQuiz(cid, qi, oi) {
 /* NOVIDADES */
 const novidadesData = [
   { id:'nov22', titulo:'🏖️ Sugestão inteligente de férias!', descricao:'Agora o app te ajuda a escolher a MELHOR data para suas férias. Você escolhe o mês e a quantidade de dias, e ele mostra as datas que rendem mais dias em casa respeitando sua escala. Acesse: Configurações → Programar Férias.', data:'2026-10-01', cartilhaId:'comousar' },
-  { id:'nov21', titulo:'📱 Melhorias na vibração', descricao:'O feedback háptico foi ajustado para funcionar corretamente no Android.', data:'2026-10-01', cartilhaId:null },
   { id:'nov20', titulo:'🌞 Saudação Minimalista funcionando', descricao:'Agora o toggle "Saudação Minimalista" realmente funciona. Mostra apenas "Bom dia / Boa tarde / Boa noite".', data:'2026-10-01', cartilhaId:null },
   { id:'nov19', titulo:'📦 Meus Pedidos reformulado!', descricao:'Agora você preenche a quantidade e o tamanho de cada item. O pedido vai direto por e-mail.', data:'2026-09-30', cartilhaId:null },
   { id:'nov18', titulo:'📘 Nova Cartilha: Como usar o Braun OnLine', descricao:'Guia rápido com tudo o que você precisa saber.', data:'2026-09-28', cartilhaId:'comousar' },
