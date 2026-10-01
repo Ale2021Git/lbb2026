@@ -363,6 +363,19 @@ function tick() {
   if (bigClock) bigClock.innerText = now.toLocaleTimeString('pt-BR');
   const msg = document.getElementById('status-msg');
   if (!msg) return;
+
+  // ✅ Saudação Minimalista: mostra apenas o período do dia
+  if (getStorageValue('braun_minimal_greeting') === 'true') {
+    const h = now.getHours();
+    let saudacao;
+    if (h >= 5 && h < 12) saudacao = 'BOM DIA';
+    else if (h >= 12 && h < 18) saudacao = 'BOA TARDE';
+    else saudacao = 'BOA NOITE';
+    msg.innerText = saudacao;
+    msg.style.color = 'var(--primary)';
+    return;
+  }
+
   if (isFerias(now)) {
     msg.innerText = 'EM FÉRIAS \u2708\uFE0F';
     msg.style.color = '#7030A0';
@@ -966,7 +979,9 @@ function toggleDarkMode() {
   setStorageValue('braun_dark_mode', document.documentElement.classList.contains('dark-mode'));
 }
 function toggleMinimalGreeting() {
-  setStorageValue('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked);
+  const checked = document.getElementById('minimalGreetingToggle').checked;
+  setStorageValue('braun_minimal_greeting', checked ? 'true' : 'false');
+  tick(); // atualiza imediatamente o texto do status
 }
 function toggleVoiceResponse() {
   const checked = document.getElementById('voiceResponseToggle').checked;
@@ -1458,11 +1473,11 @@ function responderQuiz(cartId, qIndex, opIndex) {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
+  { id: 'nov20', titulo: '&#127774; Saudação Minimalista funcionando', descricao: 'Agora o toggle "Saudação Minimalista" nas Configurações realmente funciona. Ativado, ele mostra apenas "Bom dia / Boa tarde / Boa noite" em vez do status de trabalho.', data: '2026-10-01', cartilhaId: null },
   { id: 'nov19', titulo: '&#128230; Meus Pedidos reformulado!', descricao: 'Agora você preenche a quantidade e o tamanho de cada item (camisa, calça, jaleco, botina...). O pedido vai direto para o setor responsável por e-mail.', data: '2026-09-30', cartilhaId: null },
   { id: 'nov18', titulo: '&#128218; Nova Cartilha: Como usar o Braun OnLine', descricao: 'Guia rápido com tudo o que você precisa saber: escala, anotações, férias, backup e mais. Confira em Cartilhas!', data: '2026-09-28', cartilhaId: 'comousar' },
   { id: 'nov17', titulo: '&#128274; Backup e Restauração', descricao: 'Exporte e importe todos os seus dados em JSON. Troque de celular sem perder nada.', data: '2026-09-27', cartilhaId: null },
   { id: 'nov16', titulo: '&#128101; "Fase" virou "Equipe"', descricao: 'Na escala 1x1, trocamos "fase A / fase B" por "Equipe A / Equipe B".', data: '2026-09-14', cartilhaId: null },
-  { id: 'nov15', titulo: '&#127912; Legenda das cores no 1x1', descricao: 'Legenda mostrando o significado das cores abaixo do seletor de meses.', data: '2026-09-14', cartilhaId: null },
   { id: 'nov5', titulo: '&#129675; Nova Cartilha: Prevenção de Incêndios', descricao: 'Aprenda sobre classes de incêndio, método PASS e cuidados em áreas farmacêuticas.', data: '2026-07-05', cartilhaId: 'incendio' },
   { id: 'nov1', titulo: '&#128216; Nova Cartilha: Compliance', descricao: 'Aprenda sobre Ética, Código de Conduta, Anticorrupção, LGPD e Canal de Denúncia.', data: '2026-07-04', cartilhaId: 'compliance' }
 ];
