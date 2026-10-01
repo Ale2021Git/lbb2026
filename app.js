@@ -7,7 +7,6 @@
 /* ============================================================
    0) CONFIGURAÇÕES EDITÁVEIS
    ============================================================ */
-// ✏️ EDITE AQUI o e-mail que vai receber os pedidos
 const EMAIL_PEDIDOS = 'braun.online.app@gmail.com';
 
 /* ============================================================
@@ -64,10 +63,12 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+// ✅ Haptic — chamado SEMPRE no início do handler de clique
 function haptic(ms) {
-  ms = ms || 10;
+  ms = ms || 15;
   if (getStorageValue('braun_haptic') === 'false') return;
-  if (navigator.vibrate) { try { navigator.vibrate(ms); } catch (e) {} }
+  if (!navigator.vibrate) return;
+  try { navigator.vibrate(ms); } catch (e) {}
 }
 
 /* ============================================================
@@ -364,7 +365,6 @@ function tick() {
   const msg = document.getElementById('status-msg');
   if (!msg) return;
 
-  // ✅ Saudação Minimalista: mostra apenas o período do dia
   if (getStorageValue('braun_minimal_greeting') === 'true') {
     const h = now.getHours();
     let saudacao;
@@ -401,6 +401,7 @@ window.addEventListener('beforeinstallprompt', function (e) {
   if (btn) btn.style.display = 'flex';
 });
 function installPWA() {
+  haptic();
   if (deferredPrompt) {
     deferredPrompt.prompt();
     deferredPrompt = null;
@@ -417,6 +418,7 @@ function dispensarAtualizacao() {
   if (b) b.classList.remove('show');
 }
 function aplicarAtualizacao() {
+  haptic();
   if (navigator.serviceWorker) {
     navigator.serviceWorker.getRegistration().then(function (reg) {
       if (reg && reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
@@ -460,7 +462,7 @@ function atualizarLegenda1x1() {
   else block.classList.remove('com-legenda');
 }
 function setRegion(r) {
-  haptic(8);
+  haptic();
   currentRegion = r;
   setStorageValue('braun_last_region', r);
   document.querySelectorAll('.tab').forEach(function (t) {
@@ -648,7 +650,7 @@ function bindCalendarioDelegation() {
   box.dataset.bound = '1';
 
   function handleDia(el) {
-    haptic(8);
+    haptic(); // ✅ haptic no início
     if (el.dataset.iso) openCard(el.dataset.iso);
   }
   box.addEventListener('click', function (e) {
@@ -656,6 +658,7 @@ function bindCalendarioDelegation() {
     if (dia) { e.stopPropagation(); handleDia(dia); return; }
     const face = e.target.closest('.mes-face');
     if (face && face.parentElement) {
+      haptic();
       face.parentElement.classList.toggle('flipped');
     }
   });
@@ -689,7 +692,7 @@ function openCard(iso) {
   focusModal('infoCard');
 }
 function copyLote() {
-  haptic(10);
+  haptic();
   const disp = document.getElementById('lote-display');
   const lote = disp.innerText;
   const orig = lote;
@@ -710,6 +713,7 @@ function copyLote() {
   setTimeout(function () { disp.innerText = orig; }, 1000);
 }
 function saveNota() {
+  haptic();
   const log = document.getElementById('noteInput').value;
   const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
   if (log.trim() === '') { delete logs[dataAtiva]; }
@@ -721,6 +725,7 @@ function saveNota() {
   toast('Anotação salva.', 'sucesso');
 }
 function openHamburger() {
+  haptic();
   document.getElementById('hamburgerDrawer').classList.add('open');
   document.getElementById('drawerOverlay').classList.add('show');
   const menuBtn = document.getElementById('menuButton');
@@ -862,7 +867,7 @@ function preencherDadosModais() {
   document.getElementById('pedidoAno').innerText = ano;
 }
 function abrirFormularioVotacao() {
-  haptic(10);
+  haptic();
   const nome = getStorageValue('braun_nome_completo') || 'Não informado';
   const matricula = getStorageValue('braun_matricula') || 'Não informado';
   const ano = getStorageValue('braun_ano') || '2026';
@@ -882,6 +887,7 @@ function limparPedido() {
   if (obs) obs.value = '';
 }
 function enviarPedidoEmail() {
+  haptic();
   const nome = getStorageValue('braun_nome_completo') || '';
   const matricula = getStorageValue('braun_matricula') || '';
   const turma = getStorageValue('braun_turma_perfil') || '';
@@ -954,6 +960,7 @@ function enviarPedidoEmail() {
    17) FÉRIAS / DARK MODE / NAVEGAÇÃO DE MÊS
    ============================================================ */
 function saveFerias() {
+  haptic();
   const ini = document.getElementById('feriasInicio').value;
   const fim = document.getElementById('feriasFim').value;
   if (!ini || !fim) { toast('Preencha as duas datas.', 'aviso'); return; }
@@ -965,6 +972,7 @@ function saveFerias() {
   toast('Férias programadas.', 'sucesso');
 }
 function confirmarClearFerias() {
+  haptic();
   toastConfirm('Deseja limpar o período de férias?', function (ok) {
     if (!ok) return;
     removeStorageValue('braun_ferias_inicio');
@@ -975,21 +983,25 @@ function confirmarClearFerias() {
   });
 }
 function toggleDarkMode() {
+  haptic();
   document.documentElement.classList.toggle('dark-mode');
   setStorageValue('braun_dark_mode', document.documentElement.classList.contains('dark-mode'));
 }
 function toggleMinimalGreeting() {
   const checked = document.getElementById('minimalGreetingToggle').checked;
   setStorageValue('braun_minimal_greeting', checked ? 'true' : 'false');
-  tick(); // atualiza imediatamente o texto do status
+  haptic();
+  tick();
 }
 function toggleVoiceResponse() {
   const checked = document.getElementById('voiceResponseToggle').checked;
   setStorageValue('braun_voice_response', checked ? 'true' : 'false');
+  haptic();
 }
 function toggleHaptic() {
-  setStorageValue('braun_haptic', document.getElementById('hapticToggle').checked ? 'true' : 'false');
-  if (document.getElementById('hapticToggle').checked) haptic(20);
+  const checked = document.getElementById('hapticToggle').checked;
+  setStorageValue('braun_haptic', checked ? 'true' : 'false');
+  if (checked && navigator.vibrate) { try { navigator.vibrate(30); } catch (e) {} }
 }
 function atualizarTituloMes() {
   const dt = new Date(anoAtualVisivel, mesAtualVisivel, 1);
@@ -998,7 +1010,7 @@ function atualizarTituloMes() {
   if (el) el.innerText = nome.charAt(0).toUpperCase() + nome.slice(1);
 }
 function mudarMes(direcao) {
-  haptic(6);
+  haptic();
   mesAtualVisivel += direcao;
   if (mesAtualVisivel > 11) { mesAtualVisivel = 0; anoAtualVisivel++; }
   else if (mesAtualVisivel < 0) { mesAtualVisivel = 11; anoAtualVisivel--; }
@@ -1016,7 +1028,7 @@ function mudarMes(direcao) {
   atualizarTituloMes();
 }
 function irParaHoje() {
-  haptic(10);
+  haptic();
   const hoje = new Date();
   mesAtualVisivel = hoje.getMonth();
   anoAtualVisivel = hoje.getFullYear();
@@ -1084,7 +1096,7 @@ function scrollToToday() {
   atualizarTituloMes();
 }
 function goToGreeting() {
-  haptic(15);
+  haptic(20);
   const welcome = document.getElementById('welcomeScreen');
   welcome.classList.add('hide');
   setTimeout(function () {
@@ -1098,6 +1110,7 @@ function goToGreeting() {
    18) BACKUP / RESTORE
    ============================================================ */
 function exportarBackup() {
+  haptic();
   try {
     const data = {
       schema: SCHEMA_VERSION,
@@ -1156,9 +1169,10 @@ function handleBackupFile(ev) {
 }
 
 /* ============================================================
-   19) EXPORTAR ICS / NOTIFICAÇÕES
+   19) EXPORTAR ICS
    ============================================================ */
 function exportarEscalaICS() {
+  haptic();
   const ano = parseInt(currentAno);
   const turma = currentTurma;
   const region = currentRegion;
@@ -1202,47 +1216,9 @@ function exportarEscalaICS() {
   URL.revokeObjectURL(url);
   toast('Arquivo .ics gerado! Abra no seu app de calendário.', 'sucesso', 4500);
 }
-function solicitarPermissaoNotificacao() {
-  if (!('Notification' in window)) { toast('Navegador sem suporte a notificações.', 'erro'); return Promise.resolve(false); }
-  if (Notification.permission === 'granted') return Promise.resolve(true);
-  if (Notification.permission !== 'denied') {
-    return Notification.requestPermission().then(function (p) { return p === 'granted'; });
-  }
-  return Promise.resolve(false);
-}
-function mostrarNotificacaoLocal(titulo, corpo) {
-  if (Notification.permission === 'granted') {
-    new Notification(titulo, { body: corpo, icon: './maskable_icon_x192.png', badge: './maskable_icon_x192.png', tag: 'braun-lembrete', renotify: true });
-  }
-}
-function agendarLembreteTurno() {
-  const amanha = new Date();
-  amanha.setDate(amanha.getDate() + 1);
-  amanha.setHours(0, 0, 0, 0);
-  const trabalhando = isTrabalhando(amanha, currentRegion, currentTurma);
-  const ferias = isFerias(amanha);
-  if (ferias) mostrarNotificacaoLocal('Férias amanhã', 'Aproveite seu descanso!');
-  else if (trabalhando) mostrarNotificacaoLocal('Trabalho amanhã', 'Você está escalado para trabalhar amanhã.');
-  else mostrarNotificacaoLocal('Folga amanhã', 'Aproveite seu dia de folga!');
-}
-function iniciarNotificacoes() {
-  solicitarPermissaoNotificacao().then(function (permitido) {
-    if (permitido) {
-      const ultimaVerificacao = getStorageValue('braun_ultima_notificacao');
-      const hoje = new Date().toDateString();
-      if (ultimaVerificacao !== hoje) {
-        agendarLembreteTurno();
-        setStorageValue('braun_ultima_notificacao', hoje);
-      }
-      toast('Lembretes ativados com sucesso!', 'sucesso');
-    } else {
-      toast('Permissão negada.', 'erro');
-    }
-  });
-}
 
 /* ============================================================
-   20) CARTILHAS (10 — "Como usar" + 9 originais)
+   20) CARTILHAS
    ============================================================ */
 const cartilhasData = [
     {
@@ -1422,7 +1398,7 @@ function renderCartilhas() {
   atualizarProgresso();
 }
 function toggleCartilhaLida(id) {
-  haptic(10);
+  haptic();
   const index = cartilhasLidas.indexOf(id);
   if (index > -1) cartilhasLidas.splice(index, 1);
   else {
@@ -1450,7 +1426,7 @@ function responderQuiz(cartId, qIndex, opIndex) {
   const opcoesDiv = document.getElementById('quiz-' + cartId + '-' + qIndex);
   const feedback = document.getElementById('feedback-' + cartId + '-' + qIndex);
   if (opcoesDiv.querySelector('.desabilitada')) return;
-  haptic(8);
+  haptic();
   opcoesDiv.querySelectorAll('.quiz-opcao').forEach(function (el) { el.classList.add('desabilitada'); });
   const opEls = opcoesDiv.querySelectorAll('.quiz-opcao');
   opEls.forEach(function (el, i) {
@@ -1473,9 +1449,10 @@ function responderQuiz(cartId, qIndex, opIndex) {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
-  { id: 'nov20', titulo: '&#127774; Saudação Minimalista funcionando', descricao: 'Agora o toggle "Saudação Minimalista" nas Configurações realmente funciona. Ativado, ele mostra apenas "Bom dia / Boa tarde / Boa noite" em vez do status de trabalho.', data: '2026-10-01', cartilhaId: null },
-  { id: 'nov19', titulo: '&#128230; Meus Pedidos reformulado!', descricao: 'Agora você preenche a quantidade e o tamanho de cada item (camisa, calça, jaleco, botina...). O pedido vai direto para o setor responsável por e-mail.', data: '2026-09-30', cartilhaId: null },
-  { id: 'nov18', titulo: '&#128218; Nova Cartilha: Como usar o Braun OnLine', descricao: 'Guia rápido com tudo o que você precisa saber: escala, anotações, férias, backup e mais. Confira em Cartilhas!', data: '2026-09-28', cartilhaId: 'comousar' },
+  { id: 'nov21', titulo: '&#128241; Melhorias na vibração', descricao: 'O feedback háptico foi ajustado para funcionar corretamente no Android.', data: '2026-10-01', cartilhaId: null },
+  { id: 'nov20', titulo: '&#127774; Saudação Minimalista funcionando', descricao: 'Agora o toggle "Saudação Minimalista" realmente funciona. Mostra apenas "Bom dia / Boa tarde / Boa noite".', data: '2026-10-01', cartilhaId: null },
+  { id: 'nov19', titulo: '&#128230; Meus Pedidos reformulado!', descricao: 'Agora você preenche a quantidade e o tamanho de cada item. O pedido vai direto para o setor responsável por e-mail.', data: '2026-09-30', cartilhaId: null },
+  { id: 'nov18', titulo: '&#128218; Nova Cartilha: Como usar o Braun OnLine', descricao: 'Guia rápido com tudo o que você precisa saber: escala, anotações, férias, backup e mais.', data: '2026-09-28', cartilhaId: 'comousar' },
   { id: 'nov17', titulo: '&#128274; Backup e Restauração', descricao: 'Exporte e importe todos os seus dados em JSON. Troque de celular sem perder nada.', data: '2026-09-27', cartilhaId: null },
   { id: 'nov16', titulo: '&#128101; "Fase" virou "Equipe"', descricao: 'Na escala 1x1, trocamos "fase A / fase B" por "Equipe A / Equipe B".', data: '2026-09-14', cartilhaId: null },
   { id: 'nov5', titulo: '&#129675; Nova Cartilha: Prevenção de Incêndios', descricao: 'Aprenda sobre classes de incêndio, método PASS e cuidados em áreas farmacêuticas.', data: '2026-07-05', cartilhaId: 'incendio' },
@@ -1588,6 +1565,7 @@ function atualizarBotaoOuvir() {
   }
 }
 function toggleLerResultado() {
+  haptic();
   if (window.speechSynthesis && window.speechSynthesis.speaking) pararVoz();
   else lerResultado();
 }
@@ -1682,6 +1660,7 @@ function pesquisarData() {
   if (getStorageValue('braun_voice_response') !== 'false') lerResultado();
 }
 function iniciarReconhecimentoVoz() {
+  haptic();
   const campoTexto = document.getElementById('pesquisaDataTexto');
   if (!campoTexto) return;
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -1755,7 +1734,7 @@ function salvarConquista(id) {
 function mostrarConquistaDesbloqueada(id) {
   const c = conquistas[id];
   if (!c) return;
-  haptic(20);
+  haptic(25);
   const t = document.createElement('div');
   t.style.cssText = 'position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7030A0,#00A97A);color:white;padding:16px 24px;border-radius:20px;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:3000;display:flex;align-items:center;gap:12px;animation:bounceIn 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);max-width:90%;';
   t.innerHTML = '<span style="font-size:2em;">' + c.icone + '</span><div><div style="font-size:0.75em;opacity:0.85;">CONQUISTA DESBLOQUEADA</div><div style="font-size:1.1em;">' + c.titulo + '</div></div>';
@@ -1818,7 +1797,6 @@ const ACTION_MAP = {
   'export-ics':             exportarEscalaICS,
   'export-backup':          exportarBackup,
   'import-backup':          importarBackup,
-  'iniciar-notif':          iniciarNotificacoes,
   'save-ferias':            saveFerias,
   'confirm-clear-ferias':   confirmarClearFerias,
   'save-perfil-fechar':     function () { salvarDadosPerfil(); closeAllModals(); },
@@ -1846,9 +1824,9 @@ function bindAll() {
 
   const turmaBadge = document.getElementById('turmaBadge');
   if (turmaBadge) {
-    turmaBadge.addEventListener('click', openMeuPerfil);
+    turmaBadge.addEventListener('click', function () { haptic(); openMeuPerfil(); });
     turmaBadge.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMeuPerfil(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); haptic(); openMeuPerfil(); }
     });
   }
 
