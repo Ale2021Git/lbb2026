@@ -3,8 +3,14 @@
  */
 'use strict';
 
+/* ============================================================
+   0) CONFIGURAÇÕES EDITÁVEIS
+   ============================================================ */
 const EMAIL_PEDIDOS = 'braun.online.app@gmail.com';
 
+/* ============================================================
+   1) CONSTANTES DE CONFIGURAÇÃO
+   ============================================================ */
 const ESCALA_CONFIG = Object.freeze({
   BR:    { baseDate: new Date(2026, 0, 18), cicloDias: 4, metadeCiclo: 2 },
   MNT:   { baseDate: new Date(2026, 2, 6),  cicloDias: 4, metadeCiclo: 2 },
@@ -22,6 +28,9 @@ const BACKUP_KEYS = [
   'braun_novidades_lidas','logs_v26'
 ];
 
+/* ============================================================
+   2) STORAGE HELPERS
+   ============================================================ */
 function getStorageValue(key) {
   try { return localStorage.getItem(key); } catch (e) {
     try { return sessionStorage.getItem(key); } catch (f) { return null; }
@@ -38,6 +47,9 @@ function removeStorageValue(key) {
   }
 }
 
+/* ============================================================
+   3) UTILITÁRIOS
+   ============================================================ */
 function dec(str) {
   if (!str) return '';
   var txt = document.createElement('textarea');
@@ -50,9 +62,11 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
-function haptic(ms) { /* desativado */ }
+function haptic(ms) { /* no-op — API desativada */ }
 
-/* TOAST SYSTEM */
+/* ============================================================
+   4) TOAST SYSTEM
+   ============================================================ */
 function toast(mensagem, tipo, duracaoMs) {
   tipo = tipo || 'info';
   duracaoMs = duracaoMs || 3200;
@@ -63,7 +77,10 @@ function toast(mensagem, tipo, duracaoMs) {
   const icones = { sucesso: 'check_circle', erro: 'error', info: 'info', aviso: 'warning' };
   el.innerHTML = '<span class="material-symbols-outlined">' + (icones[tipo] || 'info') + '</span><div class="toast-msg">' + escapeHtml(mensagem) + '</div>';
   container.appendChild(el);
-  setTimeout(function () { el.classList.add('saindo'); setTimeout(function () { el.remove(); }, 320); }, duracaoMs);
+  setTimeout(function () {
+    el.classList.add('saindo');
+    setTimeout(function () { el.remove(); }, 320);
+  }, duracaoMs);
 }
 function toastConfirm(mensagem, onConfirm) {
   const container = document.getElementById('toast-container');
@@ -77,13 +94,17 @@ function toastConfirm(mensagem, onConfirm) {
   setTimeout(function () { if (el.parentNode) el.remove(); }, 8000);
 }
 
-/* LRU CACHE */
+/* ============================================================
+   5) LRU CACHE
+   ============================================================ */
 function LRUCache(max) { this.max = max || 800; this.map = new Map(); }
 LRUCache.prototype.get = function (k) { if (!this.map.has(k)) return undefined; var v = this.map.get(k); this.map.delete(k); this.map.set(k, v); return v; };
 LRUCache.prototype.set = function (k, v) { if (this.map.has(k)) this.map.delete(k); this.map.set(k, v); if (this.map.size > this.max) { var f = this.map.keys().next().value; this.map.delete(f); } };
 LRUCache.prototype.clear = function () { this.map.clear(); };
 
-/* MODAL FOCUS TRAP */
+/* ============================================================
+   6) MODAL FOCUS TRAP
+   ============================================================ */
 let activeModalElement = null;
 let lastFocusedElement = null;
 const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -127,7 +148,9 @@ function closeAllModals() {
   if (lastFocusedElement && lastFocusedElement.focus) { lastFocusedElement.focus(); lastFocusedElement = null; }
 }
 
-/* CACHES E FERIADOS */
+/* ============================================================
+   7) CACHES E FERIADOS
+   ============================================================ */
 let cachedFerias = null;
 function getFeriasRange() {
   if (cachedFerias) return cachedFerias;
@@ -183,7 +206,9 @@ function getWeekNumber(d) {
   return Math.ceil((((d - ys) / 86400000) + 1) / 7);
 }
 
-/* ESTADO GLOBAL */
+/* ============================================================
+   8) ESTADO GLOBAL
+   ============================================================ */
 let currentRegion = getStorageValue('braun_last_region') || 'BR';
 let dataAtiva = '';
 const translations = {
@@ -196,7 +221,9 @@ let currentTurma = getStorageValue('braun_turma_' + currentRegion) || 'AC';
 let mesAtualVisivel = new Date().getMonth();
 let anoAtualVisivel = currentAno;
 
-/* LÓGICA DE ESCALA */
+/* ============================================================
+   9) LÓGICA DE ESCALA
+   ============================================================ */
 function checkBR(dt, t) {
   const k = 'BR_' + dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate() + '_' + t;
   let v = _escalaCache.get(k); if (v !== undefined) return v;
@@ -239,6 +266,17 @@ function isFerias(dt) {
   const d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()).getTime();
   return d >= new Date(r.inicio + 'T00:00:00').getTime() && d <= new Date(r.fim + 'T00:00:00').getTime();
 }
+function getDataRetorno() {
+  const range = getFeriasRange();
+  if (!range.fim) return null;
+  const fim = new Date(range.fim + 'T00:00:00');
+  const d = new Date(fim.getTime());
+  for (let i = 0; i < 30; i++) {
+    d.setDate(d.getDate() + 1);
+    if (isTrabalhando(d, currentRegion, currentTurma)) return new Date(d.getTime());
+  }
+  return null;
+}
 function diaDaSemanaPorExtenso(d) {
   return ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'][d.getDay()];
 }
@@ -257,7 +295,9 @@ function nomeRegiao(r) {
   return 'MANUTENÇÃO';
 }
 
-/* RELÓGIO + CONTADOR DE FÉRIAS */
+/* ============================================================
+   10) RELÓGIO + CONTADOR DE FÉRIAS
+   ============================================================ */
 let clockInterval = null;
 function startClock() {
   if (clockInterval) clearInterval(clockInterval);
@@ -313,7 +353,9 @@ function atualizarContadorFerias() {
   } else { el.style.display = 'none'; }
 }
 
-/* PWA */
+/* ============================================================
+   11) PWA
+   ============================================================ */
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', function (e) {
   e.preventDefault(); deferredPrompt = e;
@@ -338,7 +380,9 @@ if (getStorageValue('braun_update_pending') === 'true') {
   });
 }
 
-/* REGIÃO / BADGE / LEGENDA */
+/* ============================================================
+   12) REGIÃO / BADGE / LEGENDA
+   ============================================================ */
 function atualizarBadgeTurma() {
   const tl = getStorageValue('braun_turma_perfil') || 'A';
   const bt = document.getElementById('turmaBadgeText'); if (!bt) return;
@@ -366,31 +410,76 @@ function setRegion(r) {
   scrollParaMes(mesAtualVisivel, anoAtualVisivel);
 }
 
-/* BANNER AVISOS */
+/* ============================================================
+   13) BANNER DE AVISOS (com countdown de férias)
+   ============================================================ */
 function atualizarBannerAvisos() {
   const banner = document.getElementById('banner-avisos');
   const content = document.getElementById('bannerContent');
   const mesNav = document.getElementById('mesNav');
   if (!banner || !content || !mesNav) return;
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const items = [];
+
+  // Countdown de férias (em destaque, primeiro item)
+  const range = getFeriasRange();
+  if (range.inicio && range.fim) {
+    const inicio = new Date(range.inicio + 'T00:00:00');
+    const fim = new Date(range.fim + 'T00:00:00');
+    if (hoje < inicio) {
+      const dias = Math.round((inicio - hoje) / 86400000);
+      if (dias === 1) items.push({ icon: 'beach_access', texto: 'Suas férias começam AMANHÃ!', destaque: true });
+      else items.push({ icon: 'beach_access', texto: 'Faltam ' + dias + ' dias para suas férias', destaque: true });
+    } else if (hoje >= inicio && hoje <= fim) {
+      const rest = Math.round((fim - hoje) / 86400000);
+      if (rest === 0) items.push({ icon: 'beach_access', texto: 'Último dia de férias', destaque: true });
+      else items.push({ icon: 'beach_access', texto: 'Férias em andamento · ' + rest + ' dia' + (rest > 1 ? 's' : '') + ' restante' + (rest > 1 ? 's' : ''), destaque: true });
+    }
+  }
+
+  // Notas futuras
   const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
-  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-  const nf = Object.keys(logs).filter(function (iso) {
-    const d = new Date(iso + 'T00:00:00');
-    return d >= hoje && logs[iso] && logs[iso].trim() !== '';
-  }).sort();
-  if (nf.length === 0) { banner.classList.remove('show'); mesNav.classList.add('sem-banner'); return; }
+  Object.keys(logs)
+    .filter(function (iso) {
+      const d = new Date(iso + 'T00:00:00');
+      return d >= hoje && logs[iso] && logs[iso].trim() !== '';
+    })
+    .sort()
+    .forEach(function (iso) {
+      const p = iso.split('-');
+      items.push({ icon: 'event', texto: p[2] + '/' + p[1] + ' — ' + logs[iso], destaque: false });
+    });
+
+  if (items.length === 0) {
+    banner.classList.remove('show');
+    mesNav.classList.add('sem-banner');
+    return;
+  }
+
   let html = '';
-  nf.forEach(function (iso) {
-    const p = iso.split('-');
-    html += '<span class="banner-item"><span class="material-symbols-outlined">event</span><strong>' + p[2] + '/' + p[1] + '</strong> &mdash; ' + escapeHtml(logs[iso]) + '</span>';
+  items.forEach(function (item) {
+    const styleInner = item.destaque
+      ? 'background:rgba(255,255,255,0.22);padding:4px 14px;border-radius:20px;font-weight:900;letter-spacing:0.3px;'
+      : '';
+    html += '<span class="banner-item">' +
+            '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">' + item.icon + '</span>' +
+            '<span style="' + styleInner + '">' + escapeHtml(item.texto) + '</span>' +
+            '</span>';
   });
+
   content.innerHTML = html;
   banner.classList.add('show');
   mesNav.classList.remove('sem-banner');
-  content.style.animation = 'none'; void content.offsetWidth; content.style.animation = '';
+  content.style.animation = 'none';
+  void content.offsetWidth;
+  content.style.animation = '';
 }
 
-/* CALENDÁRIO */
+/* ============================================================
+   14) CALENDÁRIO
+   ============================================================ */
 let calendarioGeracao = 0;
 function gerarCalendario() {
   const box = document.getElementById('calendario-box');
@@ -411,6 +500,8 @@ function gerarCalendario() {
     let hF = '<div class="mes-face mes-front"><div style="display:flex;justify-content:space-between;align-items:center;margin:5px 10px 0 10px;"><span style="color:var(--primary);font-weight:800;text-transform:capitalize;font-size:1.1em;">' + nomeM + '</span><span style="color:var(--primary);font-weight:800;font-size:1.1em;">' + ano + '</span></div><div class="grid"><div class="dia-label">W</div>' + lang.days.map(function (s) { return '<div class="dia-label">' + s + '</div>'; }).join('');
     let hB = '<div class="mes-face mes-back"><div style="display:flex;justify-content:space-between;align-items:center;margin:5px 10px 0 10px;"><span style="font-weight:800;text-transform:capitalize;font-size:1.1em;">' + nomeM + '</span><span style="font-weight:800;font-size:1.1em;">' + ano + '</span></div><div style="font-weight:800;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:5px;margin-bottom:10px;">Eventos do mês</div>';
     let hasEv = false;
+    const dataRetorno = getDataRetorno();
+    const retornoStr = dataRetorno ? dataRetorno.toDateString() : '';
     const dnm = new Date(ano, m + 1, 0).getDate();
     const dsi = dtM.getDay();
     const esp = dsi === 0 ? 6 : dsi - 1;
@@ -440,7 +531,19 @@ function gerarCalendario() {
       if (hojeStr === at.toDateString()) cls += 'hoje ';
       if (nt) cls += 'HAS_NOTE ';
       if (isFerias(at)) { cls += 'FERIAS '; sh = 'em férias'; }
-      if (f || nt) { hasEv = true; hB += '<div style="font-size:0.9em;margin-bottom:8px;"><b>' + d + ':</b> ' + (f || '') + (nt ? ' &#128221; ' + escapeHtml(nt) : '') + '</div>'; }
+      const isRetorno = (retornoStr && at.toDateString() === retornoStr);
+      if (isRetorno) { cls += 'RETORNO '; sh = 'primeiro dia de retorno ao trabalho'; }
+      if (f || nt || isRetorno) {
+        hasEv = true;
+        let evLine = '<div style="font-size:0.9em;margin-bottom:8px;"><b>' + d + ':</b> ';
+        const partes = [];
+        if (f) partes.push(f);
+        if (nt) partes.push('&#128221; ' + escapeHtml(nt));
+        if (isRetorno) partes.push('&#128295; Retorno ao trabalho');
+        evLine += partes.join(' · ');
+        evLine += '</div>';
+        hB += evLine;
+      }
       const al = d + ' de ' + nomeM + ' de ' + ano + ', ' + sh + (f ? ', feriado: ' + f : '') + (nt ? ', com anotação' : '') + '. Toque para ver detalhes.';
       hF += '<div class="' + cls.trim() + '" data-iso="' + isoF + '" role="button" tabindex="0" aria-label="' + escapeHtml(al) + '">' + d + '</div>';
       col++;
@@ -476,7 +579,9 @@ function bindCalendarioDelegation() {
   });
 }
 
-/* MODAIS */
+/* ============================================================
+   15) MODAIS
+   ============================================================ */
 function openCard(iso) {
   dataAtiva = iso;
   const logs = JSON.parse(getStorageValue('logs_v26') || '{}');
@@ -535,7 +640,17 @@ function openMeuPerfil() {
   document.getElementById('setorPerfil').value = getStorageValue('braun_setor') || '';
   focusModal('meuPerfilCard');
 }
-function openColaboradorDoMes() { closeHamburger(); preencherDadosModais(); focusModal('colaboradorDoMesCard'); }
+function openColaboradorDoMes() {
+  closeHamburger();
+  preencherDadosModais();
+  const vn = document.getElementById('votoNome');
+  if (vn) vn.value = '';
+  const bloco = document.getElementById('votoFormBloco');
+  const agrad = document.getElementById('votoAgradecimento');
+  if (bloco) bloco.style.display = 'block';
+  if (agrad) agrad.style.display = 'none';
+  focusModal('colaboradorDoMesCard');
+}
 function openMeusPedidos() { closeHamburger(); preencherDadosModais(); limparPedido(); focusModal('meusPedidosCard'); }
 function openConfig() {
   document.getElementById('minimalGreetingToggle').checked = getStorageValue('braun_minimal_greeting') === 'true';
@@ -576,7 +691,9 @@ function openStats() {
   focusModal('statsCard');
 }
 
-/* PERFIL / PEDIDOS / VOTAÇÃO */
+/* ============================================================
+   16) PERFIL / PEDIDOS / VOTAÇÃO
+   ============================================================ */
 function salvarDadosPerfil() {
   const nome = document.getElementById('nomePerfil').value;
   const matr = document.getElementById('matriculaPerfil').value;
@@ -611,19 +728,51 @@ function preencherDadosModais() {
   const matr = getStorageValue('braun_matricula') || '---';
   const turma = getStorageValue('braun_turma_perfil') || '---';
   const ano = getStorageValue('braun_ano') || '---';
-  document.getElementById('votacaoNome').innerText = nome;
-  document.getElementById('votacaoMatricula').innerText = matr;
-  document.getElementById('votacaoAno').innerText = ano;
-  document.getElementById('pedidoNome').innerText = nome;
-  document.getElementById('pedidoMatricula').innerText = matr;
-  document.getElementById('pedidoTurma').innerText = turma;
-  document.getElementById('pedidoAno').innerText = ano;
+  const vt = document.getElementById('votacaoTurma');
+  const vm = document.getElementById('votacaoMatricula');
+  const pn = document.getElementById('pedidoNome');
+  const pm = document.getElementById('pedidoMatricula');
+  const pt = document.getElementById('pedidoTurma');
+  const pa = document.getElementById('pedidoAno');
+  if (vt) vt.innerText = turma;
+  if (vm) vm.innerText = matr;
+  if (pn) pn.innerText = nome;
+  if (pm) pm.innerText = matr;
+  if (pt) pt.innerText = turma;
+  if (pa) pa.innerText = ano;
 }
 function abrirFormularioVotacao() {
-  const nome = getStorageValue('braun_nome_completo') || 'Não informado';
-  const matr = getStorageValue('braun_matricula') || 'Não informado';
-  const ano = getStorageValue('braun_ano') || '2026';
-  window.open('https://forms.gle/KfS9XFv9UseZyqnS7?entry.1=' + encodeURIComponent(nome) + '&entry.2=' + encodeURIComponent(matr) + '&entry.3=' + encodeURIComponent(ano), '_blank');
+  const turma = getStorageValue('braun_turma_perfil') || '';
+  const matricula = getStorageValue('braun_matricula') || '';
+  const votoInput = document.getElementById('votoNome');
+  const voto = votoInput ? votoInput.value.trim() : '';
+
+  if (!turma) { toast('Preencha sua turma no Perfil primeiro.', 'aviso'); return; }
+  if (!matricula) { toast('Preencha sua matrícula no Perfil primeiro.', 'aviso'); return; }
+  if (!voto) { toast('Digite o nome do colaborador que você quer votar.', 'aviso'); return; }
+
+  const url = 'https://docs.google.com/forms/d/e/1FAIpQLSdoP_K57HRUXTrnMX23k2cB2h0m8UBwxiGihBoORWCrdE_x3Q/viewform?usp=pp_url' +
+    '&entry.1097002360=' + encodeURIComponent(turma) +
+    '&entry.2099346238=' + encodeURIComponent(matricula) +
+    '&entry.1005686647=' + encodeURIComponent(voto);
+
+  window.open(url, '_blank');
+
+  const bloco = document.getElementById('votoFormBloco');
+  const agrad = document.getElementById('votoAgradecimento');
+  if (bloco) bloco.style.display = 'none';
+  if (agrad) agrad.style.display = 'block';
+
+  toast('Formulário aberto em outra aba!', 'sucesso', 4000);
+}
+function voltarAoVoto() {
+  const bloco = document.getElementById('votoFormBloco');
+  const agrad = document.getElementById('votoAgradecimento');
+  const vn = document.getElementById('votoNome');
+  if (bloco) bloco.style.display = 'block';
+  if (agrad) agrad.style.display = 'none';
+  if (vn) vn.value = '';
+  setTimeout(function () { if (vn) vn.focus(); }, 100);
 }
 function limparPedido() {
   const card = document.getElementById('meusPedidosCard'); if (!card) return;
@@ -664,7 +813,9 @@ function enviarPedidoEmail() {
   toast('Abrindo seu e-mail...', 'info');
 }
 
-/* FÉRIAS */
+/* ============================================================
+   17) FÉRIAS
+   ============================================================ */
 function saveFerias() {
   const ini = document.getElementById('feriasInicio').value;
   const fim = document.getElementById('feriasFim').value;
@@ -686,7 +837,7 @@ function confirmarClearFerias() {
   });
 }
 
-/* SUGESTÃO INTELIGENTE DE FÉRIAS */
+/* ---------- SUGESTÃO INTELIGENTE DE FÉRIAS ---------- */
 function popularMesesFerias() {
   const sel = document.getElementById('feriasMes'); if (!sel) return;
   sel.innerHTML = '';
@@ -750,8 +901,6 @@ function renderSugestoesFerias(sug, duracao) {
   sug.forEach(function (s, i) {
     const iniF = s.S.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
     const fimF = s.E.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
-
-    // Descobre o dia de retorno: primeiro dia de trabalho APÓS o fim das férias
     let retorno = new Date(s.E.getTime());
     for (let j = 0; j < 15; j++) {
       retorno.setDate(retorno.getDate() + 1);
@@ -759,12 +908,10 @@ function renderSugestoesFerias(sug, duracao) {
     }
     const retornoF = retorno.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' });
     const retornoDia = nomeDia[retorno.getDay()];
-
     const b = s.ganho > 0
       ? '<span style="background:var(--verde);color:white;padding:3px 10px;border-radius:20px;font-size:0.75em;font-weight:800;">+' + s.ganho + ' dia' + (s.ganho > 1 ? 's' : '') + '</span>'
       : '<span style="background:var(--border);color:var(--text);padding:3px 10px;border-radius:20px;font-size:0.75em;font-weight:800;opacity:0.6;">sem ganho</span>';
     const est = i === 0 ? ' ⭐' : '';
-
     html += '<div data-sugestao-ini="' + s.S.toISOString().split('T')[0] + '" data-sugestao-fim="' + s.E.toISOString().split('T')[0] + '" class="sugestao-ferias-item" style="background:var(--bg);border:1.5px solid ' + (i === 0 ? 'var(--primary)' : 'var(--border)') + ';border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;transition:0.2s;">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">' +
       '<div style="font-weight:800;font-size:0.95em;">' + iniF + ' → ' + fimF + est + '</div>' +
@@ -777,7 +924,6 @@ function renderSugestoesFerias(sug, duracao) {
       '</div>';
   });
   container.innerHTML = html;
-
   container.querySelectorAll('.sugestao-ferias-item').forEach(function (el) {
     el.addEventListener('click', function () {
       document.getElementById('feriasInicio').value = el.dataset.sugestaoIni;
@@ -788,7 +934,9 @@ function renderSugestoesFerias(sug, duracao) {
   });
 }
 
-/* DARK MODE + NAV */
+/* ============================================================
+   18) DARK MODE + NAV
+   ============================================================ */
 function toggleDarkMode() { document.documentElement.classList.toggle('dark-mode'); setStorageValue('braun_dark_mode', document.documentElement.classList.contains('dark-mode')); }
 function toggleMinimalGreeting() { setStorageValue('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked ? 'true' : 'false'); tick(); }
 function toggleVoiceResponse() { setStorageValue('braun_voice_response', document.getElementById('voiceResponseToggle').checked ? 'true' : 'false'); }
@@ -857,7 +1005,9 @@ function goToGreeting() {
   setTimeout(function () { w.style.display = 'none'; setStorageValue('braun_visited', 'true'); scrollToToday(); }, 500);
 }
 
-/* BACKUP / ICS */
+/* ============================================================
+   19) BACKUP / ICS
+   ============================================================ */
 function exportarBackup() {
   try {
     const data = { schema: SCHEMA_VERSION, app: 'BraunOnLine', versao: window.APP_VERSION, exportado_em: new Date().toISOString(), dados: {} };
@@ -923,7 +1073,9 @@ function exportarEscalaICS() {
   toast('Arquivo .ics gerado!', 'sucesso', 4500);
 }
 
-/* CARTILHAS */
+/* ============================================================
+   20) CARTILHAS
+   ============================================================ */
 const cartilhasData = [
   { id:'comousar', icone:'help', titulo:'Como usar o Braun OnLine', conteudo:'<p>Bem-vindo ao <strong>Braun OnLine</strong>! Este guia rápido mostra tudo.</p><div class="cartilha-destaque"><strong>📅 Ver sua escala</strong><br>Dias coloridos mostram sua escala. Use as abas no rodapé para alternar entre <b>ECOFLAC</b>, <b>MANUT.</b> e <b>1x1</b>.</div><div class="cartilha-destaque"><strong>✏️ Anotações</strong><br>Toque em qualquer dia para escrever um lembrete.</div><div class="cartilha-destaque"><strong>🏖️ Programar férias</strong><br>Use a ferramenta de <b>Sugestão</b> para descobrir as datas que rendem mais dias em casa!</div><div class="cartilha-destaque"><strong>📦 Meus Pedidos</strong><br>Menu ☰ → Meus Pedidos. Preencha quantidade e tamanho, envie por e-mail.</div><div class="cartilha-destaque"><strong>💾 Backup</strong><br>Menu ☰ → Configurações → Exportar Backup (JSON).</div><p><strong>Dica:</strong> Sempre que aparecer um banner roxo, toque em <b>Atualizar</b>.</p>', quiz:[{pergunta:'Como você faz backup?',opcoes:['Tocando no calendário','Menu ☰ → Configurações → Exportar Backup','Reiniciando','Falando com supervisor'],certa:1},{pergunta:'Onde programa férias?',opcoes:['Nas Cartilhas','No Meu Perfil','No menu ☰ → Configurações','Não dá'],certa:2},{pergunta:'O que fazer quando aparecer banner roxo?',opcoes:['Ignorar','Tocar em Atualizar','Desinstalar','Reiniciar'],certa:1}] },
   { id:'kaizen', icone:'trending_up', titulo:'Kaizen – Melhoria Contínua', conteudo:'<p><strong>Kaizen</strong> significa "mudança para melhor". Pequenas melhorias diárias de todos.</p><div class="cartilha-destaque"><strong>Princípios:</strong><br> • Eliminar desperdícios<br> • Padronizar processos<br> • Envolver todos<br> • Focar em dados</div>', quiz:[{pergunta:'O que significa Kaizen?',opcoes:['Grande revolução','Mudança para melhor','Padronização','Controle'],certa:1},{pergunta:'Um princípio do Kaizen:',opcoes:['Grandes mudanças','Eliminar desperdícios','Centralizar','Ignorar dados'],certa:1},{pergunta:'Kaizen busca melhorias:',opcoes:['Na produção','Na gestão','Pequenas e diárias','Em crises'],certa:2}] },
@@ -1016,8 +1168,11 @@ function responderQuiz(cid, qi, oi) {
   } else { fb.innerHTML = '&#10060; Incorreto. A resposta certa é: ' + q.opcoes[q.certa]; fb.className = 'quiz-feedback errado'; }
 }
 
-/* NOVIDADES */
+/* ============================================================
+   21) NOVIDADES
+   ============================================================ */
 const novidadesData = [
+  { id:'nov23', titulo:'🗳️ Votação do Colaborador do Mês melhorada', descricao:'Agora o formulário de votação é preenchido automaticamente com seus dados. Digite apenas o nome do colega que você quer votar.', data:'2026-10-02', cartilhaId:null },
   { id:'nov22', titulo:'🏖️ Sugestão inteligente de férias!', descricao:'Agora o app te ajuda a escolher a MELHOR data para suas férias. Você escolhe o mês e a quantidade de dias, e ele mostra as datas que rendem mais dias em casa respeitando sua escala. Acesse: Configurações → Programar Férias.', data:'2026-10-01', cartilhaId:'comousar' },
   { id:'nov20', titulo:'🌞 Saudação Minimalista funcionando', descricao:'Agora o toggle "Saudação Minimalista" realmente funciona. Mostra apenas "Bom dia / Boa tarde / Boa noite".', data:'2026-10-01', cartilhaId:null },
   { id:'nov19', titulo:'📦 Meus Pedidos reformulado!', descricao:'Agora você preenche a quantidade e o tamanho de cada item. O pedido vai direto por e-mail.', data:'2026-09-30', cartilhaId:null },
@@ -1072,7 +1227,9 @@ function atualizarNovidadesUI() {
 function formatarData(ds) { return new Date(ds + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }); }
 function abrirCartilhaPorId(id) { closeAllModals(); cartilhaAtiva = id; openCartilhas(); }
 
-/* PESQUISA + VOZ */
+/* ============================================================
+   22) PESQUISA + VOZ
+   ============================================================ */
 let resultadoPesquisaAtual = null;
 let recognitionInstance = null;
 function openPesquisa() {
@@ -1153,7 +1310,9 @@ function lerResultado() {
   if (window.speechSynthesis) { window.speechSynthesis.cancel(); window.speechSynthesis.speak(v); setTimeout(atualizarBotaoOuvir, 100); }
 }
 
-/* CONQUISTAS */
+/* ============================================================
+   23) CONQUISTAS
+   ============================================================ */
 const conquistas = {
   primeiro_passo: { id:'primeiro_passo', titulo:'Primeiro Passo', descricao:'Marcou a primeira cartilha como lida', icone:'&#127937;' },
   leitor_dedicado: { id:'leitor_dedicado', titulo:'Leitor Dedicado', descricao:'Leu 5 cartilhas', icone:'&#128218;' },
@@ -1188,7 +1347,9 @@ function openConquistas() {
   focusModal('conquistasCard');
 }
 
-/* EVENT BINDING */
+/* ============================================================
+   24) EVENT BINDING
+   ============================================================ */
 const ACTION_MAP = {
   'go-greeting': goToGreeting,
   'install-pwa': installPWA,
@@ -1223,6 +1384,7 @@ const ACTION_MAP = {
   'confirm-clear-ferias': confirmarClearFerias,
   'save-perfil-fechar': function () { salvarDadosPerfil(); closeAllModals(); },
   'votar': abrirFormularioVotacao,
+  'votar-novamente': voltarAoVoto,
   'enviar-pedido': enviarPedidoEmail,
   'limpar-pedido': limparPedido,
   'mic': iniciarReconhecimentoVoz,
@@ -1259,7 +1421,9 @@ function bindAll() {
   bindCalendarioDelegation();
 }
 
-/* INIT */
+/* ============================================================
+   25) INIT
+   ============================================================ */
 (function init() {
   const st = getStorageValue('braun_turma_perfil');
   if (st) {
