@@ -17,6 +17,7 @@
 <meta name="apple-mobile-web-app-title" content="Braun OnLine">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+<script src="boot.js"></script>
 <style>
     :root {
         --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
@@ -55,7 +56,7 @@
         text-align: center; padding: 0 30px; box-sizing: border-box; transition: 0.5s;
     }
     .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(-20px); }
-    .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .welcome-logo { width: 120px; margin-bottom: 25px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.25)); }
     .btn-comecar {
         background: white; color: var(--primary); border: none;
         padding: 20px 44px; border-radius: 40px;
@@ -528,7 +529,7 @@
 <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
 <div id="welcomeScreen" class="welcome-screen">
-    <img src="maskable_icon_x512.png" class="welcome-logo" alt="Logo Braun OnLine">
+    <img src="icon-512.png" class="welcome-logo" alt="Logo Braun OnLine">
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     <button class="btn-comecar" data-action="go-greeting">ENTRAR NO APP</button>
@@ -897,18 +898,46 @@
 </div>
 
 <div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">&#127942; Colaborador do Mês</h2>
+    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏆 Colaborador do Mês</h2>
+
     <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
-        <div style="display:flex;flex-direction:column;gap:8px;">
-            <div><span style="font-weight:600;opacity:0.6;">Nome:</span> <span id="votacaoNome" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Matrícula:</span> <span id="votacaoMatricula" style="font-weight:800;">---</span></div>
-            <div><span style="font-weight:600;opacity:0.6;">Ano:</span> <span id="votacaoAno" style="font-weight:800;">---</span></div>
+        <div style="font-size:0.7em;font-weight:900;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Seus dados (votante)</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9em;">
+            <div><span style="opacity:0.6;">Turma:</span> <strong id="votacaoTurma">---</strong></div>
+            <div><span style="opacity:0.6;">Matrícula:</span> <strong id="votacaoMatricula">---</strong></div>
         </div>
     </div>
-    <p style="font-size:0.9em;opacity:0.7;margin-bottom:15px;">Seus dados já estão pré-preenchidos. Clique abaixo para votar.</p>
-    <button data-action="votar" style="background:linear-gradient(135deg, #FFD700, #EBC13D);color:#1A1A1A;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(235,193,61,0.3);cursor:pointer;">
-        <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">how_to_vote</span> VOTAR AGORA
-    </button>
+
+    <div id="votoFormBloco">
+        <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
+       <label for="votoNome" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:8px;">EM QUEM VOCÊ VOTA</label>
+            <input type="text" id="votoNome" placeholder="Digite o nome do colega" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--card);color:var(--text);font-weight:800;font-size:1em;">
+        </div>
+
+        <div style="background:rgba(112,48,160,0.08);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;margin-bottom:15px;">
+            <div style="font-size:0.75em;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🔒 Privacidade</div>
+            <div style="font-size:0.82em;line-height:1.5;opacity:0.85;">
+                Seu voto fica registrado com a sua <strong>matrícula</strong> apenas para <strong>evitar votos duplicados</strong>. Só o RH tem acesso aos votos individuais — nenhum colega vê em quem você votou.
+            </div>
+        </div>
+
+        <button data-action="votar" style="background:linear-gradient(135deg, #FFD700, #EBC13D);color:#1A1A1A;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(235,193,61,0.3);cursor:pointer;">
+            <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">how_to_vote</span> VOTAR AGORA
+        </button>
+    </div>
+
+    <div id="votoAgradecimento" style="display:none;text-align:center;padding:24px 10px;">
+        <div style="font-size:3.5em;margin-bottom:12px;">🎉</div>
+        <div style="font-weight:900;color:var(--primary);font-size:1.3em;margin-bottom:8px;">Obrigado pelo seu voto!</div>
+        <div style="font-size:0.9em;opacity:0.75;line-height:1.5;margin-bottom:20px;">
+            O formulário foi aberto em outra aba.<br>
+            <strong>Não esqueça de enviar sua resposta lá para confirmar o voto.</strong>
+        </div>
+        <button data-action="votar-novamente" style="background:var(--bg);color:var(--text);border:2px solid var(--border);padding:14px 20px;border-radius:18px;font-weight:800;font-size:0.9em;cursor:pointer;">
+            Voltar
+        </button>
+    </div>
+
     <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
 </div>
 
