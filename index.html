@@ -17,6 +17,7 @@
 <meta name="apple-mobile-web-app-title" content="Braun OnLine">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+<script src="boot.js"></script>
 <style>
     :root {
         --primary: #00A97A; --bg: #F4F7F6; --card: #FFFFFF; --text: #1A1A1A;
@@ -55,7 +56,7 @@
         text-align: center; padding: 0 30px; box-sizing: border-box; transition: 0.5s;
     }
     .welcome-screen.hide { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(-20px); }
-    .welcome-logo { width: 120px; margin-bottom: 25px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    .welcome-logo { width: 120px; margin-bottom: 25px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.25)); }
     .btn-comecar {
         background: white; color: var(--primary); border: none;
         padding: 20px 44px; border-radius: 40px;
@@ -528,7 +529,7 @@
 <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
 <div id="welcomeScreen" class="welcome-screen">
-    <img src="maskable_icon_x512.png" class="welcome-logo" alt="Logo Braun OnLine">
+    <img src="icon-512.png" class="welcome-logo" alt="Logo Braun OnLine">
     <h1>Braun OnLine</h1>
     <p>Sua escala na palma da mão.</p>
     <button class="btn-comecar" data-action="go-greeting">ENTRAR NO APP</button>
@@ -896,7 +897,7 @@
     <button data-action="save-perfil-fechar" class="btn-modal-salvar">SALVAR E FECHAR</button>
 </div>
 
-<<div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
+<div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
     <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏆 Colaborador do Mês</h2>
 
     <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
