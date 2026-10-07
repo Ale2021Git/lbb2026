@@ -956,7 +956,16 @@ function renderSugestoesFerias(sug, duracao) {
 /* ============================================================
    18) DARK MODE + NAV
    ============================================================ */
-function toggleDarkMode() { document.documentElement.classList.toggle('dark-mode'); setStorageValue('braun_dark_mode', document.documentElement.classList.contains('dark-mode')); }
+function toggleDarkMode() {
+  document.documentElement.classList.toggle('dark-mode');
+  const dark = document.documentElement.classList.contains('dark-mode');
+  setStorageValue('braun_dark_mode', dark);
+  try {
+    const cor = dark ? '#00C48D' : '#00A97A';
+    const meta = document.getElementById('meta-theme-color') || document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', cor);
+  } catch (e) {}
+}
 function toggleMinimalGreeting() { setStorageValue('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked ? 'true' : 'false'); tick(); }
 function toggleVoiceResponse() { setStorageValue('braun_voice_response', document.getElementById('voiceResponseToggle').checked ? 'true' : 'false'); }
 function atualizarTituloMes() {
@@ -1394,7 +1403,8 @@ function aplicarCampanhaDoMes() {
   if (tarja && texto) {
     tarja.style.setProperty('--cor-campanha', c.cor);
     texto.style.color = c.corTexto;
-    texto.innerText = c.nome;
+    // Laço/emoji + nome (Outubro Rosa fica "🎀 Outubro Rosa")
+    texto.innerText = (c.emoji ? c.emoji + ' ' : '') + c.nome;
     tarja.classList.add('show');
     const panel = document.querySelector('.status-panel');
     if (panel) panel.style.borderBottom = 'none';
@@ -1532,4 +1542,10 @@ window.addEventListener('load', function () {
   safeRun('atualizarTituloMes', atualizarTituloMes);
   safeRun('atualizarBannerAvisos', atualizarBannerAvisos);
   safeRun('aplicarCampanhaDoMes', aplicarCampanhaDoMes);
+  try {
+    const isDark = document.documentElement.classList.contains('dark-mode');
+    const cor = isDark ? '#00C48D' : '#00A97A';
+    const meta = document.getElementById('meta-theme-color') || document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', cor);
+  } catch (e) {}
 });

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<meta name="theme-color" content="#4A148C">
+<meta name="theme-color" content="#00A97A" id="meta-theme-color">
 <title>Braun OnLine 2026/2027</title>
 <meta name="description" content="Aplicativo de escala para colaboradores Braun - ECOFLAC, MANUTENÇÃO e 1x1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,13 +30,17 @@
         --bg: #121212; --card: #1E1E1E; --text: #E0E0E0; --border: #333333;
         --primary: #00C48D; --semana-w: #00C48D;
     }
-    html, body { background: var(--bg); }
+    /* Fundo do html = verde do header → some a faixa atrás de bateria/ícones */
+    html { background-color: #00A97A; }
+    html.dark-mode { background-color: #00C48D; }
     body {
         font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
-        margin: 0; padding-bottom: 90px; transition: 0.3s; overflow-x: hidden;
+        margin: 0;
+        padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+        transition: 0.3s; overflow-x: hidden;
         -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
         touch-action: manipulation; -webkit-touch-callout: none;
-        width: 100%; min-height: 100vh; box-shadow: none;
+        width: 100%; min-height: 100vh; min-height: 100dvh; box-shadow: none;
     }
     html.dark-mode body { box-shadow: none; }
     @media (prefers-reduced-motion: reduce) {
@@ -79,8 +83,13 @@
         50% { transform: translate(2px, -3px) rotate(10deg); }
     }
     header {
-        background: var(--primary); padding: 45px 18px 20px 18px; color: white; display: flex;
+        background: var(--primary); color: white; display: flex;
         justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+        padding-top: max(44px, calc(env(safe-area-inset-top, 0px) + 12px));
+        padding-bottom: 16px;
+        padding-left: max(18px, env(safe-area-inset-left, 0px));
+        padding-right: max(18px, env(safe-area-inset-right, 0px));
+        box-sizing: border-box;
     }
     .brand-container { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .brand-logo-svg { height: 35px; width: auto; }
@@ -92,7 +101,12 @@
     }
     .turma-badge:active { background: rgba(255,255,255,0.35); transform: scale(0.96); }
     .turma-badge .material-symbols-outlined { font-size: 16px; }
-    .sticky-header-block { position: sticky; top: 85px; z-index: 95; padding: 0 15px; }
+    .sticky-header-block {
+        position: sticky;
+        top: calc(52px + max(44px, calc(env(safe-area-inset-top, 0px) + 12px)));
+        z-index: 95;
+        padding: 0 15px;
+    }
     .status-panel {
         background: var(--card); border-radius: 25px 25px 0 0; padding: 15px 10px;
         border: 1px solid var(--border); border-bottom: none; text-align: center;
@@ -102,13 +116,13 @@
     .clock { font-family: 'JetBrains Mono', monospace; font-size: 2.8em; color: var(--primary); font-weight: 700; }
     .status-msg { font-weight: 900; font-size: 1.2em; text-transform: uppercase; margin-top: 5px; }
 
-    /* ===== TARJA DIAGONAL DA CAMPANHA ===== */
+    /* ===== TARJA / LAÇO DIAGONAL DA CAMPANHA ===== */
     .campanha-tarja {
         position: absolute;
         top: 0;
         right: 0;
-        width: 110px;
-        height: 110px;
+        width: 118px;
+        height: 118px;
         overflow: hidden;
         pointer-events: none;
         display: none;
@@ -117,29 +131,58 @@
     .campanha-tarja.show { display: block; }
     .campanha-tarja span {
         position: absolute;
-        display: block;
-        width: 160px;
-        padding: 5px 0;
-        top: 24px;
-        right: -42px;
-        background: var(--cor-campanha, #F48FB1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: 170px;
+        padding: 7px 0;
+        top: 26px;
+        right: -46px;
+        background: linear-gradient(90deg,
+            color-mix(in srgb, var(--cor-campanha, #F48FB1) 85%, #fff) 0%,
+            var(--cor-campanha, #F48FB1) 40%,
+            color-mix(in srgb, var(--cor-campanha, #F48FB1) 80%, #000) 100%);
         color: #FFFFFF;
-        font-size: 0.6em;
+        font-size: 0.62em;
         font-weight: 900;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         text-align: center;
         transform: rotate(45deg);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        box-shadow:
+            0 3px 10px rgba(0,0,0,0.22),
+            inset 0 1px 0 rgba(255,255,255,0.35);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.35);
         pointer-events: auto;
         cursor: pointer;
-        border-top: 1px solid rgba(255,255,255,0.5);
-        border-bottom: 1px solid rgba(255,255,255,0.5);
+        border-top: 1px solid rgba(255,255,255,0.55);
+        border-bottom: 1px solid rgba(0,0,0,0.12);
         -webkit-user-select: none;
         user-select: none;
     }
-    .campanha-tarja:active span { filter: brightness(0.9); }
+    /* Laço decorativo nas pontas da tarja (Outubro Rosa e campanhas) */
+    .campanha-tarja span::before,
+    .campanha-tarja span::after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.9);
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+        flex-shrink: 0;
+    }
+    .campanha-tarja:active span { filter: brightness(0.92); }
+    @keyframes tarja-shine {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.08); }
+    }
+    .campanha-tarja.show span {
+        animation: tarja-shine 3s ease-in-out infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .campanha-tarja.show span { animation: none; }
+    }
 
     .mes-nav {
         display: flex; align-items: center; justify-content: space-between;
@@ -234,18 +277,28 @@
 
     .tab-bar {
         position: fixed; bottom: 0; left: 0; right: 0;
-        background: var(--primary); display: flex; height: 75px; z-index: 1000;
-        padding-bottom: env(safe-area-inset-bottom); width: 100%;
+        background: var(--primary); display: flex; z-index: 1000;
+        height: calc(75px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        box-sizing: border-box;
+        width: 100%;
     }
-    .tab { flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.6); font-size: 0.68em; font-weight: 700; background: none; border: none; cursor: pointer; padding: 0 2px; }
+    .tab {
+        flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: rgba(255,255,255,0.6); font-size: 0.68em; font-weight: 700;
+        background: none; border: none; cursor: pointer; padding: 0 2px;
+        min-height: 75px; height: 75px; box-sizing: border-box;
+    }
     .tab.active { color: #FFFFFF; }
     .tab .material-symbols-outlined { font-size: 26px; }
     #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1500; backdrop-filter: blur(5px); }
 
     .bottom-modal {
         position: fixed; bottom: -110%; left: 0; right: 0;
-        background: var(--card); border-radius: 35px 35px 0 0; padding: 30px 25px;
-        z-index: 2000; transition: bottom 0.5s; max-height: 85vh; overflow-y: auto;
+        background: var(--card); border-radius: 35px 35px 0 0;
+        padding: 30px 25px calc(30px + env(safe-area-inset-bottom, 0px));
+        z-index: 2000; transition: bottom 0.5s;
+        max-height: 85vh; max-height: 85dvh; overflow-y: auto;
         width: 100%; box-sizing: border-box;
     }
     .bottom-modal.show { bottom: 0; }
