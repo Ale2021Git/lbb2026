@@ -956,16 +956,13 @@ function renderSugestoesFerias(sug, duracao) {
 /* ============================================================
    18) DARK MODE + NAV
    ============================================================ */
-function toggleDarkMode() {
-  document.documentElement.classList.toggle('dark-mode');
-  const dark = document.documentElement.classList.contains('dark-mode');
-  setStorageValue('braun_dark_mode', dark);
-  try {
-    const cor = dark ? '#00C48D' : '#00A97A';
-    const meta = document.getElementById('meta-theme-color') || document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', cor);
-  } catch (e) {}
+function sincronizarCorBarraStatus() {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) return;
+  const cor = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+  if (cor) meta.setAttribute('content', cor);
 }
+function toggleDarkMode() { document.documentElement.classList.toggle('dark-mode'); setStorageValue('braun_dark_mode', document.documentElement.classList.contains('dark-mode')); sincronizarCorBarraStatus(); }
 function toggleMinimalGreeting() { setStorageValue('braun_minimal_greeting', document.getElementById('minimalGreetingToggle').checked ? 'true' : 'false'); tick(); }
 function toggleVoiceResponse() { setStorageValue('braun_voice_response', document.getElementById('voiceResponseToggle').checked ? 'true' : 'false'); }
 function atualizarTituloMes() {
@@ -1383,10 +1380,22 @@ const campanhasData = {
   7:  { nome:'Julho Amarelo',            cor:'#FFD54F', corTexto:'#1A1A1A', emoji:'💛', abrev:'JUL', descricao:'Julho Amarelo: mês de conscientização sobre as <b>hepatites virais</b>. Previna-se, faça exames regularmente! 💛' },
   8:  { nome:'Agosto Dourado',           cor:'#FFCA28', corTexto:'#1A1A1A', emoji:'💛', abrev:'AGO', descricao:'Agosto Dourado: mês de incentivo à <b>amamentação</b>. O leite materno é o melhor alimento para o bebê. 💛' },
   9:  { nome:'Setembro Amarelo',         cor:'#FFEE58', corTexto:'#1A1A1A', emoji:'💛', abrev:'SET', descricao:'Setembro Amarelo: mês de prevenção ao <b>suicídio</b>. A vida é a melhor escolha! Se precisar conversar, ligue <b>188</b> (CVV) — gratuito, 24h. 💛' },
-  10: { nome:'Outubro Rosa',             cor:'#F48FB1', corTexto:'#FFFFFF', emoji:'🎀', abrev:'OUT', descricao:'Outubro Rosa: mês de conscientização e prevenção do <b>câncer de mama</b>. Faça o autoexame e a mamografia regularmente. Previna-se! 🎀' },
+  10: { nome:'Outubro Rosa',             cor:'#F48FB1', corTexto:'#FFFFFF', emoji:'🎀', laco:true, abrev:'OUT', descricao:'Outubro Rosa: mês de conscientização e prevenção do <b>câncer de mama</b>. Faça o autoexame e a mamografia regularmente. Previna-se!' },
   11: { nome:'Novembro Azul',            cor:'#64B5F6', corTexto:'#FFFFFF', emoji:'💙', abrev:'NOV', descricao:'Novembro Azul: mês de conscientização sobre o <b>câncer de próstata</b> e a saúde do homem. Cuide-se, faça exames! 💙' },
   12: { nome:'Dezembro Vermelho',        cor:'#EF5350', corTexto:'#FFFFFF', emoji:'❤️', abrev:'DEZ', descricao:'Dezembro Vermelho: mês de prevenção ao <b>HIV/AIDS</b> e outras ISTs. Informe-se, previna-se e faça o teste! ❤️' }
 };
+
+// Fita de conscientização (laço com as pontas cruzadas), em SVG
+const LACO_TRECHO_A = 'M30 108C44 84 62 62 66 40C70 18 56 8 50 8';
+const LACO_TRECHO_B = 'M50 8C44 8 30 18 34 40C38 62 56 84 70 108';
+function lacoSvg() {
+  return '<svg viewBox="0 0 100 120" focusable="false">' +
+    '<path class="laco-fita" d="' + LACO_TRECHO_B + '"/>' +
+    '<path class="laco-recorte" d="' + LACO_TRECHO_A + '"/>' +
+    '<path class="laco-fita" d="' + LACO_TRECHO_A + '"/>' +
+    '<path class="laco-brilho" transform="translate(-2.5 -1)" d="' + LACO_TRECHO_A + '"/>' +
+    '</svg>';
+}
 
 function campanhaDoMes(mes) {
   return campanhasData[mes] || null;
@@ -1403,8 +1412,7 @@ function aplicarCampanhaDoMes() {
   if (tarja && texto) {
     tarja.style.setProperty('--cor-campanha', c.cor);
     texto.style.color = c.corTexto;
-    // Laço/emoji + nome (Outubro Rosa fica "🎀 Outubro Rosa")
-    texto.innerText = (c.emoji ? c.emoji + ' ' : '') + c.nome;
+    texto.innerText = c.nome;
     tarja.classList.add('show');
     const panel = document.querySelector('.status-panel');
     if (panel) panel.style.borderBottom = 'none';
@@ -1418,11 +1426,16 @@ function openCampanha() {
   const titulo = document.getElementById('campanhaTitulo');
   const corpo  = document.getElementById('campanhaCorpo');
   const icone  = document.getElementById('campanhaModalIcon');
+  const laco   = document.getElementById('campanhaLaco');
   const modalHeader = document.getElementById('campanhaCard');
 
-  if (titulo) { titulo.innerText = c.emoji + ' ' + c.nome; titulo.style.color = c.cor; }
+  if (titulo) { titulo.innerText = (c.laco ? '' : c.emoji + ' ') + c.nome; titulo.style.color = c.cor; }
   if (corpo)  { corpo.innerHTML = c.descricao; }
-  if (icone)  { icone.style.color = c.cor; }
+  if (icone)  { icone.style.color = c.cor; icone.style.display = c.laco ? 'none' : ''; }
+  if (laco)   {
+    if (c.laco) { laco.innerHTML = lacoSvg(); laco.style.color = c.cor; laco.style.display = 'block'; }
+    else { laco.innerHTML = ''; laco.style.display = 'none'; }
+  }
   if (modalHeader) modalHeader.style.borderTop = '4px solid ' + c.cor;
 
   focusModal('campanhaCard');
@@ -1542,10 +1555,5 @@ window.addEventListener('load', function () {
   safeRun('atualizarTituloMes', atualizarTituloMes);
   safeRun('atualizarBannerAvisos', atualizarBannerAvisos);
   safeRun('aplicarCampanhaDoMes', aplicarCampanhaDoMes);
-  try {
-    const isDark = document.documentElement.classList.contains('dark-mode');
-    const cor = isDark ? '#00C48D' : '#00A97A';
-    const meta = document.getElementById('meta-theme-color') || document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', cor);
-  } catch (e) {}
+safeRun('sincronizarCorBarraStatus', sincronizarCorBarraStatus);
 });
