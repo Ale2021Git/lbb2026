@@ -12,32 +12,11 @@
   try {
     if (localStorage.getItem('braun_dark_mode') === 'true') {
       document.documentElement.classList.add('dark-mode');
-      // Barra de status preta já no primeiro paint (a meta theme-color existe antes deste script)
-      var tc = document.querySelector('meta[name="theme-color"]');
-      if (tc) tc.setAttribute('content', '#121212');
-    }
-  } catch (e) {}
-
-  // 1b) Boas-vindas já no 1º quadro: com nome no perfil, ou na 1ª visita.
-  //     A classe faz o CSS exibir a tela antes do app.js carregar; o app.js preenche textos e fecha.
-  try {
-    var nomePerfil = (localStorage.getItem('braun_nome_completo') || '').trim();
-    var jaVisitou = localStorage.getItem('braun_visited');
-    if (nomePerfil || !jaVisitou) {
-      document.documentElement.classList.add('welcome-on');
-      var tcw = document.querySelector('meta[name="theme-color"]');
-      if (tcw) tcw.setAttribute('content', '#00A97A');
-      // Trava de segurança: se o app.js falhar, a tela não prende o usuário
-      setTimeout(function () {
-        document.documentElement.classList.remove('welcome-on');
-        var w = document.getElementById('welcomeScreen');
-        if (w) w.style.display = 'none';
-      }, nomePerfil ? 8000 : 20000);
     }
   } catch (e) {}
 
   // 2) Versão + sinal de update pendente
-  var APP_VERSION = '2026.10.25a';
+  var APP_VERSION = '2026.10.31b';
   window.APP_VERSION = APP_VERSION;
 
   var storedVersion = null;
