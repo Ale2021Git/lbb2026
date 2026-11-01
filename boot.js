@@ -18,6 +18,19 @@
     }
   } catch (e) {}
 
+  // 1a) Splash (imagem) no 1º quadro. A welcome fica em espera (animações pausadas) até a splash sair.
+  try {
+    document.documentElement.classList.add('splash-on', 'splash-hold');
+    var tcs = document.querySelector('meta[name="theme-color"]');
+    if (tcs) tcs.setAttribute('content', '#00A97A');
+    // Trava de segurança: se o app.js falhar, a splash não prende o usuário
+    setTimeout(function () {
+      document.documentElement.classList.remove('splash-on', 'splash-hold');
+      var sp = document.getElementById('splash');
+      if (sp && sp.parentNode) sp.parentNode.removeChild(sp);
+    }, 4500);
+  } catch (e) {}
+
   // 1b) Boas-vindas já no 1º quadro: com nome no perfil, ou na 1ª visita.
   //     A classe faz o CSS exibir a tela antes do app.js carregar; o app.js preenche textos e fecha.
   try {
@@ -37,7 +50,7 @@
   } catch (e) {}
 
   // 2) Versão + sinal de update pendente
-  var APP_VERSION = '2026.10.25a';
+  var APP_VERSION = '2026.11.01b';
   window.APP_VERSION = APP_VERSION;
 
   var storedVersion = null;
