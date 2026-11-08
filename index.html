@@ -307,21 +307,20 @@
     .ramal-badge:active { transform: scale(0.95); background: var(--primary); color: white; }
     .ramal-secao { background: var(--primary); color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.75em; font-weight: 800; margin: 20px 0 5px 0; }
     .ramal-item.emergencia-destaque {
-        background: linear-gradient(90deg, rgba(231,76,60,0.12), rgba(231,76,60,0.03));
-        border-left: 4px solid #e74c3c; border-radius: 10px; padding: 12px 12px;
+        background: linear-gradient(90deg, rgba(112,48,160,0.12), rgba(112,48,160,0.03));
+        border-left: 4px solid var(--accent); border-radius: 10px; padding: 12px 12px;
         border-bottom: none; margin: 10px 0;
         animation: emergencia-pulse 2s infinite ease-in-out;
     }
-    .ramal-item.emergencia-destaque .ramal-nome { color: #e74c3c; font-weight: 900; font-size: 1.05em; }
-    .ramal-item.emergencia-destaque .ramal-nome::before { content: '\1F6A8  '; }
+    .ramal-item.emergencia-destaque .ramal-nome { color: var(--accent-txt); font-weight: 900; font-size: 1.05em; }
     .ramal-item.emergencia-destaque .ramal-badge {
-        background: #e74c3c; color: white; border-color: #e74c3c;
+        background: var(--accent); color: white; border-color: var(--accent);
         font-size: 1em; font-weight: 900; padding: 10px 18px;
         animation: emergencia-badge-pulse 1.5s infinite ease-in-out;
     }
-    @keyframes emergencia-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(231,76,60,0.4); } 50% { box-shadow: 0 0 0 8px rgba(231,76,60,0); } }
+    @keyframes emergencia-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(112,48,160,0.4); } 50% { box-shadow: 0 0 0 8px rgba(112,48,160,0); } }
     @keyframes emergencia-badge-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-    html.dark-mode .ramal-item.emergencia-destaque { background: linear-gradient(90deg, rgba(231,76,60,0.25), rgba(231,76,60,0.08)); }
+    html.dark-mode .ramal-item.emergencia-destaque { background: linear-gradient(90deg, rgba(112,48,160,0.35), rgba(112,48,160,0.12)); }
     .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
     .stat-card-big { background: var(--bg); padding: 20px 10px; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .stat-card-big.purple { border-color: var(--accent); }
@@ -380,7 +379,8 @@
     html.dark-mode .drawer-item:active { background: rgba(255,255,255,0.05); }
     .drawer-item.highlight { background: rgba(0,169,122,0.08); }
     html.dark-mode .drawer-item.highlight { background: rgba(0,169,122,0.15); }
-    .drawer-item-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; background: transparent !important; color: var(--text) !important; }
+    .drawer-item-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--primary) !important; color: #fff !important; }
+    .drawer-item-icon .material-symbols-outlined { font-size: 24px; }
     .drawer-item-label { flex: 1; font-weight: 700; font-size: 1.1rem; color: var(--text); }
     .drawer-item-sub { font-size: 0.75rem; font-weight: 500; opacity: 0.5; margin-top: 2px; color: var(--text); }
     .drawer-item-arrow { color: var(--text); opacity: 0.3; font-size: 20px; }
@@ -424,6 +424,118 @@
     .cartilha-btn-marcar { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 18px; font-weight: 800; font-size: 1em; width: 100%; cursor: pointer; margin-top: 20px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .cartilha-btn-marcar:active { transform: scale(0.97); }
     .cartilha-btn-marcar.marcado { background: var(--border); color: var(--text); }
+    /* ===== PADRÃO DE TELAS (mesmo estilo das Cartilhas) ===== */
+    .pg-wrap { max-width: 720px; margin: 0 auto; }
+    .pg-eyebrow { display: inline-block; color: var(--accent-txt); font-weight: 900; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; }
+    .pg-eyebrow::after { content: ''; display: block; width: 26px; height: 2px; background: var(--accent-txt); margin-top: 5px; }
+    .pg-h1 { margin: 10px 0 6px; font-weight: 900; font-size: 1.9rem; color: var(--primary); line-height: 1.1; }
+    .pg-lead { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.55; opacity: 0.8; }
+    .pg-ico { width: 46px; height: 46px; border-radius: 12px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .pg-ico.sm { width: 34px; height: 34px; border-radius: 10px; }
+    .pg-ico.sm .material-symbols-outlined { font-size: 20px; }
+    .pg-secao { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 10px; color: var(--accent-txt); font-weight: 900; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; }
+    .pg-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+    .pg-card h3 { margin: 0 0 4px; font-size: 1rem; font-weight: 800; }
+    .pg-card p { margin: 0; font-size: 0.9rem; line-height: 1.6; opacity: 0.85; }
+    .pg-linha { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; }
+    .pg-linha-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .pg-linha-txt b { font-weight: 800; font-size: 1rem; }
+    .pg-linha-txt small { font-size: 0.8rem; opacity: 0.7; line-height: 1.4; }
+    .pg-acao { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: var(--card); color: var(--text); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; cursor: pointer; font-family: inherit; }
+    .pg-acao:active { transform: scale(0.985); }
+    .pg-acao > span:nth-child(2) { flex: 1; min-width: 0; }
+    .pg-acao b { display: block; font-weight: 800; font-size: 1rem; }
+    .pg-acao small { display: block; font-size: 0.8rem; opacity: 0.7; margin-top: 2px; line-height: 1.4; }
+    .pg-acao .pg-seta { color: var(--accent-txt); flex-shrink: 0; }
+    .pg-form { display: flex; flex-direction: column; gap: 16px; margin-bottom: 8px; }
+    .pg-label { display: flex; align-items: center; gap: 6px; font-weight: 900; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-txt); margin-bottom: 7px; }
+    .pg-label .material-symbols-outlined { font-size: 18px; color: var(--primary); }
+    .pg-input { width: 100%; box-sizing: border-box; padding: 14px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; font-weight: 700; font-size: 1rem; }
+    .pg-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,169,122,0.22); }
+    .pg-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 18px; border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; font-family: inherit; margin-top: 14px; }
+    .pg-btn:active { transform: scale(0.98); }
+    .pg-btn.primario { background: var(--primary); color: #fff; }
+    .pg-btn.secundario { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .pg-busca { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); border-radius: 14px; background: var(--bg); padding: 0 12px; margin-bottom: 4px; }
+    .pg-busca:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,169,122,0.22); }
+    .pg-busca .material-symbols-outlined { color: var(--primary); }
+    .pg-busca input { flex: 1; min-width: 0; border: none; background: transparent; color: var(--text); font-family: inherit; font-weight: 600; font-size: 1rem; padding: 14px 0; outline: none; }
+    .pg-vazio { text-align: center; padding: 28px 10px; opacity: 0.7; font-weight: 600; }
+    /* Voz da resposta como cartão */
+    .voz-bloco { padding: 14px; border: 1.5px solid var(--border); border-radius: 16px; background: var(--card); margin-bottom: 10px; }
+    /* Ramais no padrão */
+    .ramal-secao { display: flex; align-items: center; gap: 10px; background: transparent; color: var(--accent-txt); padding: 0; border-radius: 0; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.14em; margin: 26px 0 10px 0; }
+    .ramal-qtd { margin-left: auto; font-size: 0.75rem; font-weight: 700; opacity: 0.6; letter-spacing: 0; }
+    .ramal-item { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; }
+    .ramal-item.emergencia-destaque { border: 1.5px solid var(--accent); border-left-width: 4px; border-radius: 14px; margin: 0 0 8px 0; }
+    .ramal-item.emergencia-destaque .ramal-nome { display: flex; align-items: center; gap: 6px; }
+    /* ===== CARTILHAS v2 — biblioteca, leitura e quiz por etapas ===== */
+    .ct-wrap { max-width: 720px; margin: 0 auto; }
+    .ct-oculto { display: none !important; }
+    .ct-eyebrow { display: inline-block; color: var(--accent-txt); font-weight: 900; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; }
+    .ct-eyebrow::after { content: ''; display: block; width: 26px; height: 2px; background: var(--accent-txt); margin-top: 5px; }
+    .ct-h1 { margin: 10px 0 6px; font-weight: 900; font-size: 1.9rem; color: var(--primary); line-height: 1.1; }
+    .ct-lead { margin: 0 0 18px; font-size: 0.95rem; line-height: 1.55; opacity: 0.8; }
+    .ct-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    .ct-stat { background: var(--bg); border: 1.5px solid var(--border); border-radius: 14px; padding: 12px 6px; text-align: center; }
+    .ct-stat b { display: block; font-size: 1.3rem; color: var(--primary); font-weight: 900; line-height: 1.1; }
+    .ct-stat span { font-size: 0.66rem; font-weight: 700; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+    .ct-barra { height: 8px; background: var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+    .ct-barra i { display: block; height: 100%; background: var(--primary); transition: width 0.5s; }
+    .ct-continuar { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: linear-gradient(135deg, var(--primary), #007F5C); color: #fff; border: none; border-radius: 16px; padding: 16px; cursor: pointer; font-family: inherit; }
+    .ct-continuar:active { transform: scale(0.985); }
+    .ct-c-ico { width: 46px; height: 46px; border-radius: 12px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ct-continuar small { display: block; font-size: 0.7rem; opacity: 0.9; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .ct-continuar strong { display: block; font-size: 1.05rem; margin-top: 2px; line-height: 1.25; }
+    .ct-parabens { display: flex; align-items: center; gap: 12px; background: var(--bg); border: 1.5px solid var(--accent); border-radius: 16px; padding: 14px 16px; color: var(--accent-txt); }
+    .ct-grupo-titulo { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 10px; }
+    .ct-grupo-titulo span:first-child { color: var(--accent-txt); font-weight: 900; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; }
+    .ct-grupo-titulo span:last-child { font-size: 0.75rem; font-weight: 700; opacity: 0.6; }
+    .ct-card { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; background: var(--card); color: var(--text); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; cursor: pointer; font-family: inherit; }
+    .ct-card:active { transform: scale(0.985); }
+    .ct-card-icon { width: 46px; height: 46px; border-radius: 12px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ct-card.lida .ct-card-icon { background: var(--accent); }
+    .ct-card-body { flex: 1; min-width: 0; display: block; }
+    .ct-card-titulo { display: block; font-weight: 800; font-size: 1rem; line-height: 1.25; }
+    .ct-card-resumo { display: block; font-size: 0.82rem; opacity: 0.7; margin-top: 3px; line-height: 1.4; }
+    .ct-card-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 0.72rem; font-weight: 700; opacity: 0.65; }
+    .ct-card-meta > span, .ct-leitura-meta > span { display: inline-flex; align-items: center; gap: 3px; }
+    .ct-card-meta .material-symbols-outlined, .ct-leitura-meta .material-symbols-outlined { font-size: 15px; }
+    .ct-card-status { color: var(--accent-txt); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; font-size: 0.65rem; font-weight: 800; gap: 2px; }
+    .ct-leitura-titulo { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 1.5rem; color: var(--primary); line-height: 1.15; margin: 10px 0 10px; }
+    .ct-leitura-titulo .material-symbols-outlined { font-size: 32px; flex-shrink: 0; }
+    .ct-leitura-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 0.8rem; font-weight: 700; opacity: 0.85; margin-bottom: 18px; }
+    .ct-chip { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
+    .ct-chip.lida { background: var(--accent); color: #fff; }
+    .ct-chip.nova { background: var(--border); color: var(--text); }
+    .cartilha-conteudo h4 { color: var(--accent-txt); font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase; margin: 22px 0 8px; font-weight: 900; }
+    .cartilha-conteudo ul { margin: 8px 0 12px; padding-left: 20px; }
+    .cartilha-conteudo li { margin-bottom: 6px; }
+    .ct-alerta { background: var(--bg); border-left: 5px solid var(--accent); padding: 14px; border-radius: 10px; margin: 16px 0; }
+    .ct-tabela { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 6px 0; }
+    .ct-tabela th, .ct-tabela td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .ct-tabela th { color: var(--accent-txt); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+    .ct-quiz { margin: 28px 0 8px; padding: 18px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 18px; }
+    .ct-quiz-titulo { margin: 10px 0 4px; font-size: 1.15rem; font-weight: 900; color: var(--primary); }
+    .ct-quiz-txt { margin: 0; font-size: 0.9rem; opacity: 0.8; line-height: 1.5; }
+    .ct-quiz-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .ct-quiz-pos { font-size: 0.78rem; font-weight: 800; opacity: 0.7; }
+    .ct-quiz-seg { display: flex; gap: 4px; margin-bottom: 16px; }
+    .ct-quiz-seg i { flex: 1; height: 5px; border-radius: 4px; background: var(--border); }
+    .ct-quiz-seg i.ok { background: var(--primary); }
+    .ct-quiz-seg i.erro { background: #e74c3c; }
+    .ct-quiz-seg i.atual { background: var(--accent); }
+    button.quiz-opcao { width: 100%; text-align: left; color: var(--text); font-family: inherit; line-height: 1.4; }
+    .quiz-opcao.desabilitada.certa, .quiz-opcao.desabilitada.errada { opacity: 1; }
+    .ct-resultado { text-align: center; padding: 8px 0 4px; }
+    .ct-resultado .nota { font-size: 2.8rem; font-weight: 900; color: var(--primary); line-height: 1.1; }
+    .ct-resultado p { margin: 6px 0 0; font-weight: 600; }
+    .ct-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px 18px; border: none; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; font-family: inherit; margin-top: 12px; }
+    .ct-btn:active { transform: scale(0.98); }
+    .ct-btn.primario { background: var(--primary); color: #fff; }
+    .ct-btn.roxo { background: var(--accent); color: #fff; }
+    .ct-btn.secundario { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .ct-btn.texto { background: transparent; color: var(--accent-txt); }
     .cartilha-quiz { margin-top: 25px; border-top: 2px solid var(--border); padding-top: 20px; }
     .cartilha-quiz h4 { color: var(--primary); margin: 0 0 15px 0; font-size: 1.1em; }
     .quiz-pergunta { font-weight: 700; margin: 12px 0 6px 0; }
@@ -575,6 +687,97 @@
         cursor: pointer; flex-shrink: 0;
     }
 
+    /* ===== ETAPA 2 — Novidades, Colaborador do Mês, Meus Pedidos, Conquistas ===== */
+    .pg-secao.ic { justify-content: flex-start; gap: 10px; }
+    .pg-ico.big { width: 72px; height: 72px; border-radius: 20px; }
+    .pg-ico.big .material-symbols-outlined { font-size: 40px; }
+    .pg-ico.roxo { background: var(--accent); }
+    .pg-ico.cinza { background: var(--border); color: var(--text); opacity: 0.6; }
+    .pg-btn.texto { background: transparent; color: var(--accent-txt); width: auto; padding: 8px 0; margin-top: 0; justify-content: flex-start; }
+    .ct-stats.dois { grid-template-columns: repeat(2, 1fr); }
+    .novidades-timeline { gap: 10px; margin-top: 12px; }
+    .novidade-card { display: flex; gap: 14px; align-items: flex-start; background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; }
+    .novidade-card .nov-body { flex: 1; min-width: 0; }
+    .novidade-card .novidade-titulo { font-weight: 800; font-size: 1rem; flex-wrap: wrap; line-height: 1.3; }
+    .novidade-card .novidade-desc { font-size: 0.88rem; opacity: 0.75; margin-top: 4px; line-height: 1.5; }
+    .novidade-card .novidade-data { font-size: 0.72rem; font-weight: 700; opacity: 0.55; margin-top: 8px; display: block; }
+    .novidade-card .badge-novo { background: var(--accent); color: #fff; font-size: 0.6rem; letter-spacing: 0.08em; margin-left: 0; }
+    .novidade-card .link-cartilha { color: var(--accent-txt); font-size: 0.9rem; }
+    .conq-status { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; font-size: 0.75rem; font-weight: 800; color: var(--accent-txt); }
+    .conq-status .material-symbols-outlined { font-size: 16px; }
+    .pg-card.bloqueada .conq-status { color: inherit; opacity: 0.55; }
+    .voto-dados { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; }
+    .voto-dados span { display: block; font-size: 0.68rem; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-txt); }
+    .voto-dados strong { display: block; font-size: 1.05rem; margin-top: 2px; }
+    .pedido-info { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; font-size: 0.9rem; line-height: 1.9; margin-bottom: 6px; }
+    .pedido-info strong { color: var(--accent-txt); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 900; }
+    .pedido-item-row { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; }
+    .pedido-item-nome { font-weight: 800; font-size: 0.95rem; }
+    .pedido-item-row input { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 6px; font-size: 0.9rem; }
+    .pedido-botoes { gap: 10px; margin-top: 20px; align-items: stretch; }
+    /* ===== ETAPA 3 — Pesquisar Escala, Estatísticas, Programar Férias ===== */
+    .ct-stat.roxo b { color: var(--accent-txt); }
+    .ct-stat.verde b { color: var(--primary); }
+    .stat-legenda { font-size: 0.8rem; font-weight: 700; opacity: 0.7; margin: -6px 0 6px; }
+    .stat-feriados { flex-direction: column; align-items: stretch; gap: 0; padding: 4px 14px; margin-top: 4px; }
+    .stat-fer { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .stat-fer:last-child { border-bottom: none; }
+    .stat-fer-data { font-weight: 900; color: var(--accent-txt); min-width: 44px; }
+    .stat-fer-nome { flex: 1; min-width: 0; font-weight: 600; }
+    .chip { padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+    .chip.roxo { background: var(--accent); color: #fff; }
+    .chip.verde { background: var(--primary); color: #fff; }
+    .pesq-linha { display: flex; gap: 10px; align-items: center; }
+    .pesq-linha .pg-input { flex: 1; min-width: 60px; }
+    .pesq-result { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px 16px; min-height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
+    .pesq-result #resultadoTexto { font-weight: 800; font-size: 1.15rem; color: var(--text); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .pesq-result #resultadoDetalhe { font-size: 0.85rem; opacity: 0.7; }
+    .pg-ico.big .icone-folga, .pg-ico.big .icone-trabalho, .pg-ico.big .icone-ferias { font-size: 40px; }
+    .pg-btn.btn-ouvir { padding: 14px 18px; border-radius: 16px; flex: none; margin-top: 12px; }
+    .btn-ouvir.parar { background: var(--accent); }
+    .sugestao-ferias-item { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 10px; cursor: pointer; }
+    .sugestao-ferias-item.destaque { border-color: var(--accent); }
+    .sugestao-ferias-item:active { transform: scale(0.985); }
+    .sug-melhor { display: inline-flex; align-items: center; gap: 4px; color: var(--accent-txt); font-size: 0.68rem; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+    .sug-melhor .material-symbols-outlined { font-size: 16px; }
+    .sug-topo { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .sug-datas { font-weight: 800; font-size: 1rem; }
+    .sug-chip { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
+    .sug-chip.ganho { background: var(--primary); color: #fff; }
+    .sug-chip.neutro { background: var(--border); color: var(--text); }
+    .sug-info { font-size: 0.85rem; opacity: 0.8; margin-top: 8px; }
+    .sug-retorno { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--accent-txt); font-weight: 700; }
+    .sug-retorno .material-symbols-outlined { font-size: 18px; }
+    .pg-btn.perigo { background: transparent; color: var(--accent-txt); border: 2px solid var(--accent); }
+    .ferias-duracao { display: flex; gap: 10px; align-items: stretch; margin-top: 10px; }
+    .ferias-duracao .pg-input { flex: 1; text-align: center; }
+    .ferias-duracao .pg-btn { width: auto; margin-top: 0; padding: 0 22px; }
+    /* ===== Informações do dia ===== */
+    .lote-box { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px 60px 16px 16px; margin-bottom: 4px; text-align: center; position: relative; }
+    .lote-value { color: var(--primary); }
+    .lote-copy { width: 40px; height: 40px; border-radius: 12px; background: var(--primary); color: #fff; right: 10px; display: flex; align-items: center; justify-content: center; padding: 0; }
+    textarea.pg-input { resize: vertical; font-weight: 600; line-height: 1.5; }
+    /* ===== CALENDÁRIO v2 — resumo do mês, legenda, fim de semana e feriado ===== */
+    .mes-nav-title { text-transform: none; }
+    .mes-container { min-height: 440px; }
+    .mes-resumo { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 8px 6px 0 6px; }
+    .mes-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; background: var(--bg); border: 1.5px solid var(--border); color: var(--text); }
+    .mes-chip b { font-weight: 900; font-size: 0.95rem; }
+    .mes-chip.t b { color: var(--accent-txt); }
+    .mes-chip.f b { color: var(--primary); }
+    .mes-chip.h b, .mes-chip.v b { color: var(--accent-txt); }
+    .grid { gap: 8px 7px; padding-top: 10px; }
+    .grid .dia-label:nth-child(7), .grid .dia-label:nth-child(8) { color: var(--accent-txt); opacity: 1; }
+    .FERIADO { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    .mes-legenda { position: absolute; left: 12px; right: 12px; bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: center; font-size: 0.68rem; font-weight: 700; color: var(--text); opacity: 0.85; }
+    .mes-legenda > span { display: inline-flex; align-items: center; gap: 5px; }
+    .leg-sw { width: 15px; height: 15px; border-radius: 5px; border: 2px solid transparent; display: inline-block; flex-shrink: 0; }
+    .leg-sw.hoje-sw { background: var(--accent); border-color: #fff; box-shadow: 0 0 0 1.5px var(--accent); }
+    .leg-sw.ferias-sw { border: 2px dashed var(--ferias); background: transparent; }
+    .leg-nota { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); border: 1.5px solid #fff; box-shadow: 0 0 0 1px var(--border); display: inline-block; flex-shrink: 0; }
+    .leg-fer { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 2px; font-weight: 900; }
+    @keyframes mesIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .mes-container { animation: mesIn 0.35s ease both; }
     @media (max-width: 480px) {
         body { box-shadow: none; }
     }
@@ -719,73 +922,73 @@
     <div class="drawer-menu">
         <div class="drawer-section-label">Perfil</div>
         <button class="drawer-item" data-action="open-perfil">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128100;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">person</span></div>
             <div><div class="drawer-item-label">Meu Perfil</div><div class="drawer-item-sub">Nome · Matrícula · Turma · Ano · Setor</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Contatos</div>
         <button class="drawer-item" data-action="open-ramais">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128222;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">call</span></div>
             <div><div class="drawer-item-label">Ramais Úteis</div><div class="drawer-item-sub">Contatos internos</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Colaborador</div>
         <button class="drawer-item" data-action="open-colaborador">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127942;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">emoji_events</span></div>
             <div><div class="drawer-item-label">Colaborador do Mês</div><div class="drawer-item-sub">Votação mensal</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" data-action="open-pedidos">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128230;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">inventory_2</span></div>
             <div><div class="drawer-item-label">Meus Pedidos</div><div class="drawer-item-sub">Uniformes e EPIs</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" data-action="open-ferias">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127958;&#65039;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">beach_access</span></div>
             <div><div class="drawer-item-label">Programar Férias</div><div class="drawer-item-sub">Período e sugestão de datas</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Aprendizado</div>
         <button class="drawer-item highlight" data-action="open-cartilhas">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128216;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">menu_book</span></div>
             <div><div class="drawer-item-label">Cartilhas</div><div class="drawer-item-sub">Como usar · Kaizen · 5S · PDCA · Qualidade · Segurança · BPF · Sustentabilidade · Compliance · Incêndio</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Conquistas</div>
         <button class="drawer-item" data-action="open-conquistas">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127885;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">military_tech</span></div>
             <div><div class="drawer-item-label">Minhas Conquistas</div><div class="drawer-item-sub">Selos e progresso</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Novidades</div>
         <button class="drawer-item" data-action="open-novidades">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128276;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">notifications</span></div>
             <div><div class="drawer-item-label">Novidades</div><div class="drawer-item-sub">O que mudou no app</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <div class="drawer-section-label">Ferramentas</div>
         <button class="drawer-item" data-action="open-pesquisa">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128269;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">search</span></div>
             <div><div class="drawer-item-label">Pesquisar Escala</div><div class="drawer-item-sub">Consulte qualquer data e turma</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" data-action="open-stats">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128202;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">bar_chart</span></div>
             <div><div class="drawer-item-label">Estatísticas da Escala</div><div class="drawer-item-sub">Dias trabalhados e folgas</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" data-action="open-config">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#9881;&#65039;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">settings</span></div>
             <div><div class="drawer-item-label">Configurações</div><div class="drawer-item-sub">Exportar · Backup · Preferências</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item no-arrow" data-action="toggle-dark">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#127763;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">dark_mode</span></div>
             <div><div class="drawer-item-label">Modo Escuro</div><div class="drawer-item-sub">Alterna o tema</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
         <button class="drawer-item" data-action="open-privacy">
-            <div class="drawer-item-icon" aria-hidden="true" style="font-size:24px;">&#128737;&#65039;</div>
+            <div class="drawer-item-icon" aria-hidden="true"><span class="material-symbols-outlined">shield</span></div>
             <div><div class="drawer-item-label">Privacidade</div><div class="drawer-item-sub">Política de dados</div></div>
             <span class="material-symbols-outlined drawer-item-arrow" aria-hidden="true">chevron_right</span>
         </button>
@@ -807,125 +1010,134 @@
 </button>
 
 <div id="novidadesCard" class="bottom-modal" role="dialog" aria-label="Novidades" aria-modal="true">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <h2 style="font-weight:800;color:var(--primary);margin:0;">&#128276; Novidades</h2>
-        <button data-action="marcar-novidades" style="background:none;border:none;color:var(--primary);font-weight:700;font-size:0.8em;cursor:pointer;">Marcar todas como lidas</button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Atualizações</div>
+        <h2 class="pg-h1">Novidades</h2>
+        <p class="pg-lead">Fique por dentro das últimas atualizações e conteúdos.</p>
+        <button data-action="marcar-novidades" class="pg-btn texto"><span class="material-symbols-outlined" aria-hidden="true">done_all</span>Marcar todas como lidas</button>
+        <div id="novidadesLista" class="novidades-timeline"></div>
     </div>
-    <div class="cartilha-sub">Fique por dentro das últimas atualizações e conteúdos.</div>
-    <div id="novidadesLista" class="novidades-timeline"></div>
-    <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
 </div>
 
 <div id="cartilhasCard" class="bottom-modal" role="dialog" aria-label="Cartilhas" aria-modal="true">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-        <h2 style="font-weight:800;color:var(--primary);margin:0;">&#128216; Cartilhas</h2>
-        <span style="font-size:0.75em; opacity:0.5; font-weight:600;" id="cartilhaVersao">v1.0</span>
+    <div class="ct-wrap">
+        <div id="ctLista">
+            <div class="ct-eyebrow">Aprendizado</div>
+            <h2 class="ct-h1">Cartilhas</h2>
+            <p class="ct-lead">Conteúdos objetivos sobre melhoria contínua, qualidade, segurança e cultura Braun. Leia, teste seus conhecimentos no quiz e conquiste selos.</p>
+            <div id="ctResumo"></div>
+            <div id="ctContinuar"></div>
+            <div id="ctGrupos"></div>
+            <div class="cartilha-sub" id="cartilhaVersao" style="margin:22px 0 0;text-align:center;font-size:0.75em;opacity:0.5;">Biblioteca de cartilhas · v2.0</div>
+        </div>
+        <div id="ctLeitura" class="ct-oculto"></div>
     </div>
-    <div class="cartilha-sub">Aprenda sobre melhorias contínuas, qualidade, segurança, compliance, incêndio e muito mais.</div>
-    <div class="cartilha-progresso">
-        <span style="font-weight:600; font-size:0.85em;">Progresso</span>
-        <div class="cartilha-progresso-bar"><div class="cartilha-progresso-bar-fill" id="progressoFill" style="width:0%;"></div></div>
-        <span class="cartilha-progresso-text" id="progressoTexto">0/10</span>
-    </div>
-    <div class="cartilha-tabs" id="cartilhaTabs"></div>
-    <div id="cartilhaPanels"></div>
-    <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
 </div>
 
 <div id="infoCard" class="bottom-modal" role="dialog" aria-label="Informações do dia" aria-modal="true">
-    <div id="card-data" style="font-weight:800;color:var(--primary);font-size:1.3em;margin-bottom:10px;"></div>
-    <div class="lote-box">
-        <span class="lote-label">Lote Sugerido (YYWWD)</span>
-        <div id="lote-display" class="lote-value">------</div>
-        <button class="material-symbols-outlined lote-copy" data-action="copy-lote" aria-label="Copiar lote">content_copy</button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Dia selecionado</div>
+        <h2 class="pg-h1" id="card-data"></h2>
+        <p class="pg-lead" id="card-dia-semana">Lote sugerido e anotação deste dia.</p>
+        <div class="pg-secao ic"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">qr_code_2</span></span><span>Lote sugerido (YYWWD)</span></div>
+        <div class="lote-box">
+            <div id="lote-display" class="lote-value">------</div>
+            <button class="material-symbols-outlined lote-copy" data-action="copy-lote" aria-label="Copiar lote">content_copy</button>
+        </div>
+        <div class="pg-secao ic"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">edit_note</span></span><span>Anotação</span></div>
+        <label for="noteInput" class="sr-only">Anotação</label>
+        <textarea id="noteInput" class="pg-input" placeholder="Sua anotação..." rows="5"></textarea>
+        <button data-action="save-nota" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">check</span>Salvar</button>
     </div>
-    <label for="noteInput" class="sr-only">Anotação</label>
-    <textarea id="noteInput" placeholder="Sua anotação..." rows="5" style="width:100%;border-radius:20px;padding:18px;box-sizing:border-box;border:2.5px solid var(--border);font-family:inherit;background:var(--bg);color:var(--text);outline:none;"></textarea>
-    <button data-action="save-nota" class="btn-modal-salvar">SALVAR</button>
 </div>
 
 <div id="configCard" class="bottom-modal" role="dialog" aria-label="Configurações" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Configurações</h2>
-    <div class="config-item">
-        <span class="config-label">Saudação Minimalista<br><small style="font-weight:400;opacity:0.7;">Não exibe trabalho/folga ao entrar.</small></span>
-        <label class="switch"><input type="checkbox" id="minimalGreetingToggle" aria-label="Saudação minimalista"><span class="slider" aria-hidden="true"></span></label>
-    </div>
-    <div class="config-item">
-        <span class="config-label">Resposta por voz<br><small style="font-weight:400;opacity:0.7;">Ler resultado automaticamente.</small></span>
-        <label class="switch"><input type="checkbox" id="voiceResponseToggle" aria-label="Resposta por voz" checked><span class="slider" aria-hidden="true"></span></label>
-    </div>
-    <div class="voz-bloco">
-        <span class="config-label">Voz da resposta<br><small style="font-weight:400;opacity:0.7;">Quem lê o resultado da pesquisa.</small></span>
-        <div class="voz-seg" role="radiogroup" aria-label="Tipo de voz">
-            <button type="button" id="vozFem" class="voz-opt" role="radio" aria-checked="true" data-action="voz-fem"><span class="material-symbols-outlined" aria-hidden="true">woman</span> Feminina</button>
-            <button type="button" id="vozMasc" class="voz-opt" role="radio" aria-checked="false" data-action="voz-masc"><span class="material-symbols-outlined" aria-hidden="true">man</span> Masculina</button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Preferências</div>
+        <h2 class="pg-h1">Configurações</h2>
+        <p class="pg-lead">Ajuste o app ao seu jeito e mantenha seus dados seguros.</p>
+        <div class="pg-secao"><span>Geral</span></div>
+        <div class="pg-linha">
+            <span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">visibility_off</span></span>
+            <span class="pg-linha-txt"><b>Saudação minimalista</b><small>Não exibe trabalho/folga ao entrar.</small></span>
+            <label class="switch"><input type="checkbox" id="minimalGreetingToggle" aria-label="Saudação minimalista"><span class="slider" aria-hidden="true"></span></label>
         </div>
-        <select id="vozEspecifica" class="voz-select" aria-label="Voz do aparelho"></select>
-        <span id="vozInfo" class="voz-info" aria-live="polite"></span>
-        <button type="button" data-action="testar-voz" class="btn-config" style="margin-top:0;"><span class="material-symbols-outlined" aria-hidden="true">record_voice_over</span> TESTAR VOZ</button>
+        <div class="pg-linha">
+            <span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">volume_up</span></span>
+            <span class="pg-linha-txt"><b>Resposta por voz</b><small>Ler resultado automaticamente.</small></span>
+            <label class="switch"><input type="checkbox" id="voiceResponseToggle" aria-label="Resposta por voz" checked><span class="slider" aria-hidden="true"></span></label>
+        </div>
+        <div class="pg-secao"><span>Voz da resposta</span></div>
+        <div class="voz-bloco">
+            <div class="voz-seg" role="radiogroup" aria-label="Tipo de voz">
+                <button type="button" id="vozFem" class="voz-opt" role="radio" aria-checked="true" data-action="voz-fem"><span class="material-symbols-outlined" aria-hidden="true">woman</span> Feminina</button>
+                <button type="button" id="vozMasc" class="voz-opt" role="radio" aria-checked="false" data-action="voz-masc"><span class="material-symbols-outlined" aria-hidden="true">man</span> Masculina</button>
+            </div>
+            <select id="vozEspecifica" class="voz-select" aria-label="Voz do aparelho"></select>
+            <span id="vozInfo" class="voz-info" aria-live="polite"></span>
+            <button type="button" data-action="testar-voz" class="pg-btn secundario" style="margin-top:0;"><span class="material-symbols-outlined" aria-hidden="true">record_voice_over</span>Testar voz</button>
+        </div>
+        <div class="pg-secao"><span>Dados e backup</span></div>
+        <button type="button" data-action="export-ics" class="pg-acao"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span></span><span><b>Exportar escala (.ICS)</b><small>Calendário para Google, Outlook ou Apple.</small></span><span class="material-symbols-outlined pg-seta" aria-hidden="true">chevron_right</span></button>
+        <button type="button" data-action="export-backup" class="pg-acao"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">cloud_upload</span></span><span><b>Exportar backup (JSON)</b><small>Guarde seus dados em um arquivo.</small></span><span class="material-symbols-outlined pg-seta" aria-hidden="true">chevron_right</span></button>
+        <button type="button" data-action="import-backup" class="pg-acao"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">cloud_download</span></span><span><b>Importar backup (JSON)</b><small>Restaure seus dados a partir de um arquivo.</small></span><span class="material-symbols-outlined pg-seta" aria-hidden="true">chevron_right</span></button>
+        <input type="file" id="backupFileInput" accept="application/json,.json" style="display:none">
     </div>
-    <button data-action="export-ics" class="btn-config"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span> EXPORTAR ESCALA (.ICS)</button>
-    <button data-action="export-backup" class="btn-config"><span class="material-symbols-outlined" aria-hidden="true">cloud_upload</span> EXPORTAR BACKUP (JSON)</button>
-    <button data-action="import-backup" class="btn-config"><span class="material-symbols-outlined" aria-hidden="true">cloud_download</span> IMPORTAR BACKUP (JSON)</button>
-    <input type="file" id="backupFileInput" accept="application/json,.json" style="display:none">
-    <button data-action="close-modals" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;cursor:pointer;">FECHAR</button>
 </div>
 
 <div id="feriasCard" class="bottom-modal" role="dialog" aria-label="Programar férias" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏖️ Programar Férias</h2>
-    <div style="display:flex;flex-direction:column;gap:15px;">
-        <div>
-            <label for="feriasInicio" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE INÍCIO</label>
-            <input type="date" id="feriasInicio" class="input-date" style="width:100%;box-sizing:border-box;">
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Planejamento</div>
+        <h2 class="pg-h1">Programar Férias</h2>
+        <p class="pg-lead">Informe o período das suas férias ou deixe o app sugerir as melhores datas para a sua escala.</p>
+        <div class="pg-secao"><span>Período</span></div>
+        <div class="pg-form">
+            <div><label class="pg-label" for="feriasInicio"><span class="material-symbols-outlined" aria-hidden="true">flight_takeoff</span>Data de início</label><input type="date" id="feriasInicio" class="input-date pg-input"></div>
+            <div><label class="pg-label" for="feriasFim"><span class="material-symbols-outlined" aria-hidden="true">flight_land</span>Data de término</label><input type="date" id="feriasFim" class="input-date pg-input"></div>
         </div>
-        <div>
-            <label for="feriasFim" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">DATA DE TÉRMINO</label>
-            <input type="date" id="feriasFim" class="input-date" style="width:100%;box-sizing:border-box;">
+        <button data-action="save-ferias" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">check</span>Salvar período</button>
+        <button data-action="confirm-clear-ferias" class="pg-btn perigo"><span class="material-symbols-outlined" aria-hidden="true">delete</span>Limpar férias</button>
+        <div class="pg-secao ic"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">lightbulb</span></span><span>Qual a melhor data?</span></div>
+        <p class="pg-lead" style="font-size:0.88rem;">Escolha o mês e quantos dias você tem. O app mostra as datas que rendem <strong>mais dias em casa</strong> respeitando sua escala.</p>
+        <label class="pg-label" for="feriasMes"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Mês</label>
+        <select id="feriasMes" class="pg-input"></select>
+        <div class="ferias-duracao">
+            <input type="number" id="feriasDuracao" class="pg-input" min="5" max="60" value="30" aria-label="Quantidade de dias">
+            <button data-action="sugerir-ferias" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>Sugerir</button>
         </div>
-        <button data-action="save-ferias" class="btn-modal-salvar">SALVAR PERÍODO</button>
-        <button data-action="confirm-clear-ferias" style="background:#ffefef;color:#ff6b6b;border:1px solid #ff6b6b;padding:12px;border-radius:18px;font-weight:800;width:100%;cursor:pointer;">LIMPAR FÉRIAS</button>
+        <div id="sugestoesFerias" style="margin-top:14px;"></div>
     </div>
-
-    <div style="margin-top:25px;padding-top:20px;border-top:2px solid var(--border);">
-        <div style="font-weight:900;color:var(--primary);font-size:1.05em;margin-bottom:6px;">💡 Qual a melhor data?</div>
-        <p style="font-size:0.82em;opacity:0.75;margin:0 0 14px 0;line-height:1.5;">
-            Escolha o mês e quantos dias você tem. O app mostra as datas que rendem <strong>mais dias em casa</strong> respeitando sua escala.
-        </p>
-        <div style="margin-bottom:10px;">
-            <select id="feriasMes" style="width:100%;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-family:inherit;font-size:0.95em;"></select>
-        </div>
-        <div style="display:flex;gap:10px;margin-bottom:14px;align-items:stretch;">
-            <input type="number" id="feriasDuracao" min="5" max="60" value="30" style="flex:1;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-family:inherit;text-align:center;font-size:1em;">
-            <button data-action="sugerir-ferias" style="background:var(--primary);color:white;border:none;padding:0 22px;border-radius:18px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:0.9em;">Sugerir</button>
-        </div>
-        <div id="sugestoesFerias"></div>
-    </div>
-
-    <button data-action="close-modals" style="background:var(--border);color:var(--text);border:none;padding:15px;border-radius:22px;font-weight:800;width:100%;margin-top:20px;cursor:pointer;">VOLTAR</button>
 </div>
 
 <div id="statsCard" class="bottom-modal" role="dialog" aria-label="Estatísticas" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Estatísticas Detalhadas</h2>
-    <div id="stats-content"></div>
-    <button data-action="close-modals" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:22px;font-weight:800;width:100%;margin-top:25px;font-size:1.1em;cursor:pointer;">VOLTAR</button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Escala</div>
+        <h2 class="pg-h1">Estatísticas</h2>
+        <p class="pg-lead" id="statsLead">Resumo do ano para a sua escala.</p>
+        <div id="stats-content"></div>
+    </div>
 </div>
 
 <div id="ramaisCard" class="bottom-modal" role="dialog" aria-label="Ramais úteis" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:10px;">Ramais Úteis</h2>
-    <div class="ramal-secao">URGÊNCIAS &amp; SERVIÇOS</div>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Contatos</div>
+        <h2 class="pg-h1">Ramais Úteis</h2>
+        <p class="pg-lead">Toque em um ramal para ligar. Use a busca para achar por setor, nome ou número.</p>
+        <div class="pg-busca"><span class="material-symbols-outlined" aria-hidden="true">search</span><input type="search" id="ramaisBusca" placeholder="Buscar setor, nome ou ramal" aria-label="Buscar ramal"></div>
+        <div class="ramal-secao"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">emergency</span></span><span>URGÊNCIAS &amp; SERVIÇOS</span><span class="ramal-qtd"></span></div>
     <div class="ramal-item"><span class="ramal-nome">Portaria Frente / Lateral</span><div class="ramal-numeros-container"><a href="tel:26023211" class="ramal-badge">3211</a> <a href="tel:26023214" class="ramal-badge">3214</a></div></div>
-    <div class="ramal-item emergencia-destaque"><span class="ramal-nome">Emergência</span><div class="ramal-numeros-container"><a href="tel:26023222" class="ramal-badge">3222</a></div></div>
+    <div class="ramal-item emergencia-destaque"><span class="ramal-nome"><span class="material-symbols-outlined" aria-hidden="true">emergency</span>Emergência</span><div class="ramal-numeros-container"><a href="tel:26023222" class="ramal-badge">3222</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Serviço Médico</span><div class="ramal-numeros-container"><a href="tel:26023160" class="ramal-badge">3160</a> <a href="tel:26023245" class="ramal-badge">3245</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Segurança do Trabalho</span><div class="ramal-numeros-container"><a href="tel:26023356" class="ramal-badge">3356</a> <a href="tel:26023144" class="ramal-badge">3144</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Cozinha / Padaria / Restaurante</span><div class="ramal-numeros-container"><a href="tel:26023297" class="ramal-badge">3297</a> <a href="tel:26023532" class="ramal-badge">3532</a> <a href="tel:26023470" class="ramal-badge">3470</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Banco Itaú</span><div class="ramal-numeros-container"><a href="tel:26023110" class="ramal-badge">3110</a></div></div>
-    <div class="ramal-secao">ADMINISTRAÇÃO &amp; RH</div>
+        <div class="ramal-secao"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span></span><span>ADMINISTRAÇÃO &amp; RH</span><span class="ramal-qtd"></span></div>
     <div class="ramal-item"><span class="ramal-nome">DP (Depto Pessoal)</span><div class="ramal-numeros-container"><a href="tel:26023357" class="ramal-badge">3357</a> <a href="tel:26023396" class="ramal-badge">3396</a> <a href="tel:26023521" class="ramal-badge">3521</a> <a href="tel:26023397" class="ramal-badge">3397</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">RH Geral / Nanda / Figueredo</span><div class="ramal-numeros-container"><a href="tel:26023123" class="ramal-badge">3123</a> <a href="tel:26023279" class="ramal-badge">3279</a> <a href="tel:26023483" class="ramal-badge">3483</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Administração (Rosimar/Rubens)</span><div class="ramal-numeros-container"><a href="tel:26023436" class="ramal-badge">3436</a> <a href="tel:26023269" class="ramal-badge">3269</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Administr. (Adriana/Rafael)</span><div class="ramal-numeros-container"><a href="tel:26023467" class="ramal-badge">3467</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Bradesco Saúde / CoopBraun</span><div class="ramal-numeros-container"><a href="tel:26023180" class="ramal-badge">3180</a> <a href="tel:26023284" class="ramal-badge">3284</a> <a href="tel:26023298" class="ramal-badge">3298</a> <a href="tel:976218473" class="ramal-badge" style="background:#25D366;color:white;border-color:#25D366;">97621-8473</a></div></div>
-    <div class="ramal-secao">ECOFLAC - PRODUÇÃO &amp; QUALIDADE</div>
+        <div class="ramal-secao"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">precision_manufacturing</span></span><span>ECOFLAC - PRODUÇÃO &amp; QUALIDADE</span><span class="ramal-qtd"></span></div>
     <div class="ramal-item"><span class="ramal-nome">Eng. de Produção / Ricardo</span><div class="ramal-numeros-container"><a href="tel:26023174" class="ramal-badge">3174</a> <a href="tel:26023237" class="ramal-badge">3237</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Controle (Biol/Fis/Quim)</span><div class="ramal-numeros-container"><a href="tel:26023430" class="ramal-badge">3430</a> <a href="tel:26023343" class="ramal-badge">3343</a> <a href="tel:26023429" class="ramal-badge">3429</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Envasamento 1 ao 5</span><div class="ramal-numeros-container"><a href="tel:26023431" class="ramal-badge">3431</a> <a href="tel:26023422" class="ramal-badge">3422</a> <a href="tel:26023434" class="ramal-badge">3434</a> <a href="tel:26023561" class="ramal-badge">3561</a> <a href="tel:26023713" class="ramal-badge">3713</a></div></div>
@@ -933,39 +1145,47 @@
     <div class="ramal-item"><span class="ramal-nome">Rotulagem / Robô</span><div class="ramal-numeros-container"><a href="tel:26023423" class="ramal-badge">3423</a> <a href="tel:26023571" class="ramal-badge">3571</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Área Branca Fábrica 2</span><div class="ramal-numeros-container"><a href="tel:26023270" class="ramal-badge">3270</a> <a href="tel:26023267" class="ramal-badge">3267</a> <a href="tel:26023260" class="ramal-badge">3260</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Área Branca Fábrica 3</span><div class="ramal-numeros-container"><a href="tel:26023164" class="ramal-badge">3164</a> <a href="tel:26023273" class="ramal-badge">3273</a></div></div>
-    <div class="ramal-secao">MANUTENÇÃO &amp; APOIO</div>
+        <div class="ramal-secao"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">build</span></span><span>MANUTENÇÃO &amp; APOIO</span><span class="ramal-qtd"></span></div>
     <div class="ramal-item"><span class="ramal-nome">Manutenção (Central/Injeção)</span><div class="ramal-numeros-container"><a href="tel:26023426" class="ramal-badge">3426</a> <a href="tel:26023363" class="ramal-badge">3363</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Mnt Elétrica / Mecânica</span><div class="ramal-numeros-container"><a href="tel:26023364" class="ramal-badge">3364</a> <a href="tel:26023365" class="ramal-badge">3365</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Utilidades / Osmose / Moinho</span><div class="ramal-numeros-container"><a href="tel:26023427" class="ramal-badge">3427</a> <a href="tel:26023529" class="ramal-badge">3529</a> <a href="tel:26023433" class="ramal-badge">3433</a><a href="tel:26023506" class="ramal-badge">3506</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Preparo / Ferramentaria</span><div class="ramal-numeros-container"><a href="tel:26023421" class="ramal-badge">3421</a> <a href="tel:26023165" class="ramal-badge">3165</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Almoxarifado / Calibração</span><div class="ramal-numeros-container"><a href="tel:26023210" class="ramal-badge">3210</a> <a href="tel:26023186" class="ramal-badge">3186</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Expedição 2 / Quarentena</span><div class="ramal-numeros-container"><a href="tel:26023438" class="ramal-badge">3438</a> <a href="tel:26023342" class="ramal-badge">3342</a></div></div>
-    <div class="ramal-secao">CONTATOS NOMINAIS &amp; OUTROS</div>
+        <div class="ramal-secao"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">contacts</span></span><span>CONTATOS NOMINAIS &amp; OUTROS</span><span class="ramal-qtd"></span></div>
     <div class="ramal-item"><span class="ramal-nome">Guido Gerente / Davis</span><div class="ramal-numeros-container"><a href="tel:26023361" class="ramal-badge">3361</a> <a href="tel:26023478" class="ramal-badge">3478</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Idael / Leandro ou Hélio</span><div class="ramal-numeros-container"><a href="tel:26023165" class="ramal-badge">3165</a> <a href="tel:26023241" class="ramal-badge">3241</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Alexandre / Alexandre Senna</span><div class="ramal-numeros-container"><a href="tel:26023423" class="ramal-badge">3423</a> <a href="tel:26023525" class="ramal-badge">3525</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Doraci / Universal</span><div class="ramal-numeros-container"><a href="tel:26023155" class="ramal-badge">3155</a> <a href="tel:26023261" class="ramal-badge">3261</a></div></div>
     <div class="ramal-item"><span class="ramal-nome">Empilhadeira (Ramal/Celular)</span><div class="ramal-numeros-container"><a href="tel:26023406" class="ramal-badge">3406</a> <a href="tel:982294329" class="ramal-badge">98229-4329</a></div></div>
-    <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
+        <div id="ramaisVazio" class="pg-vazio ct-oculto">Nenhum ramal encontrado.</div>
+    </div>
 </div>
 
 <div id="privacyCard" class="bottom-modal" role="dialog" aria-label="Política de Privacidade" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;">Política de Privacidade</h2>
-    <p style="font-size:0.9em;line-height:1.6;opacity:0.85;">Este aplicativo (Braun OnLine) é uma ferramenta de uso pessoal e informativo para gestão de escalas e calendários.</p>
-    <p style="font-size:0.9em;line-height:1.6;opacity:0.85;"><b>Dados armazenados no dispositivo:</b> nome, matrícula, turma, ano, setor, anotações, férias, preferências e progresso em cartilhas são salvos exclusivamente no seu navegador (localStorage). Nada disso é enviado para servidores nossos ou de terceiros.</p>
-    <p style="font-size:0.9em;line-height:1.6;opacity:0.85;"><b>Serviços de terceiros:</b> utilizamos apenas o Google Fonts para tipografia. Nenhum dado pessoal ou de uso é enviado a terceiros.</p>
-    <p style="font-size:0.9em;line-height:1.6;opacity:0.85;"><b>Seus direitos (LGPD):</b> você pode exportar todos os seus dados locais via "Exportar Backup (JSON)" em Configurações e apagá-los limpando os dados do navegador.</p>
-    <button data-action="close-modals" style="background:var(--primary);color:white;border:none;padding:15px;border-radius:18px;font-weight:800;width:100%;margin-top:20px;cursor:pointer;">ENTENDI</button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Transparência</div>
+        <h2 class="pg-h1">Política de Privacidade</h2>
+        <p class="pg-lead">Como o Braun OnLine trata as suas informações.</p>
+        <div class="pg-card"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">info</span></span><div><h3>Finalidade</h3><p>Este aplicativo (Braun OnLine) é uma ferramenta de uso pessoal e informativo para gestão de escalas e calendários.</p></div></div>
+        <div class="pg-card"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">smartphone</span></span><div><h3>Dados armazenados no dispositivo</h3><p>Nome, matrícula, turma, ano, setor, anotações, férias, preferências e progresso em cartilhas são salvos exclusivamente no seu navegador (localStorage). Nada disso é enviado para servidores nossos ou de terceiros.</p></div></div>
+        <div class="pg-card"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">hub</span></span><div><h3>Serviços de terceiros</h3><p>Utilizamos apenas o Google Fonts para tipografia. Nenhum dado pessoal ou de uso é enviado a terceiros.</p></div></div>
+        <div class="pg-card"><span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">verified_user</span></span><div><h3>Seus direitos (LGPD)</h3><p>Você pode exportar todos os seus dados locais via &quot;Exportar Backup (JSON)&quot; em Configurações e apagá-los limpando os dados do navegador.</p></div></div>
+        <button data-action="close-modals" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">check</span>Entendi</button>
+    </div>
 </div>
 
 <div id="meuPerfilCard" class="bottom-modal" role="dialog" aria-label="Meu Perfil" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">Meu Perfil</h2>
-    <div style="display:flex;flex-direction:column;gap:15px;">
-        <div><label for="nomePerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Nome Completo</label><input type="text" id="nomePerfil" placeholder="Digite seu nome completo" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
-        <div><label for="matriculaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Matrícula</label><input type="text" id="matriculaPerfil" placeholder="Digite sua matrícula" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
-        <div>
-            <label for="turmaPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Turma / Escala</label>
-            <select id="turmaPerfil" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Colaborador</div>
+        <h2 class="pg-h1">Meu Perfil</h2>
+        <p class="pg-lead">Seus dados ficam salvos somente neste aparelho e personalizam a escala e a saudação do app.</p>
+        <div class="pg-form">
+            <div><label class="pg-label" for="nomePerfil"><span class="material-symbols-outlined" aria-hidden="true">badge</span>Nome completo</label><input type="text" id="nomePerfil" class="pg-input" placeholder="Digite seu nome completo"></div>
+            <div><label class="pg-label" for="matriculaPerfil"><span class="material-symbols-outlined" aria-hidden="true">pin</span>Matrícula</label><input type="text" id="matriculaPerfil" class="pg-input" placeholder="Digite sua matrícula"></div>
+            <div>
+                <label class="pg-label" for="turmaPerfil"><span class="material-symbols-outlined" aria-hidden="true">groups</span>Turma / Escala</label>
+                <select id="turmaPerfil" class="pg-input">
                 <optgroup label="ECOFLAC">
                     <option value="A">Turma A (Manhã - ECOFLAC)</option>
                     <option value="B">Turma B (Manhã - ECOFLAC)</option>
@@ -984,76 +1204,65 @@
                     <option value="1x1C">1x1 Noite - Equipe A</option>
                     <option value="1x1D">1x1 Noite - Equipe B</option>
                 </optgroup>
-            </select>
-        </div>
-        <div>
-            <label for="anoPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Ano</label>
-            <select id="anoPerfil" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;">
+                </select>
+            </div>
+            <div>
+                <label class="pg-label" for="anoPerfil"><span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>Ano</label>
+                <select id="anoPerfil" class="pg-input">
                 <option value="2026">2026</option>
                 <option value="2027">2027</option>
             </select>
+            </div>
+            <div><label class="pg-label" for="setorPerfil"><span class="material-symbols-outlined" aria-hidden="true">factory</span>Setor</label><input type="text" id="setorPerfil" class="pg-input" placeholder="Digite seu setor..."></div>
         </div>
-        <div><label for="setorPerfil" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">Setor</label><input type="text" id="setorPerfil" placeholder="Digite seu setor..." style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:800;font-size:1em;"></div>
+        <button data-action="save-perfil-fechar" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">check</span>Salvar e fechar</button>
     </div>
-    <button data-action="save-perfil-fechar" class="btn-modal-salvar">SALVAR E FECHAR</button>
 </div>
 
 <div id="colaboradorDoMesCard" class="bottom-modal" role="dialog" aria-label="Colaborador do Mês" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">🏆 Colaborador do Mês</h2>
-
-    <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
-        <div style="font-size:0.7em;font-weight:900;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Seus dados (votante)</div>
-        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.9em;">
-            <div><span style="opacity:0.6;">Turma:</span> <strong id="votacaoTurma">---</strong></div>
-            <div><span style="opacity:0.6;">Matrícula:</span> <strong id="votacaoMatricula">---</strong></div>
-        </div>
-    </div>
-
-    <div id="votoFormBloco">
-        <div style="background:var(--bg);border-radius:18px;padding:15px;margin-bottom:15px;border:1px solid var(--border);">
-       <label for="votoNome" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:8px;">EM QUEM VOCÊ VOTA</label>
-            <input type="text" id="votoNome" placeholder="Digite o nome do colega" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--card);color:var(--text);font-weight:800;font-size:1em;">
-        </div>
-
-        <div style="background:rgba(112,48,160,0.08);border-left:4px solid var(--accent);border-radius:10px;padding:12px 14px;margin-bottom:15px;">
-            <div style="font-size:0.75em;font-weight:900;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🔒 Privacidade</div>
-            <div style="font-size:0.82em;line-height:1.5;opacity:0.85;">
-                Seu voto fica registrado com a sua <strong>matrícula</strong> apenas para <strong>evitar votos duplicados</strong>. Só o RH tem acesso aos votos individuais — nenhum colega vê em quem você votou.
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Reconhecimento</div>
+        <h2 class="pg-h1">Colaborador do Mês</h2>
+        <p class="pg-lead">Vote no colega que mais se destacou este mês.</p>
+        <div class="pg-secao"><span>Seus dados (votante)</span></div>
+        <div class="pg-card" style="align-items:center;">
+            <span class="pg-ico"><span class="material-symbols-outlined" aria-hidden="true">badge</span></span>
+            <div class="voto-dados">
+                <div><span>Turma</span><strong id="votacaoTurma">---</strong></div>
+                <div><span>Matrícula</span><strong id="votacaoMatricula">---</strong></div>
             </div>
         </div>
-
-        <button data-action="votar" style="background:linear-gradient(135deg, #FFD700, #EBC13D);color:#1A1A1A;border:none;padding:18px;border-radius:18px;font-weight:800;width:100%;font-size:1.1em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(235,193,61,0.3);cursor:pointer;">
-            <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">how_to_vote</span> VOTAR AGORA
-        </button>
-    </div>
-
-    <div id="votoAgradecimento" style="display:none;text-align:center;padding:24px 10px;">
-        <div style="font-size:3.5em;margin-bottom:12px;">🎉</div>
-        <div style="font-weight:900;color:var(--primary);font-size:1.3em;margin-bottom:8px;">Obrigado pelo seu voto!</div>
-        <div style="font-size:0.9em;opacity:0.75;line-height:1.5;margin-bottom:20px;">
-            O formulário foi aberto em outra aba.<br>
-            <strong>Não esqueça de enviar sua resposta lá para confirmar o voto.</strong>
+        <div id="votoFormBloco">
+            <div class="pg-secao"><span>Seu voto</span></div>
+            <label class="pg-label" for="votoNome"><span class="material-symbols-outlined" aria-hidden="true">how_to_vote</span>Em quem você vota</label>
+            <input type="text" id="votoNome" class="pg-input" placeholder="Digite o nome do colega">
+            <div class="ct-alerta">
+                <b style="display:flex;align-items:center;gap:6px;color:var(--accent-txt);"><span class="material-symbols-outlined" aria-hidden="true">lock</span>Privacidade</b>
+                <span style="display:block;margin-top:6px;font-size:0.88rem;line-height:1.5;opacity:0.85;">Seu voto fica registrado com a sua <strong>matrícula</strong> apenas para <strong>evitar votos duplicados</strong>. Só o RH tem acesso aos votos individuais — nenhum colega vê em quem você votou.</span>
+            </div>
+            <button data-action="votar" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">how_to_vote</span>Votar agora</button>
         </div>
-        <button data-action="votar-novamente" style="background:var(--bg);color:var(--text);border:2px solid var(--border);padding:14px 20px;border-radius:18px;font-weight:800;font-size:0.9em;cursor:pointer;">
-            Voltar
-        </button>
+        <div id="votoAgradecimento" style="display:none;text-align:center;padding:24px 10px;">
+            <div class="pg-ico big" style="margin:0 auto 14px;"><span class="material-symbols-outlined" aria-hidden="true">celebration</span></div>
+            <h3 style="margin:0 0 8px;font-size:1.3rem;font-weight:900;color:var(--primary);">Obrigado pelo seu voto!</h3>
+            <p style="margin:0 0 6px;font-size:0.92rem;line-height:1.55;opacity:0.8;">O formulário foi aberto em outra aba.<br><strong>Não esqueça de enviar sua resposta lá para confirmar o voto.</strong></p>
+            <button data-action="votar-novamente" class="pg-btn secundario">Voltar</button>
+        </div>
     </div>
-
-    <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
 </div>
 
 <div id="meusPedidosCard" class="bottom-modal" role="dialog" aria-label="Meus Pedidos" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:15px;">&#128230; Meus Pedidos</h2>
-
-    <div class="pedido-info">
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Solicitações</div>
+        <h2 class="pg-h1">Meus Pedidos</h2>
+        <p class="pg-lead">Preencha a <strong>quantidade</strong> e o <strong>tamanho</strong> dos itens que precisa. Só os itens com quantidade serão enviados.</p>
+        <div class="pedido-info">
         <div><strong>Nome:</strong> <span id="pedidoNome">---</span></div>
         <div><strong>Matrícula:</strong> <span id="pedidoMatricula">---</span></div>
         <div><strong>Turma:</strong> <span id="pedidoTurma">---</span> &middot; <strong>Ano:</strong> <span id="pedidoAno">---</span></div>
     </div>
 
-    <p class="pedido-instrucao">Preencha a <strong>quantidade</strong> e o <strong>tamanho</strong> dos itens que precisa. Só os itens com quantidade serão enviados.</p>
-
-    <div class="pedido-secao">&#128085; UNIFORMES</div>
+    <div class="pg-secao ic"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">checkroom</span></span><span>Uniformes</span></div>
 
     <div class="pedido-item-row" data-item="Camisa" data-secao="uniformes">
         <span class="pedido-item-nome">Camisa</span>
@@ -1081,7 +1290,7 @@
         <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Meias">
     </div>
 
-    <div class="pedido-secao">&#129509; EQUIPAMENTOS DE PROTEÇÃO</div>
+    <div class="pg-secao ic"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">health_and_safety</span></span><span>Equipamentos de proteção</span></div>
 
     <div class="pedido-item-row" data-item="Botina" data-secao="epis">
         <span class="pedido-item-nome">Botina</span>
@@ -1104,7 +1313,7 @@
         <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho de Protetor Auricular">
     </div>
 
-    <div class="pedido-secao">&#128230; OUTRO ITEM</div>
+    <div class="pg-secao ic"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">add_box</span></span><span>Outro item</span></div>
 
     <div class="pedido-item-row pedido-item-livre" data-secao="outros">
         <input type="text" maxlength="40" placeholder="Nome do item" class="pedido-nome-livre" aria-label="Nome do outro item">
@@ -1112,50 +1321,54 @@
         <input type="text" maxlength="4" placeholder="Tam" class="pedido-tam" aria-label="Tamanho do outro item">
     </div>
 
-    <div style="margin-top:20px;">
-        <label for="pedidoObs" style="font-weight:800;font-size:0.8em;color:var(--primary);display:block;margin-bottom:5px;">OBSERVAÇÕES</label>
-        <textarea id="pedidoObs" placeholder="Escreva aqui alguma observação sobre o pedido..." rows="3" style="width:100%;box-sizing:border-box;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit;outline:none;"></textarea>
+    <div style="margin-top:22px;">
+        <label class="pg-label" for="pedidoObs"><span class="material-symbols-outlined" aria-hidden="true">notes</span>Observações</label>
+        <textarea id="pedidoObs" class="pg-input" placeholder="Escreva aqui alguma observação sobre o pedido..." rows="3"></textarea>
     </div>
 
     <div class="pedido-botoes">
-        <button data-action="limpar-pedido" class="btn-pedido-limpar" aria-label="Limpar todos os campos">Limpar</button>
-        <button data-action="enviar-pedido" style="background:var(--primary);color:white;border:none;padding:18px;border-radius:18px;font-weight:800;flex:1;font-size:1.05em;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 4px 12px rgba(0,169,122,0.3);cursor:pointer;">
-            <span class="material-symbols-outlined" aria-hidden="true" style="font-variation-settings:'FILL' 1">send</span> ENVIAR POR E-MAIL
-        </button>
+        <button data-action="limpar-pedido" class="pg-btn secundario" style="width:auto;margin-top:0;" aria-label="Limpar todos os campos"><span class="material-symbols-outlined" aria-hidden="true">backspace</span>Limpar</button>
+        <button data-action="enviar-pedido" class="pg-btn primario" style="flex:1;margin-top:0;"><span class="material-symbols-outlined" aria-hidden="true">send</span>Enviar por e-mail</button>
     </div>
-
-    <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
+    </div>
 </div>
 
 <div id="pesquisaCard" class="bottom-modal" role="dialog" aria-label="Pesquisar escala" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;margin-bottom:20px;">&#128269; Pesquisar data</h2>
-    <div style="display:flex;flex-direction:column;gap:14px;">
-        <div style="width:100%;"><input type="date" id="pesquisaData" class="input-date" style="width:100%;box-sizing:border-box;"></div>
-        <div style="display:flex;gap:10px;align-items:center;width:100%;">
-            <input type="text" id="pesquisaDataTexto" placeholder="dd/mm/aaaa ou fale a data" style="flex:1;min-width:60px;padding:14px;border-radius:18px;border:2.5px solid var(--border);background:var(--bg);color:var(--text);font-weight:600;font-size:0.9em;">
-            <button data-action="mic" class="btn-mic" aria-label="Pesquisar por voz"><span class="material-symbols-outlined">mic</span></button>
-            <button data-action="pesquisar" style="background:var(--primary);color:white;border:none;padding:0 22px;border-radius:18px;font-weight:800;height:54px;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0;">
-                <span class="material-symbols-outlined" style="font-size:20px;">search</span> Buscar
-            </button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Consulta</div>
+        <h2 class="pg-h1">Pesquisar Escala</h2>
+        <p class="pg-lead">Escolha a data no calendário, digite (dd/mm/aaaa) ou fale. A consulta vale para a sua turma e região.</p>
+        <div class="pg-form">
+            <div><label class="pg-label" for="pesquisaData"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Data</label><input type="date" id="pesquisaData" class="input-date pg-input"></div>
+            <div>
+                <label class="pg-label" for="pesquisaDataTexto"><span class="material-symbols-outlined" aria-hidden="true">edit_calendar</span>Digitar ou falar a data</label>
+                <div class="pesq-linha">
+                    <input type="text" id="pesquisaDataTexto" class="pg-input" placeholder="dd/mm/aaaa ou fale a data">
+                    <button data-action="mic" class="btn-mic" aria-label="Pesquisar por voz"><span class="material-symbols-outlined" aria-hidden="true">mic</span></button>
+                </div>
+            </div>
         </div>
-    </div>
-    <div id="resultadoPesquisa" style="background:var(--bg);border-radius:16px;padding:15px;border:1px solid var(--border);min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;margin-top:15px;">
-        <div id="resultadoTexto" style="font-weight:800;font-size:1.2em;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:8px;">Nenhuma pesquisa realizada.</div>
-        <div id="resultadoDetalhe" style="font-size:0.85em;opacity:0.7;"></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:15px;">
-        <button data-action="toggle-voz" id="btnOuvirResultado" class="btn-ouvir">
-            <span class="material-symbols-outlined" id="btnOuvirIcon">volume_up</span>
+        <button data-action="pesquisar" class="pg-btn primario"><span class="material-symbols-outlined" aria-hidden="true">search</span>Buscar</button>
+        <div class="pg-secao"><span>Resultado</span></div>
+        <div id="resultadoPesquisa" class="pesq-result" aria-live="polite">
+            <div id="resultadoTexto">Nenhuma pesquisa realizada.</div>
+            <div id="resultadoDetalhe"></div>
+        </div>
+        <button data-action="toggle-voz" id="btnOuvirResultado" class="pg-btn primario btn-ouvir">
+            <span class="material-symbols-outlined" id="btnOuvirIcon" aria-hidden="true">volume_up</span>
             <span id="btnOuvirTexto">Ouvir resposta</span>
         </button>
-        <button data-action="fechar-pesquisa" style="background:var(--border);color:var(--text);border:none;padding:12px 16px;border-radius:18px;font-weight:800;cursor:pointer;flex:1;">Fechar</button>
     </div>
 </div>
 
 <div id="conquistasCard" class="bottom-modal" role="dialog" aria-label="Conquistas" aria-modal="true">
-    <h2 style="font-weight:800;color:var(--primary);margin-top:0;">&#127885; Minhas Conquistas</h2>
-    <div id="listaConquistas" style="display:flex;flex-direction:column;gap:12px;margin-top:15px;"></div>
-    <button data-action="close-modals" class="btn-modal-fechar">FECHAR</button>
+    <div class="pg-wrap">
+        <div class="pg-eyebrow">Progresso</div>
+        <h2 class="pg-h1">Minhas Conquistas</h2>
+        <p class="pg-lead">Selos ganhos ao usar o app, ler cartilhas e acertar o quiz.</p>
+        <div id="conqResumo"></div>
+        <div id="listaConquistas"></div>
+    </div>
 </div>
 
 <script src="app.js" defer></script>
