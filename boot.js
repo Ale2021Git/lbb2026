@@ -55,14 +55,15 @@
   // 1a) Modo minimalista (só feriados) já no 1º quadro, sem piscar
   try { if (localStorage.getItem('braun_minimal_greeting') === 'true') document.documentElement.classList.add('modo-feriados'); } catch (e) {}
 
-  // 1a2) Tema de Natal: automático em dezembro. ?natal=1 pré-visualiza (só nesta abertura);
+  // 1a2) Tema de Natal: automático de 1/dez a 6/jan (Dia de Reis). ?natal=1 pré-visualiza (só nesta abertura);
   //      ?natal=0 desliga de vez; ?natal=auto volta ao automático.
   try {
+    function natalEmEpoca(d) { return d.getMonth() === 11 || (d.getMonth() === 0 && d.getDate() <= 6); }
     var qn = (location.search.match(/[?&]natal=(1|0|auto)(&|$)/) || [])[1];
     if (qn === '0') localStorage.setItem('braun_natal', 'off');
     else if (qn === 'auto') localStorage.removeItem('braun_natal');
     var natalOff = localStorage.getItem('braun_natal') === 'off';
-    if (qn === '1' || (new Date().getMonth() === 11 && !natalOff && qn !== '0')) document.documentElement.classList.add('natal');
+    if (qn === '1' || (natalEmEpoca(new Date()) && !natalOff && qn !== '0')) document.documentElement.classList.add('natal');
   } catch (e) {}
 
   // 1b) Boas-vindas já no 1º quadro: com nome no perfil, ou na 1ª visita.
@@ -84,7 +85,7 @@
   } catch (e) {}
 
   // 2) Versão + sinal de update pendente
-  var APP_VERSION = '2026.11.19b';
+  var APP_VERSION = '2026.11.19d';
   window.APP_VERSION = APP_VERSION;
 
   var storedVersion = null;

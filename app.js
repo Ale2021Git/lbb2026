@@ -1610,6 +1610,7 @@ function bindCartilhas() {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
+  { id:'nov28', titulo:'🎄 Natal mais enfeitado', descricao:'A tela de boas-vindas ganhou bolas de Natal penduradas e pinheiros com neve. No dia 25, o calendário mostra uma guirlanda de Natal.', data:'2026-11-19', cartilhaId:null },
   { id:'nov27', titulo:'🌸 MEDICAL em rosa e novo feriado', descricao:'A escala MEDICAL agora usa rosa nos dias de trabalho e verde nas folgas. Também entrou o feriado de Consciência Negra (20/11). No Natal, ramos de parreira enfeitam o topo da tela de boas-vindas.', data:'2026-11-19', cartilhaId:null },
   { id:'nov26', titulo:'🎄 Tema de Natal', descricao:'Em dezembro o app ganha folhas de parreira, neve e clima natalino, mantendo o visual B. Braun. Para ver antes, abra o app com ?natal=1 no endereço; para desligar, use ?natal=0.', data:'2026-11-18', cartilhaId:null },
   { id:'nov25', titulo:'🏥 Nova escala MEDICAL', descricao:'Agora o app tem a escala MEDICAL: segunda a sexta, mais os sábados que você trabalha no mês. Escolha "Escala MEDICAL" no Meu Perfil, toque no sábado desejado no calendário e marque como trabalhado.', data:'2026-11-18', cartilhaId:null },
