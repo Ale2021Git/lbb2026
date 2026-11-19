@@ -21,7 +21,7 @@ const SCHEMA_VERSION = 1;
 
 const BACKUP_KEYS = [
   'braun_nome_completo','braun_matricula','braun_turma_perfil','braun_ano','braun_setor',
-  'braun_last_region','braun_turma_BR','braun_turma_MNT','braun_turma_1x1',
+  'braun_last_region','braun_turma_BR','braun_turma_MNT','braun_turma_1x1','braun_sabados_5x2',
   'braun_ferias_inicio','braun_ferias_fim','braun_dark_mode',
   'braun_minimal_greeting','braun_voice_response','braun_voz_genero','braun_voz_nome_f','braun_voz_nome_m','braun_haptic',
   'braun_cartilhas_lidas','braun_conquistas','braun_quizzes_acertados','braun_quiz_ok','braun_quiz_melhor',
@@ -217,7 +217,7 @@ function getFeriados(ano) {
   const f = {
     '01-01':'Ano Novo','04-21':'Tiradentes','04-23':'São Jorge','05-01':'Dia do Trabalho',
     '09-07':'Independência','09-22':'Aniv. São Gonçalo','10-12':'N. S. Aparecida',
-    '11-02':'Finados','11-15':'Proclamação da República','12-25':'Natal'
+    '11-02':'Finados','11-15':'Proclamação da República','11-20':'Consciência Negra','12-25':'Natal'
   };
   const p = calculaPascoa(ano);
   const car = new Date(p.getTime() - 47 * 86400000);
@@ -252,7 +252,8 @@ let dataAtiva = '';
 const translations = {
   BR:    { statusTrab: 'TRABALHANDO', statusFolga: 'DE FOLGA',  days: ['S','T','Q','Q','S','S','D'] },
   MNT:   { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA MNT', days: ['S','T','Q','Q','S','S','D'] },
-  '1x1': { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA 1x1', days: ['S','T','Q','Q','S','S','D'] }
+  '1x1': { statusTrab: 'TRABALHANDO', statusFolga: 'FOLGA 1x1', days: ['S','T','Q','Q','S','S','D'] },
+  '5x2': { statusTrab: 'TRABALHANDO', statusFolga: 'DE FOLGA',  days: ['S','T','Q','Q','S','S','D'] }
 };
 let currentAno = parseInt(getStorageValue('braun_ano')) || 2026;
 let currentTurma = getStorageValue('braun_turma_' + currentRegion) || 'AC';
@@ -293,9 +294,34 @@ function check1x1(dt, turma) {
   _escalaCache.set(k, v); return v;
 }
 function isTurnoNoite1x1(t) { return t === '1x1C' || t === '1x1D'; }
+
+/* ---- Escala 5x2: segunda a sexta + sábados marcados pelo usuário (normalmente 2 por mês) ----
+   Os sábados ficam em localStorage 'braun_sabados_5x2' no formato {"2026-11":[7,21]}.
+   Feriado em dia útil = folga. Sábado marcado trabalha mesmo se for feriado. */
+function getSabados5x2() { return getJSON('braun_sabados_5x2', {}); }
+function chaveMes5x2(dt) { return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0'); }
+function isSabadoMarcado5x2(dt) {
+  const lista = getSabados5x2()[chaveMes5x2(dt)];
+  return Array.isArray(lista) && lista.indexOf(dt.getDate()) > -1;
+}
+function check5x2(dt) {
+  const k = '5x2_' + dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate();
+  let v = _escalaCache.get(k); if (v !== undefined) return v;
+  const dow = dt.getDay();
+  let trab = false, sabado = false;
+  if (dow >= 1 && dow <= 5) {
+    const mmdd = String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    trab = !getFeriados(dt.getFullYear())[mmdd];
+  } else if (dow === 6) {
+    sabado = isSabadoMarcado5x2(dt); trab = sabado;
+  }
+  v = { trab: trab, sabado: sabado };
+  _escalaCache.set(k, v); return v;
+}
 function isTrabalhando(dt, r, t) {
   if (r === 'BR') return checkBR(dt, t).trab;
   if (r === '1x1') return check1x1(dt, t).trab;
+  if (r === '5x2') return check5x2(dt).trab;
   return checkMnt(dt, t).trab;
 }
 function isFerias(dt) {
@@ -324,12 +350,14 @@ function formatarTurmaParaVoz(t) {
   if (t === '1x1B') return '1x1 manhã equipe B';
   if (t === '1x1C') return '1x1 noite equipe A';
   if (t === '1x1D') return '1x1 noite equipe B';
+  if (t === '5x2') return 'MEDICAL';
   if (t.length !== 2) return t;
   return t.split('').join(' e ');
 }
 function nomeRegiao(r) {
   if (r === 'BR') return 'ECOFLAC';
   if (r === '1x1') return '1x1';
+  if (r === '5x2') return 'MEDICAL';
   return 'MANUTENÇÃO';
 }
 
@@ -444,7 +472,8 @@ function atualizarBadgeTurma() {
     const turno = (tl === '1x1A' || tl === '1x1B') ? 'M' : 'N';
     const eq = (tl === '1x1A' || tl === '1x1C') ? 'A' : 'B';
     bt.innerText = '1x1 ' + turno + ' ' + eq;
-  } else { bt.innerText = 'Turma ' + tl; }
+  } else if (tl === '5x2') { bt.innerText = 'MEDICAL'; }
+  else { bt.innerText = 'Turma ' + tl; }
 }
 function atualizarLegenda1x1() {
   const b = document.querySelector('.sticky-header-block'); if (!b) return;
@@ -455,7 +484,8 @@ function setRegion(r) {
   document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
   const at = document.getElementById('tab-' + r);
   if (at) { at.classList.add('active'); at.setAttribute('aria-selected', 'true'); }
-  if (r === '1x1') { currentTurma = getStorageValue('braun_turma_1x1') || '1x1A'; setStorageValue('braun_turma_1x1', currentTurma); }
+  if (r === '5x2') { currentTurma = '5x2'; }
+  else if (r === '1x1') { currentTurma = getStorageValue('braun_turma_1x1') || '1x1A'; setStorageValue('braun_turma_1x1', currentTurma); }
   else { currentTurma = getStorageValue('braun_turma_' + r) || (r === 'BR' ? 'AC' : 'EG'); }
   _escalaCache.clear();
   atualizarLegenda1x1();
@@ -556,6 +586,7 @@ function legendaCalendario() {
   const t = currentTurma; let trabCls, folgaCls, trabTxt = 'Trabalho';
   if (currentRegion === 'BR') { trabCls = t === 'AC' ? 'AMARELO' : 'VERDE'; folgaCls = t === 'AC' ? 'VERDE' : 'AMARELO'; }
   else if (currentRegion === '1x1') { const n = isTurnoNoite1x1(t); trabCls = n ? 'ROXO' : 'LARANJA'; folgaCls = 'VERDE'; trabTxt = n ? 'Trabalho (noite)' : 'Trabalho (manhã)'; }
+  else if (currentRegion === '5x2') { trabCls = 'ROSA'; folgaCls = 'VERDE'; trabTxt = 'Trabalho (sáb. com borda)'; }
   else { trabCls = t === 'EG' ? 'AZUL' : 'VERDE'; folgaCls = t === 'EG' ? 'VERDE' : 'AZUL'; }
   return '<div class="mes-legenda" aria-hidden="true">' +
     '<span><i class="leg-sw ' + trabCls + ' TRABALHO"></i>' + trabTxt + '</span>' +
@@ -581,7 +612,7 @@ function gerarCalendario() {
     const dtM = new Date(ano, m, 1);
     const nomeM = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(dtM);
     const container = document.createElement('div');
-    container.className = 'mes-container';
+    container.className = 'mes-container' + ((m === 11 && document.documentElement.classList.contains('natal')) ? ' mes-natal' : '');
     container.dataset.mes = m; container.dataset.ano = ano;
     container.setAttribute('role', 'group'); container.setAttribute('aria-label', nomeM + ' de ' + ano);
     let cT = 0, cF = 0, cFer = 0, cFe = 0;
@@ -607,6 +638,10 @@ function gerarCalendario() {
         const r = checkBR(at, t);
         cls += (r.isA ? 'AMARELO ' : 'VERDE ') + (r.trab ? 'TRABALHO ' : 'FOLGA ');
         sh = r.trab ? 'trabalhando' : 'de folga';
+      } else if (currentRegion === '5x2') {
+        const r5 = check5x2(at);
+        if (r5.trab) { cls += 'ROSA TRABALHO ' + (r5.sabado ? 'SABTRAB ' : ''); sh = r5.sabado ? 'trabalhando no sábado' : 'trabalhando'; }
+        else { cls += 'VERDE FOLGA '; sh = 'de folga'; }
       } else if (currentRegion === '1x1') {
         const r = check1x1(at, t); const n = isTurnoNoite1x1(t);
         if (r.trab) { cls += (n ? 'ROXO ' : 'LARANJA ') + 'TRABALHO '; sh = n ? 'trabalhando no turno da noite' : 'trabalhando no turno da manhã'; }
@@ -620,6 +655,7 @@ function gerarCalendario() {
       if (trabDia) cT++; else cF++;
       if (modo) { cls = 'dia NEUTRO ' + ((at.getDay() === 0 || at.getDay() === 6) ? 'FDS ' : 'UTIL '); sh = ''; }
       if (f) { cFer++; cls += 'FERIADO '; }
+      if (m === 11 && d === 25 && document.documentElement.classList.contains('natal')) cls += 'NATAL25 ';
       if (hojeStr === at.toDateString()) cls += 'hoje ';
       if (nt) cls += 'HAS_NOTE ';
       if (isFerias(at)) { cls += 'FERIAS '; sh = 'em férias'; cFe++; }
@@ -697,7 +733,44 @@ function openCard(iso) {
   document.getElementById('lote-display').innerText = yy + ww + ds;
   const sem = document.getElementById('card-dia-semana');
   if (sem) { const dn = diaDaSemanaPorExtenso(dtSel); sem.textContent = dn.charAt(0).toUpperCase() + dn.slice(1) + ' · lote sugerido e anotação deste dia.'; }
+  atualizarBotaoSabado5x2(dtSel);
   focusModal('infoCard');
+}
+function atualizarBotaoSabado5x2(dtSel) {
+  const box = document.getElementById('sab5x2-box'); if (!box) return;
+  const mostrar = currentRegion === '5x2' && dtSel.getDay() === 6;
+  box.style.display = mostrar ? 'block' : 'none';
+  if (!mostrar) return;
+  const on = isSabadoMarcado5x2(dtSel);
+  const b = document.getElementById('sab5x2-btn');
+  b.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">' + (on ? 'check_circle' : 'add_circle') + '</span>' +
+    (on ? 'Trabalho neste sábado (tocar para desmarcar)' : 'Marcar como sábado trabalhado');
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  const lista = getSabados5x2()[chaveMes5x2(dtSel)];
+  const n = Array.isArray(lista) ? lista.length : 0;
+  const info = document.getElementById('sab5x2-info');
+  if (info) info.textContent = n + ' de 2 sábados marcados neste mês.';
+}
+function toggleSabado5x2() {
+  if (currentRegion !== '5x2' || !dataAtiva) return;
+  const p = dataAtiva.split('-');
+  const dia = parseInt(p[2], 10);
+  const dt = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, dia);
+  if (dt.getDay() !== 6) return;
+  const mapa = getSabados5x2(), k = chaveMes5x2(dt);
+  const lista = Array.isArray(mapa[k]) ? mapa[k].slice() : [];
+  const i = lista.indexOf(dia);
+  let msg;
+  if (i > -1) { lista.splice(i, 1); msg = 'Sábado desmarcado.'; }
+  else {
+    lista.push(dia); lista.sort(function (x, y) { return x - y; });
+    msg = lista.length > 2 ? 'Sábado marcado. Atenção: já são ' + lista.length + ' sábados neste mês.' : 'Sábado marcado como trabalhado.';
+  }
+  if (lista.length) mapa[k] = lista; else delete mapa[k];
+  setStorageValue('braun_sabados_5x2', JSON.stringify(mapa));
+  _escalaCache.clear(); cachedStats = {};
+  closeAllModals(); gerarCalendario(); tick();
+  toast(msg, 'sucesso');
 }
 function copyLote() {
   const disp = document.getElementById('lote-display');
@@ -805,7 +878,7 @@ function openStats() {
   const ano = parseInt(currentAno), turma = currentTurma;
   const lead = document.getElementById('statsLead');
   if (lead && modoFeriados()) lead.textContent = 'Feriados de ' + ano;
-  else if (lead) { const tf = formatarTurmaParaVoz(turma); lead.textContent = 'Ano ' + ano + ' · ' + (currentRegion === '1x1' ? 'Escala ' + tf : nomeRegiao(currentRegion) + ' · Turmas ' + tf); }
+  else if (lead) { const tf = formatarTurmaParaVoz(turma); lead.textContent = 'Ano ' + ano + ' · ' + ((currentRegion === '1x1' || currentRegion === '5x2') ? 'Escala ' + tf : nomeRegiao(currentRegion) + ' · Turmas ' + tf); }
   const modoF = modoFeriados();
   const ck = ano + '_' + turma + '_' + currentRegion + (modoF ? '_f' : '');
   if (cachedStats[ck]) { document.getElementById('stats-content').innerHTML = cachedStats[ck]; document.getElementById('configCard').classList.remove('show'); focusModal('statsCard'); return; }
@@ -864,6 +937,7 @@ function salvarDadosPerfil() {
   setStorageValue('braun_setor', setor);
   let region, grupo;
   if (['A','B','C','D'].indexOf(turma) > -1) { region = 'BR'; grupo = (turma === 'A' || turma === 'C') ? 'AC' : 'BD'; }
+  else if (turma === '5x2') { region = '5x2'; grupo = '5x2'; }
   else if (turma.indexOf('1x1') === 0) { region = '1x1'; grupo = turma; }
   else { region = 'MNT'; grupo = (turma === 'E' || turma === 'G') ? 'EG' : 'FH'; }
   currentRegion = region; currentTurma = grupo;
@@ -1210,6 +1284,7 @@ function boasVindas() {
     if (nm) nm.textContent = 'Bem-vindo';
     if (sb) sb.textContent = 'Empowering Global Health Workforce';
   }
+  if (sb && document.documentElement.classList.contains('natal')) sb.textContent = 'Feliz Natal e boas festas';
   const slot = w.querySelector('.w-logo');
   const src = document.querySelector('header .brand-logo-svg');
   if (slot && src && !slot.firstChild) {
@@ -1309,7 +1384,7 @@ function exportarEscalaICS() {
    20) CARTILHAS
    ============================================================ */
 const cartilhasData = [
-  { id:'comousar', icone:'help', titulo:'Como usar o Braun OnLine', conteudo:'<p>Bem-vindo ao <strong>Braun OnLine</strong>! Este guia mostra, em poucos minutos, como aproveitar cada recurso do app.</p><h4>Sua escala</h4><div class="cartilha-destaque"><strong>📅 Calendário</strong><br>Os dias coloridos mostram a sua escala. Use as abas do rodapé para alternar entre <b>ECOFLAC</b>, <b>MANUT.</b> e <b>1x1</b>, e a aba <b>BUSCAR</b> para consultar qualquer data.</div><div class="cartilha-destaque"><strong>✏️ Anotações</strong><br>Toque em qualquer dia para escrever um lembrete.</div><h4>Ferramentas do dia a dia</h4><ul><li><b>Programar férias:</b> a ferramenta de Sugestão mostra as datas que rendem mais dias em casa.</li><li><b>Meus Pedidos:</b> preencha quantidade e tamanho e envie por e-mail (menu ☰ → Meus Pedidos).</li><li><b>Ramais Úteis:</b> contatos internos e o ramal de emergência.</li><li><b>Estatísticas:</b> dias trabalhados e folgas na sua escala.</li></ul><h4>Tudo no menu ☰</h4><p>O menu reúne todas as telas do app: Perfil, Ramais, Colaborador do Mês, Pedidos, Férias, Cartilhas, Conquistas, Novidades, Pesquisar Escala, Estatísticas e Configurações. Em cada tela, o botão <b>Voltar</b>, no canto superior esquerdo, leva de volta ao app.</p><h4>Seus dados</h4><div class="ct-alerta"><strong>💾 Backup:</strong> menu ☰ → Configurações → Exportar Backup (JSON). Guarde o arquivo para recuperar seus dados se trocar de aparelho.<br><br><strong>🔔 Atualizações:</strong> sempre que aparecer um aviso verde no topo da tela, toque em <b>Atualizar</b>.</div>', quiz:[{pergunta:'Como você faz backup?',opcoes:['Tocando no calendário','Menu ☰ → Configurações → Exportar Backup','Reiniciando','Falando com supervisor'],certa:1},{pergunta:'Onde programa férias?',opcoes:['Nas Cartilhas','No Meu Perfil','No menu ☰ → Programar Férias','Não dá'],certa:2},{pergunta:'O que fazer quando aparecer o aviso verde de nova versão no topo?',opcoes:['Ignorar','Tocar em Atualizar','Desinstalar','Reiniciar'],certa:1},{pergunta:'Quais abas do rodapé alternam a escala?',opcoes:['Perfil, Pedidos e Férias','ECOFLAC, MANUT. e 1x1','Kaizen, 5S e PDCA','Hoje, Mês e Ano'],certa:1},{pergunta:'Como criar um lembrete em um dia?',opcoes:['Pelo menu Privacidade','Tocando no dia e escrevendo a anotação','Exportando o backup','Não é possível'],certa:1},{pergunta:'Para que serve a Sugestão de férias?',opcoes:['Calcular salário','Descobrir datas que rendem mais dias em casa','Trocar de turma','Enviar pedidos'],certa:1},{pergunta:'Como enviar um pedido de uniforme ou EPI?',opcoes:['Ligando para o RH','Preenchendo quantidade e tamanho e enviando por e-mail','Pelo QR Code','Não é possível'],certa:1},{pergunta:'Qual botão leva de volta ao app a partir de qualquer tela?',opcoes:['Hoje','Atualizar','Voltar, no canto superior esquerdo','Buscar'],certa:2},{pergunta:'Como consultar a escala de uma data qualquer?',opcoes:['Pela aba BUSCAR do rodapé','Pedindo ao RH','Apagando o calendário','Não é possível'],certa:0},{pergunta:'Onde ficam o Colaborador do Mês e as Conquistas?',opcoes:['Só no rodapé','No menu ☰','Dentro do Backup','Não existem no app'],certa:1},{pergunta:'Por que exportar o backup?',opcoes:['Para trocar de turma','Para liberar a bateria','Para acelerar o app','Para recuperar seus dados se trocar de aparelho'],certa:3}] },
+  { id:'comousar', icone:'help', titulo:'Como usar o Braun OnLine', conteudo:'<p>Bem-vindo ao <strong>Braun OnLine</strong>! Este guia mostra, em poucos minutos, como aproveitar cada recurso do app.</p><h4>Sua escala</h4><div class="cartilha-destaque"><strong>📅 Calendário</strong><br>Os dias coloridos mostram a sua escala. Use as abas do rodapé para alternar entre <b>ECOFLAC</b>, <b>MANUT.</b>, <b>MEDICAL</b> e <b>1x1</b>, e a aba <b>BUSCAR</b> para consultar qualquer data.</div><div class="cartilha-destaque"><strong>✏️ Anotações</strong><br>Toque em qualquer dia para escrever um lembrete.</div><h4>Ferramentas do dia a dia</h4><ul><li><b>Programar férias:</b> a ferramenta de Sugestão mostra as datas que rendem mais dias em casa.</li><li><b>Meus Pedidos:</b> preencha quantidade e tamanho e envie por e-mail (menu ☰ → Meus Pedidos).</li><li><b>Ramais Úteis:</b> contatos internos e o ramal de emergência.</li><li><b>Estatísticas:</b> dias trabalhados e folgas na sua escala.</li></ul><h4>Tudo no menu ☰</h4><p>O menu reúne todas as telas do app: Perfil, Ramais, Colaborador do Mês, Pedidos, Férias, Cartilhas, Conquistas, Novidades, Pesquisar Escala, Estatísticas e Configurações. Em cada tela, o botão <b>Voltar</b>, no canto superior esquerdo, leva de volta ao app.</p><h4>Seus dados</h4><div class="ct-alerta"><strong>💾 Backup:</strong> menu ☰ → Configurações → Exportar Backup (JSON). Guarde o arquivo para recuperar seus dados se trocar de aparelho.<br><br><strong>🔔 Atualizações:</strong> sempre que aparecer um aviso verde no topo da tela, toque em <b>Atualizar</b>.</div>', quiz:[{pergunta:'Como você faz backup?',opcoes:['Tocando no calendário','Menu ☰ → Configurações → Exportar Backup','Reiniciando','Falando com supervisor'],certa:1},{pergunta:'Onde programa férias?',opcoes:['Nas Cartilhas','No Meu Perfil','No menu ☰ → Programar Férias','Não dá'],certa:2},{pergunta:'O que fazer quando aparecer o aviso verde de nova versão no topo?',opcoes:['Ignorar','Tocar em Atualizar','Desinstalar','Reiniciar'],certa:1},{pergunta:'Quais abas do rodapé alternam a escala?',opcoes:['Perfil, Pedidos e Férias','ECOFLAC, MANUT., MEDICAL e 1x1','Kaizen, 5S e PDCA','Hoje, Mês e Ano'],certa:1},{pergunta:'Como criar um lembrete em um dia?',opcoes:['Pelo menu Privacidade','Tocando no dia e escrevendo a anotação','Exportando o backup','Não é possível'],certa:1},{pergunta:'Para que serve a Sugestão de férias?',opcoes:['Calcular salário','Descobrir datas que rendem mais dias em casa','Trocar de turma','Enviar pedidos'],certa:1},{pergunta:'Como enviar um pedido de uniforme ou EPI?',opcoes:['Ligando para o RH','Preenchendo quantidade e tamanho e enviando por e-mail','Pelo QR Code','Não é possível'],certa:1},{pergunta:'Qual botão leva de volta ao app a partir de qualquer tela?',opcoes:['Hoje','Atualizar','Voltar, no canto superior esquerdo','Buscar'],certa:2},{pergunta:'Como consultar a escala de uma data qualquer?',opcoes:['Pela aba BUSCAR do rodapé','Pedindo ao RH','Apagando o calendário','Não é possível'],certa:0},{pergunta:'Onde ficam o Colaborador do Mês e as Conquistas?',opcoes:['Só no rodapé','No menu ☰','Dentro do Backup','Não existem no app'],certa:1},{pergunta:'Por que exportar o backup?',opcoes:['Para trocar de turma','Para liberar a bateria','Para acelerar o app','Para recuperar seus dados se trocar de aparelho'],certa:3}] },
   { id:'kaizen', icone:'trending_up', titulo:'Kaizen – Melhoria Contínua', conteudo:'<p><strong>Kaizen</strong> significa “mudança para melhor”. É a prática de melhorar um pouco a cada dia, com a participação de todos, da operação à liderança.</p><h4>Princípios</h4><div class="cartilha-destaque"> • Eliminar desperdícios<br> • Padronizar processos<br> • Envolver todos<br> • Focar em dados</div><h4>Os 7 desperdícios</h4><ul><li>Superprodução</li><li>Espera</li><li>Transporte desnecessário</li><li>Processamento excessivo</li><li>Estoque excessivo</li><li>Movimentação desnecessária</li><li>Defeitos e retrabalho</li></ul><h4>No dia a dia</h4><div class="cartilha-exemplo"><b>Gemba:</b> vá até onde o trabalho acontece, observe e converse com quem executa a tarefa.<br><br><b>Exemplo:</b> reorganizar a bancada para reduzir a movimentação já é um Kaizen.</div><div class="ct-alerta">Toda ideia conta: uma melhoria pequena, repetida por muita gente, gera grandes resultados.</div>', quiz:[{pergunta:'O que significa Kaizen?',opcoes:['Grande revolução','Mudança para melhor','Padronização','Controle'],certa:1},{pergunta:'Um princípio do Kaizen:',opcoes:['Grandes mudanças','Eliminar desperdícios','Centralizar','Ignorar dados'],certa:1},{pergunta:'Kaizen busca melhorias:',opcoes:['Na produção','Na gestão','Pequenas e diárias','Em crises'],certa:2},{pergunta:'Quem participa das melhorias no Kaizen?',opcoes:['Só a diretoria','Todos os colaboradores','Apenas consultores','Somente a qualidade'],certa:1},{pergunta:'Focar em dados significa:',opcoes:['Decidir por intuição','Basear decisões em medições e fatos','Ignorar indicadores','Esperar o problema piorar'],certa:1},{pergunta:'Padronizar processos ajuda a:',opcoes:['Aumentar a variação','Manter o ganho da melhoria','Eliminar treinamentos','Reduzir a comunicação'],certa:1},{pergunta:'Qual destes é um dos 7 desperdícios?',opcoes:['Trabalho em equipe','Treinamento','Espera','Organização'],certa:2},{pergunta:'Gemba é:',opcoes:['Um tipo de relatório','O local onde o trabalho acontece','Uma ferramenta de estoque','Um prêmio interno'],certa:1},{pergunta:'Reorganizar a bancada para reduzir a movimentação é um exemplo de:',opcoes:['Kaizen','Retrabalho','Burocracia','Desperdício'],certa:0},{pergunta:'Em qual desperdício se enquadra o retrabalho?',opcoes:['Transporte','Estoque','Espera','Defeitos'],certa:3}] },
   { id:'5s', icone:'cleaning_services', titulo:'Os 5S – Organização', conteudo:'<p>Os <strong>5S</strong> organizam o ambiente de trabalho e criam hábitos que ajudam na segurança, na qualidade e na produtividade.</p><h4>Os cinco sensos</h4><div style="overflow-x:auto"><table class="ct-tabela"><tr><th>Senso</th><th>Significado</th><th>Na prática</th></tr><tr><td><b>1. Seiri</b></td><td>Utilização</td><td>Separar o útil do inútil e descartar o que não é necessário</td></tr><tr><td><b>2. Seiton</b></td><td>Organização</td><td>Um lugar para cada coisa, e cada coisa em seu lugar</td></tr><tr><td><b>3. Seiso</b></td><td>Limpeza</td><td>Manter limpo e eliminar a fonte da sujeira</td></tr><tr><td><b>4. Seiketsu</b></td><td>Padronização</td><td>Criar regras e rotinas para manter os três primeiros</td></tr><tr><td><b>5. Shitsuke</b></td><td>Disciplina</td><td>Cumprir os padrões como hábito</td></tr></table></div><div class="ct-alerta">Os 5S são a base de qualquer melhoria: sem organização e disciplina, os ganhos não se mantêm.</div>', quiz:[{pergunta:'Quantos sensos?',opcoes:['3','5','7','10'],certa:1},{pergunta:'Seiri é:',opcoes:['Limpar','Organizar','Separar útil do inútil','Criar padrões'],certa:2},{pergunta:'Disciplina:',opcoes:['Seiso','Seiketsu','Shitsuke','Seiton'],certa:2},{pergunta:'Seiton significa:',opcoes:['Limpar','Organizar','Padronizar','Disciplina'],certa:1},{pergunta:'Qual senso é o Seiso?',opcoes:['Limpeza','Descarte','Padronização','Disciplina'],certa:0},{pergunta:'Seiketsu é o senso de:',opcoes:['Separar','Limpar','Padronizar','Organizar'],certa:2},{pergunta:'Qual senso trata de cumprir os padrões como hábito?',opcoes:['Seiri','Seiso','Shitsuke','Seiton'],certa:2},{pergunta:'“Um lugar para cada coisa e cada coisa em seu lugar” é o senso de:',opcoes:['Seiton (organização)','Seiri (utilização)','Seiso (limpeza)','Seiketsu (padronização)'],certa:0},{pergunta:'Eliminar a fonte da sujeira faz parte do senso de:',opcoes:['Utilização (Seiri)','Disciplina (Shitsuke)','Limpeza (Seiso)','Padronização (Seiketsu)'],certa:2},{pergunta:'Por que os 5S ajudam na segurança?',opcoes:['Eliminam a necessidade de EPIs','Ambientes organizados reduzem riscos','Dispensam treinamento','Não têm relação com segurança'],certa:1}] },
   { id:'pdca', icone:'cycle', titulo:'PDCA – Planejar, Fazer, Checar, Agir', conteudo:'<p>O <strong>PDCA</strong> (Plan, Do, Check, Act) é um ciclo que estrutura melhorias e resolve problemas de forma organizada e repetível.</p><h4>As quatro etapas</h4><div class="cartilha-destaque"><b>P – Planejar:</b> identificar o problema, definir metas e planejar as ações.<br><b>D – Fazer:</b> executar o plano, em pequena escala se possível.<br><b>C – Checar:</b> verificar os resultados comparando com a meta.<br><b>A – Agir:</b> padronizar o que funcionou ou corrigir o que falhou.</div><h4>Ciclo contínuo</h4><p>Ao final do A, o ciclo recomeça: cada volta deixa o processo melhor que a anterior.</p><div class="cartilha-exemplo"><b>Exemplo:</b> o setor tem muitas paradas por falta de material.<br><b>P:</b> medir as paradas e definir a meta de redução.<br><b>D:</b> testar um novo ponto de abastecimento.<br><b>C:</b> comparar as paradas antes e depois.<br><b>A:</b> se reduziu, padronizar.</div>', quiz:[{pergunta:'PDCA significa?',opcoes:['Planejar, Definir, Controlar, Aplicar','Planejar, Fazer, Checar, Agir','Produzir, Distribuir','Padronizar, Dirigir'],certa:1},{pergunta:'Na etapa C?',opcoes:['Executar','Verificar resultados','Padronizar','Definir metas'],certa:1},{pergunta:'PDCA é ciclo:',opcoes:['Linear','Contínuo','Para gestores','Só produção'],certa:1},{pergunta:'Na etapa P (Plan) se faz:',opcoes:['Executar a ação','Definir metas e planejar','Verificar resultados','Padronizar'],certa:1},{pergunta:'A letra D do PDCA é:',opcoes:['Definir','Decidir','Fazer (executar)','Documentar'],certa:2},{pergunta:'Na etapa A (Act), o resultado bom deve ser:',opcoes:['Esquecido','Escondido','Cancelado','Padronizado'],certa:3},{pergunta:'Comparar os resultados com a meta acontece na etapa:',opcoes:['P (Planejar)','D (Fazer)','C (Checar)','A (Agir)'],certa:2},{pergunta:'Se a ação deu certo, o que fazer na etapa A?',opcoes:['Padronizar','Descartar o resultado','Reiniciar sem registrar','Esconder o plano'],certa:0},{pergunta:'Testar a solução em pequena escala acontece em:',opcoes:['P (Planejar)','D (Fazer)','C (Checar)','A (Agir)'],certa:1},{pergunta:'Ao terminar a etapa A, o ciclo:',opcoes:['Termina para sempre','Vira apenas um relatório','Só se repete uma vez','Recomeça, buscando uma nova melhoria'],certa:3}] },
@@ -1535,6 +1610,9 @@ function bindCartilhas() {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
+  { id:'nov27', titulo:'🌸 MEDICAL em rosa e novo feriado', descricao:'A escala MEDICAL agora usa rosa nos dias de trabalho e verde nas folgas. Também entrou o feriado de Consciência Negra (20/11). No Natal, ramos de parreira enfeitam o topo da tela de boas-vindas.', data:'2026-11-19', cartilhaId:null },
+  { id:'nov26', titulo:'🎄 Tema de Natal', descricao:'Em dezembro o app ganha folhas de parreira, neve e clima natalino, mantendo o visual B. Braun. Para ver antes, abra o app com ?natal=1 no endereço; para desligar, use ?natal=0.', data:'2026-11-18', cartilhaId:null },
+  { id:'nov25', titulo:'🏥 Nova escala MEDICAL', descricao:'Agora o app tem a escala MEDICAL: segunda a sexta, mais os sábados que você trabalha no mês. Escolha "Escala MEDICAL" no Meu Perfil, toque no sábado desejado no calendário e marque como trabalhado.', data:'2026-11-18', cartilhaId:null },
   { id:'nov24', titulo:'🎨 Novo visual em todo o app', descricao:'As telas do menu ganharam um novo padrão, com títulos, cartões e ícones iguais em todo o app, e o botão Voltar fica no topo de cada tela. As Cartilhas agora têm biblioteca por temas e quiz por etapas, com 101 perguntas, e os Ramais Úteis ganharam busca.', data:'2026-11-07', cartilhaId:null },
   { id:'nov23', titulo:'🗳️ Votação do Colaborador do Mês melhorada', descricao:'Agora o formulário de votação é preenchido automaticamente com seus dados. Digite apenas o nome do colega que você quer votar.', data:'2026-10-02', cartilhaId:null },
   { id:'nov22', titulo:'🏖️ Sugestão inteligente de férias!', descricao:'Agora o app te ajuda a escolher a MELHOR data para suas férias. Você escolhe o mês e a quantidade de dias, e ele mostra as datas que rendem mais dias em casa respeitando sua escala. Acesse: Configurações → Programar Férias.', data:'2026-10-01', cartilhaId:'comousar' },
@@ -1642,7 +1720,7 @@ function pesquisarData() {
   const trab = isTrabalhando(do_, r, t), fer = isFerias(do_);
   let st, cor, ih, det;
   const rn = nomeRegiao(r), tf = formatarTurmaParaVoz(t);
-  if (r === '1x1') det = 'Região: Escala ' + tf; else det = 'Região: ' + rn + ' · Turmas ' + tf;
+  if (r === '1x1' || r === '5x2') det = 'Região: Escala ' + tf; else det = 'Região: ' + rn + ' · Turmas ' + tf;
   const modoP = modoFeriados();
   const fnomeP = getFeriados(do_.getFullYear())[String(do_.getMonth() + 1).padStart(2, '0') + '-' + String(do_.getDate()).padStart(2, '0')] || '';
   if (modoP) {
@@ -1856,6 +1934,7 @@ const ACTION_MAP = {
   'dispensar-atualizacao': dispensarAtualizacao,
   'open-novidades': openNovidades,
   'open-pesquisa': openPesquisa,
+  'toggle-sabado-5x2': toggleSabado5x2,
   'mes-anterior': function () { mudarMes(-1); },
   'mes-proximo': function () { mudarMes(1); },
   'ir-hoje': irParaHoje,
@@ -1935,6 +2014,7 @@ function bindAll() {
   if (st) {
     let r, g;
     if (['A','B','C','D'].indexOf(st) > -1) { r = 'BR'; g = (st === 'A' || st === 'C') ? 'AC' : 'BD'; }
+    else if (st === '5x2') { r = '5x2'; g = '5x2'; }
     else if (st.indexOf('1x1') === 0) { r = '1x1'; g = st; }
     else { r = 'MNT'; g = (st === 'E' || st === 'G') ? 'EG' : 'FH'; }
     currentRegion = r; currentTurma = g;
@@ -1943,7 +2023,8 @@ function bindAll() {
   } else {
     const sr = getStorageValue('braun_last_region') || 'BR';
     currentRegion = sr;
-    if (sr === '1x1') currentTurma = getStorageValue('braun_turma_1x1') || '1x1A';
+    if (sr === '5x2') currentTurma = '5x2';
+    else if (sr === '1x1') currentTurma = getStorageValue('braun_turma_1x1') || '1x1A';
     else currentTurma = getStorageValue('braun_turma_' + sr) || (sr === 'BR' ? 'AC' : 'EG');
   }
   document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
