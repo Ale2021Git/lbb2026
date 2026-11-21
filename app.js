@@ -21,7 +21,7 @@ const SCHEMA_VERSION = 1;
 
 const BACKUP_KEYS = [
   'braun_nome_completo','braun_matricula','braun_turma_perfil','braun_ano','braun_setor',
-  'braun_last_region','braun_turma_BR','braun_turma_MNT','braun_turma_1x1','braun_sabados_5x2',
+  'braun_last_region','braun_turma_BR','braun_turma_MNT','braun_turma_1x1','braun_sabados_5x2','braun_feriados_trab_5x2','braun_horas_5x2',
   'braun_ferias_inicio','braun_ferias_fim','braun_dark_mode',
   'braun_minimal_greeting','braun_voice_response','braun_voz_genero','braun_voz_nome_f','braun_voz_nome_m','braun_haptic',
   'braun_cartilhas_lidas','braun_conquistas','braun_quizzes_acertados','braun_quiz_ok','braun_quiz_melhor',
@@ -299,6 +299,61 @@ function isTurnoNoite1x1(t) { return t === '1x1C' || t === '1x1D'; }
    Os sábados ficam em localStorage 'braun_sabados_5x2' no formato {"2026-11":[7,21]}.
    Feriado em dia útil = folga. Sábado marcado trabalha mesmo se for feriado. */
 function getSabados5x2() { return getJSON('braun_sabados_5x2', {}); }
+/* Feriados trabalhados (dia útil): 'braun_feriados_trab_5x2' no formato {"2026-11":[20]}.
+   Cada feriado trabalhado substitui um dos 2 sábados do mês (cota de sábados = 2 - feriados trabalhados). */
+function getFeriadosTrab5x2() { return getJSON('braun_feriados_trab_5x2', {}); }
+function qtdFeriadosTrab5x2(dt) { const l = getFeriadosTrab5x2()[chaveMes5x2(dt)]; return Array.isArray(l) ? l.length : 0; }
+function isFeriadoTrabalhado5x2(dt) { const l = getFeriadosTrab5x2()[chaveMes5x2(dt)]; return Array.isArray(l) && l.indexOf(dt.getDate()) > -1; }
+function nomeFeriadoUtil5x2(dt) {
+  const dow = dt.getDay(); if (dow < 1 || dow > 5) return '';
+  const mmdd = String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+  return getFeriados(dt.getFullYear())[mmdd] || '';
+}
+function cotaSabados5x2(dt) { return Math.max(0, 2 - qtdFeriadosTrab5x2(dt)); }
+
+/* ---- Horas semanais e extras (MEDICAL) ----
+   Limite semanal automático conforme a EC 141/2026: 44h até 15/12/2026, 42h até 15/12/2027, 40h depois.
+   Na semana de virada o limite é proporcional aos dias de cada regime. Extra = horas da semana (seg. a dom.) acima do limite.
+   Horas por dia: dia útil, sábado trabalhado e feriado trabalhado (configuráveis, em minutos). */
+const LIMITES_5X2 = [['2026-12-15', 44], ['2027-12-15', 42]];
+function cfgHoras5x2() {
+  const c = getJSON('braun_horas_5x2', {});
+  const n = function (v, p) { return (typeof v === 'number' && isFinite(v) && v >= 0 && v <= 1440) ? v : p; };
+  return { diaria: n(c.diaria, 480), sabado: n(c.sabado, 240), feriado: n(c.feriado, 480),
+    limite: ['auto', '44', '42', '40'].indexOf(c.limite) > -1 ? c.limite : 'auto' };
+}
+function isoLocal5x2(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function limiteDiaH5x2(d, cfg) {
+  if (cfg.limite !== 'auto') return Number(cfg.limite);
+  const iso = isoLocal5x2(d);
+  for (let i = 0; i < LIMITES_5X2.length; i++) if (iso <= LIMITES_5X2[i][0]) return LIMITES_5X2[i][1];
+  return 40;
+}
+function segundaDe5x2(dt) { const d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; }
+function fmtH5x2(min) { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h + 'h' + (m ? String(m).padStart(2, '0') : ''); }
+function fmtDM5x2(d) { return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0'); }
+function semana5x2(dt) {
+  const cfg = cfgHoras5x2(), seg = segundaDe5x2(dt);
+  let min = 0, lim = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + i);
+    lim += limiteDiaH5x2(d, cfg) / 7;
+    if (isFerias(d)) continue;
+    const r = check5x2(d);
+    if (r.trab) min += r.sabado ? cfg.sabado : (r.feriadoTrab ? cfg.feriado : cfg.diaria);
+  }
+  const limMin = Math.round(lim * 60);
+  return { seg: seg, dom: new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + 6), min: min, limMin: limMin, extra: Math.max(0, min - limMin) };
+}
+function rotuloSemanaDiv(dt) {
+  const t = getWeekNumberCached(dt);
+  if (currentRegion === '5x2') {
+    const s = semana5x2(dt);
+    if (s.extra > 0) return '<div class="dia-label-w ext" title="Semana com ' + fmtH5x2(s.extra) + ' de hora extra" aria-label="Semana ' + t + ', ' + fmtH5x2(s.extra) + ' de hora extra">' + t + '</div>';
+  }
+  return '<div class="dia-label-w">' + t + '</div>';
+}
+
 function chaveMes5x2(dt) { return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0'); }
 function isSabadoMarcado5x2(dt) {
   const lista = getSabados5x2()[chaveMes5x2(dt)];
@@ -308,14 +363,15 @@ function check5x2(dt) {
   const k = '5x2_' + dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate();
   let v = _escalaCache.get(k); if (v !== undefined) return v;
   const dow = dt.getDay();
-  let trab = false, sabado = false;
+  let trab = false, sabado = false, feriadoTrab = false;
   if (dow >= 1 && dow <= 5) {
     const mmdd = String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
-    trab = !getFeriados(dt.getFullYear())[mmdd];
+    const fer = getFeriados(dt.getFullYear())[mmdd];
+    if (fer) { trab = isFeriadoTrabalhado5x2(dt); feriadoTrab = trab; } else trab = true;
   } else if (dow === 6) {
     sabado = isSabadoMarcado5x2(dt); trab = sabado;
   }
-  v = { trab: trab, sabado: sabado };
+  v = { trab: trab, sabado: sabado, feriadoTrab: feriadoTrab };
   _escalaCache.set(k, v); return v;
 }
 function isTrabalhando(dt, r, t) {
@@ -586,7 +642,7 @@ function legendaCalendario() {
   const t = currentTurma; let trabCls, folgaCls, trabTxt = 'Trabalho';
   if (currentRegion === 'BR') { trabCls = t === 'AC' ? 'AMARELO' : 'VERDE'; folgaCls = t === 'AC' ? 'VERDE' : 'AMARELO'; }
   else if (currentRegion === '1x1') { const n = isTurnoNoite1x1(t); trabCls = n ? 'ROXO' : 'LARANJA'; folgaCls = 'VERDE'; trabTxt = n ? 'Trabalho (noite)' : 'Trabalho (manhã)'; }
-  else if (currentRegion === '5x2') { trabCls = 'ROSA'; folgaCls = 'VERDE'; trabTxt = 'Trabalho (sáb. com borda)'; }
+  else if (currentRegion === '5x2') { trabCls = 'ROSA'; folgaCls = 'VERDE'; trabTxt = 'Trabalho (sáb./feriado com borda)'; }
   else { trabCls = t === 'EG' ? 'AZUL' : 'VERDE'; folgaCls = t === 'EG' ? 'VERDE' : 'AZUL'; }
   return '<div class="mes-legenda" aria-hidden="true">' +
     '<span><i class="leg-sw ' + trabCls + ' TRABALHO"></i>' + trabTxt + '</span>' +
@@ -624,7 +680,7 @@ function gerarCalendario() {
     const dnm = new Date(ano, m + 1, 0).getDate();
     const dsi = dtM.getDay();
     const esp = dsi === 0 ? 6 : dsi - 1;
-    hF += '<div class="dia-label-w">' + getWeekNumberCached(dtM) + '</div>';
+    hF += rotuloSemanaDiv(dtM);
     for (let i = 0; i < esp; i++) hF += '<div></div>';
     let col = esp;
     for (let d = 1; d <= dnm; d++) {
@@ -632,7 +688,7 @@ function gerarCalendario() {
       const isoS = String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
       const isoF = ano + '-' + isoS;
       const f = fer[isoS], nt = logs[isoF];
-      if (col === 7) { col = 0; hF += '<div class="dia-label-w">' + getWeekNumberCached(at) + '</div>'; }
+      if (col === 7) { col = 0; hF += rotuloSemanaDiv(at); }
       let cls = 'dia '; let sh = '';
       if (currentRegion === 'BR') {
         const r = checkBR(at, t);
@@ -640,7 +696,7 @@ function gerarCalendario() {
         sh = r.trab ? 'trabalhando' : 'de folga';
       } else if (currentRegion === '5x2') {
         const r5 = check5x2(at);
-        if (r5.trab) { cls += 'ROSA TRABALHO ' + (r5.sabado ? 'SABTRAB ' : ''); sh = r5.sabado ? 'trabalhando no sábado' : 'trabalhando'; }
+        if (r5.trab) { cls += 'ROSA TRABALHO ' + ((r5.sabado || r5.feriadoTrab) ? 'SABTRAB ' : ''); sh = r5.sabado ? 'trabalhando no sábado' : (r5.feriadoTrab ? 'trabalhando no feriado' : 'trabalhando'); }
         else { cls += 'VERDE FOLGA '; sh = 'de folga'; }
       } else if (currentRegion === '1x1') {
         const r = check1x1(at, t); const n = isTurnoNoite1x1(t);
@@ -734,6 +790,8 @@ function openCard(iso) {
   const sem = document.getElementById('card-dia-semana');
   if (sem) { const dn = diaDaSemanaPorExtenso(dtSel); sem.textContent = dn.charAt(0).toUpperCase() + dn.slice(1) + ' · lote sugerido e anotação deste dia.'; }
   atualizarBotaoSabado5x2(dtSel);
+  atualizarBotaoFeriado5x2(dtSel);
+  atualizarResumoSemana5x2(dtSel);
   focusModal('infoCard');
 }
 function atualizarBotaoSabado5x2(dtSel) {
@@ -749,7 +807,115 @@ function atualizarBotaoSabado5x2(dtSel) {
   const lista = getSabados5x2()[chaveMes5x2(dtSel)];
   const n = Array.isArray(lista) ? lista.length : 0;
   const info = document.getElementById('sab5x2-info');
-  if (info) info.textContent = n + ' de 2 sábados marcados neste mês.';
+  const cota = cotaSabados5x2(dtSel), nf = qtdFeriadosTrab5x2(dtSel);
+  if (info) info.textContent = n + ' de ' + cota + (cota === 1 ? ' sábado marcado' : ' sábados marcados') + ' neste mês' +
+    (nf ? ' (' + nf + (nf === 1 ? ' feriado trabalhado substitui' : ' feriados trabalhados substituem') + ' sábado).' : '.');
+}
+function atualizarBotaoFeriado5x2(dtSel) {
+  const box = document.getElementById('fer5x2-box'); if (!box) return;
+  const nome = currentRegion === '5x2' ? nomeFeriadoUtil5x2(dtSel) : '';
+  box.style.display = nome ? 'block' : 'none';
+  if (!nome) return;
+  const on = isFeriadoTrabalhado5x2(dtSel);
+  const b = document.getElementById('fer5x2-btn');
+  b.innerHTML = '<span class="material-symbols-outlined" aria-hidden="true">' + (on ? 'check_circle' : 'add_circle') + '</span>' +
+    (on ? 'Feriado trabalhado (tocar para desmarcar)' : 'Marcar feriado como trabalhado');
+  b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  const info = document.getElementById('fer5x2-info');
+  const cota = cotaSabados5x2(dtSel), l = getSabados5x2()[chaveMes5x2(dtSel)], ns = Array.isArray(l) ? l.length : 0;
+  if (info) info.textContent = nome + '. Feriado trabalhado substitui um sábado: neste mês são ' + cota + (cota === 1 ? ' sábado' : ' sábados') + ' (' + ns + ' marcado' + (ns === 1 ? '' : 's') + ').';
+}
+function atualizarResumoSemana5x2(dtSel) {
+  const el = document.getElementById('sem5x2-info'); if (!el) return;
+  if (currentRegion !== '5x2') { el.style.display = 'none'; return; }
+  const s = semana5x2(dtSel);
+  el.style.display = 'block';
+  el.textContent = 'Semana de ' + fmtDM5x2(s.seg) + ' a ' + fmtDM5x2(s.dom) + ': ' + fmtH5x2(s.min) + ' de ' + fmtH5x2(s.limMin) +
+    (s.extra ? ' · ' + fmtH5x2(s.extra) + ' de hora extra.' : ' · sem hora extra.');
+}
+let horasMesRef = null;
+function minParaHora5x2(min) { return String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0'); }
+function horaParaMin5x2(v, pad) { const m = /^(\d{1,2}):(\d{2})$/.exec(v || ''); if (!m) return pad; const t = parseInt(m[1], 10) * 60 + parseInt(m[2], 10); return t <= 1440 ? t : pad; }
+function montarHoras5x2(id) {
+  const box = document.getElementById(id); if (!box || box.firstChild) return;
+  let t = '<select class="pg-input" aria-label="Horas">';
+  for (let i = 0; i <= 12; i++) t += '<option value="' + i + '">' + i + '</option>';
+  t += '</select><span>h</span><select class="pg-input" aria-label="Minutos">';
+  for (let i = 0; i < 60; i++) t += '<option value="' + i + '">' + String(i).padStart(2, '0') + '</option>';
+  box.innerHTML = t + '</select><span>min</span>';
+}
+function setHoras5x2(id, min) {
+  montarHoras5x2(id);
+  const s = document.getElementById(id).querySelectorAll('select');
+  s[0].value = String(Math.min(12, Math.floor(min / 60))); s[1].value = String(min % 60);
+}
+function getHoras5x2(id, pad) {
+  const box = document.getElementById(id), s = box ? box.querySelectorAll('select') : [];
+  if (s.length < 2) return pad;
+  return parseInt(s[0].value, 10) * 60 + parseInt(s[1].value, 10);
+}
+function openHoras5x2() {
+  const c = cfgHoras5x2();
+  setHoras5x2('horasDiaria', c.diaria);
+  setHoras5x2('horasSabado', c.sabado);
+  setHoras5x2('horasFeriado', c.feriado);
+  document.getElementById('horasLimite').value = c.limite;
+  const hj = new Date(); horasMesRef = new Date(hj.getFullYear(), hj.getMonth(), 1);
+  renderHoras5x2();
+  document.getElementById('configCard').classList.remove('show');
+  focusModal('horasCard');
+}
+function renderHoras5x2() {
+  const ref = horasMesRef || new Date(), ano = ref.getFullYear(), m = ref.getMonth();
+  const nomeMes = ref.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  document.getElementById('horasMesTitulo').textContent = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1) + ' · semanas que terminam no mês';
+  const fim = new Date(ano, m + 1, 0);
+  let seg = segundaDe5x2(new Date(ano, m, 1)), rows = '', tMin = 0, tExtra = 0;
+  while (seg <= fim) {
+    const dom = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + 6);
+    if (dom.getFullYear() === ano && dom.getMonth() === m) {
+      const s = semana5x2(seg); tMin += s.min; tExtra += s.extra;
+      rows += '<div class="stat-fer"><span class="stat-fer-data">' + fmtDM5x2(s.seg) + '–' + fmtDM5x2(s.dom) + '</span><span class="stat-fer-nome">' +
+        fmtH5x2(s.min) + ' de ' + fmtH5x2(s.limMin) + '</span><span class="chip ' + (s.extra ? 'roxo' : 'verde') + '">' + (s.extra ? '+' + fmtH5x2(s.extra) : 'Sem extra') + '</span></div>';
+    }
+    seg = new Date(seg.getFullYear(), seg.getMonth(), seg.getDate() + 7);
+  }
+  document.getElementById('horasResumo').innerHTML =
+    '<div class="ct-stats dois"><div class="ct-stat roxo"><b>' + fmtH5x2(tMin) + '</b><span>Horas nas semanas</span></div><div class="ct-stat verde"><b>' + fmtH5x2(tExtra) + '</b><span>Horas extras</span></div></div>' +
+    (rows ? '<div class="pg-card stat-feriados">' + rows + '</div>' : '');
+}
+function horasMesAnt5x2() { horasMesRef = new Date(horasMesRef.getFullYear(), horasMesRef.getMonth() - 1, 1); renderHoras5x2(); }
+function horasMesProx5x2() { horasMesRef = new Date(horasMesRef.getFullYear(), horasMesRef.getMonth() + 1, 1); renderHoras5x2(); }
+function salvarHoras5x2() {
+  const cfg = {
+    diaria: getHoras5x2('horasDiaria', 480),
+    sabado: getHoras5x2('horasSabado', 240),
+    feriado: getHoras5x2('horasFeriado', 480),
+    limite: document.getElementById('horasLimite').value
+  };
+  setStorageValue('braun_horas_5x2', JSON.stringify(cfg));
+  renderHoras5x2(); gerarCalendario();
+  toast(cfg.diaria > 480 ? 'Salvo. Atenção: o limite diário é de 8h, salvo compensação por acordo.' : 'Horas salvas.', 'sucesso', cfg.diaria > 480 ? 5000 : undefined);
+}
+function toggleFeriado5x2() {
+  if (currentRegion !== '5x2' || !dataAtiva) return;
+  const p = dataAtiva.split('-');
+  const dia = parseInt(p[2], 10);
+  const dt = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, dia);
+  if (!nomeFeriadoUtil5x2(dt)) return;
+  const mapa = getFeriadosTrab5x2(), k = chaveMes5x2(dt);
+  const lista = Array.isArray(mapa[k]) ? mapa[k].slice() : [];
+  const i = lista.indexOf(dia);
+  let msg;
+  if (i > -1) { lista.splice(i, 1); msg = 'Feriado desmarcado (folga).'; }
+  else { lista.push(dia); lista.sort(function (x, y) { return x - y; }); msg = 'Feriado marcado como trabalhado.'; }
+  if (lista.length) mapa[k] = lista; else delete mapa[k];
+  setStorageValue('braun_feriados_trab_5x2', JSON.stringify(mapa));
+  _escalaCache.clear(); cachedStats = {};
+  const cota = cotaSabados5x2(dt), ls = getSabados5x2()[k], ns = Array.isArray(ls) ? ls.length : 0;
+  if (i === -1 && ns > cota) msg += ' Atenção: você tem ' + ns + ' sábados marcados e a cota do mês agora é ' + cota + '.';
+  closeAllModals(); gerarCalendario(); tick();
+  toast(msg, 'sucesso', ns > cota && i === -1 ? 5000 : undefined);
 }
 function toggleSabado5x2() {
   if (currentRegion !== '5x2' || !dataAtiva) return;
@@ -764,7 +930,8 @@ function toggleSabado5x2() {
   if (i > -1) { lista.splice(i, 1); msg = 'Sábado desmarcado.'; }
   else {
     lista.push(dia); lista.sort(function (x, y) { return x - y; });
-    msg = lista.length > 2 ? 'Sábado marcado. Atenção: já são ' + lista.length + ' sábados neste mês.' : 'Sábado marcado como trabalhado.';
+    const cota = cotaSabados5x2(dt);
+    msg = lista.length > cota ? 'Sábado marcado. Atenção: já são ' + lista.length + ' e a cota do mês é ' + cota + (cota < 2 ? ' (feriado trabalhado).' : '.') : 'Sábado marcado como trabalhado.';
   }
   if (lista.length) mapa[k] = lista; else delete mapa[k];
   setStorageValue('braun_sabados_5x2', JSON.stringify(mapa));
@@ -1610,7 +1777,9 @@ function bindCartilhas() {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
-  { id:'nov28', titulo:'🎄 Natal mais enfeitado', descricao:'A tela de boas-vindas ganhou bolas de Natal penduradas e pinheiros com neve. No dia 25, o calendário mostra uma guirlanda de Natal.', data:'2026-11-19', cartilhaId:null },
+  { id:'nov30', titulo:'⏱️ Horas e extras na MEDICAL', descricao:'Novo no menu: Horas e extras. Informe suas horas por dia e o app calcula as horas da semana contra o limite (44h, 42h a partir de 16/12/2026 e 40h a partir de 16/12/2027, conforme a EC 141/2026). Semanas com hora extra aparecem no calendário.', data:'2026-11-21', cartilhaId:null },
+  { id:'nov29', titulo:'🎉 Feriado trabalhado na MEDICAL', descricao:'Na escala MEDICAL, toque no feriado e marque “Feriado trabalhado”. Cada feriado trabalhado substitui um dos 2 sábados do mês, e o app ajusta a contagem de sábados automaticamente.', data:'2026-11-19', cartilhaId:null },
+  { id:'nov28', titulo:'🎄 Natal mais enfeitado', descricao:'A tela de boas-vindas ganhou bolas de Natal penduradas, pinheiros com neve e um pisca-pisca animado. No dia 25, o calendário mostra uma guirlanda de Natal.', data:'2026-11-19', cartilhaId:null },
   { id:'nov27', titulo:'🌸 MEDICAL em rosa e novo feriado', descricao:'A escala MEDICAL agora usa rosa nos dias de trabalho e verde nas folgas. Também entrou o feriado de Consciência Negra (20/11). No Natal, ramos de parreira enfeitam o topo da tela de boas-vindas.', data:'2026-11-19', cartilhaId:null },
   { id:'nov26', titulo:'🎄 Tema de Natal', descricao:'Em dezembro o app ganha folhas de parreira, neve e clima natalino, mantendo o visual B. Braun. Para ver antes, abra o app com ?natal=1 no endereço; para desligar, use ?natal=0.', data:'2026-11-18', cartilhaId:null },
   { id:'nov25', titulo:'🏥 Nova escala MEDICAL', descricao:'Agora o app tem a escala MEDICAL: segunda a sexta, mais os sábados que você trabalha no mês. Escolha "Escala MEDICAL" no Meu Perfil, toque no sábado desejado no calendário e marque como trabalhado.', data:'2026-11-18', cartilhaId:null },
@@ -1936,6 +2105,11 @@ const ACTION_MAP = {
   'open-novidades': openNovidades,
   'open-pesquisa': openPesquisa,
   'toggle-sabado-5x2': toggleSabado5x2,
+  'toggle-feriado-5x2': toggleFeriado5x2,
+  'open-horas-5x2': openHoras5x2,
+  'salvar-horas-5x2': salvarHoras5x2,
+  'horas-mes-ant': horasMesAnt5x2,
+  'horas-mes-prox': horasMesProx5x2,
   'mes-anterior': function () { mudarMes(-1); },
   'mes-proximo': function () { mudarMes(1); },
   'ir-hoje': irParaHoje,
