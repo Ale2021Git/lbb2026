@@ -533,7 +533,7 @@ function atualizarBadgeTurma() {
 }
 function atualizarLegenda1x1() {
   const b = document.querySelector('.sticky-header-block'); if (!b) return;
-  if (currentRegion === '1x1') b.classList.add('com-legenda'); else b.classList.remove('com-legenda');
+  b.classList.remove('com-legenda');
 }
 function setRegion(r) {
   currentRegion = r; setStorageValue('braun_last_region', r);

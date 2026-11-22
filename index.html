@@ -212,13 +212,6 @@
     #banner-avisos .banner-item { margin: 0 22px; display: inline-flex; align-items: center; gap: 4px; }
     #banner-avisos .banner-item .material-symbols-outlined { font-size: 16px; color: var(--amarelo); }
     @keyframes marquee-banner { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-    #legenda-1x1 {
-        display: none; background: var(--card); padding: 10px 14px;
-        border: 1px solid var(--border); border-top: none;
-        border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        margin: 0; gap: 16px; flex-wrap: wrap; justify-content: center; align-items: center;
-    }
-    .sticky-header-block.com-legenda #legenda-1x1 { display: flex; }
     .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 0.78em; font-weight: 700; color: var(--text); white-space: nowrap; }
     .legenda-cor { width: 16px; height: 16px; border-radius: 4px; display: inline-block; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.15); }
     .sticky-header-block.com-legenda .mes-nav,
@@ -816,7 +809,7 @@
     @keyframes mesIn { from { opacity: 0; } to { opacity: 1; } }
     .mes-container { animation: mesIn 0.35s ease both; }
     /* ===== MODO MINIMALISTA (só feriados): oculta trabalho/folga ===== */
-    html.modo-feriados #turmaBadge, html.modo-feriados .tab-bar, html.modo-feriados #legenda-1x1,
+    html.modo-feriados #turmaBadge, html.modo-feriados .tab-bar,
     html.modo-feriados .pg-acao[data-action="export-ics"], html.modo-feriados #feriasSugestaoBloco { display: none !important; }
     html.modo-feriados body { padding-bottom: 24px; }
     .dia.NEUTRO { background: var(--bg) !important; color: var(--text) !important; border-color: var(--border) !important; }
@@ -980,11 +973,6 @@
             <div class="banner-track">
                 <div class="banner-content" id="bannerContent"></div>
             </div>
-        </div>
-        <div id="legenda-1x1" aria-label="Legenda das cores">
-            <div class="legenda-item"><span class="legenda-cor" style="background: var(--laranja-1x1);"></span><span>Trab. Manhã</span></div>
-            <div class="legenda-item"><span class="legenda-cor" style="background: var(--roxo-1x1);"></span><span>Trab. Noite</span></div>
-            <div class="legenda-item"><span class="legenda-cor" style="background: var(--verde);"></span><span>Folga</span></div>
         </div>
     </div>
 
