@@ -836,6 +836,51 @@ function atualizarResumoSemana5x2(dtSel) {
 let horasMesRef = null;
 function minParaHora5x2(min) { return String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0'); }
 function horaParaMin5x2(v, pad) { const m = /^(\d{1,2}):(\d{2})$/.exec(v || ''); if (!m) return pad; const t = parseInt(m[1], 10) * 60 + parseInt(m[2], 10); return t <= 1440 ? t : pad; }
+/* ---- Seletor de turma (Meu Perfil): cartões por área, alimentado pelo <select id="turmaPerfil"> (que fica oculto) ---- */
+function montarPickerTurma() {
+  const sel = document.getElementById('turmaPerfil'), box = document.getElementById('turmaPicker');
+  if (!sel || !box || box.getAttribute('data-pronto')) return;
+  box.setAttribute('data-pronto', '1');
+  const icones = { 'ECOFLAC': 'factory', 'MANUTENÇÃO': 'engineering', '1x1': 'swap_horiz', 'MEDICAL': 'precision_manufacturing' };
+  let h = '';
+  sel.querySelectorAll('optgroup').forEach(function (g) {
+    const nome = g.label;
+    h += '<div class="tp-grupo"><div class="tp-titulo"><span class="pg-ico sm"><span class="material-symbols-outlined" aria-hidden="true">' + (icones[nome] || 'groups') + '</span></span><span>' + nome + '</span></div><div class="tp-grade">';
+    g.querySelectorAll('option').forEach(function (o) {
+      const v = o.value, t = o.textContent;
+      const turno = t.indexOf('Manhã') > -1 ? 'Manhã' : (t.indexOf('Noite') > -1 ? 'Noite' : '');
+      let rotulo, letra, ico = '', txt = '', larga = false;
+      if (v === '5x2') { rotulo = 'Escala'; letra = 'Seg. a sex.'; ico = 'event_available'; txt = '+ sábados'; larga = true; }
+      else if (/^[A-H]$/.test(v)) { rotulo = 'Turma'; letra = v; }
+      else { rotulo = 'Equipe'; const me = /Equipe ([A-Z])/.exec(t); letra = me ? me[1] : v.slice(-1); }
+      if (turno) { ico = turno === 'Manhã' ? 'light_mode' : 'dark_mode'; txt = turno; }
+      h += '<button type="button" class="tp-chip' + (larga ? ' larga' : '') + '" role="radio" aria-checked="false" data-valor="' + v + '" aria-label="' + t + '">' +
+        '<span class="tp-rotulo">' + rotulo + '</span><b class="tp-letra">' + letra + '</b>' +
+        '<span class="tp-turno"><span class="material-symbols-outlined" aria-hidden="true">' + ico + '</span>' + txt + '</span>' +
+        '<span class="material-symbols-outlined tp-check" aria-hidden="true">check_circle</span></button>';
+    });
+    h += '</div></div>';
+  });
+  box.innerHTML = h;
+  box.addEventListener('click', function (e) {
+    const b = e.target.closest('.tp-chip'); if (!b) return;
+    sel.value = b.getAttribute('data-valor');
+    sincronizarPickerTurma();
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+}
+function sincronizarPickerTurma() {
+  const sel = document.getElementById('turmaPerfil'), box = document.getElementById('turmaPicker'), res = document.getElementById('tpResumo');
+  if (!sel || !box) return;
+  box.querySelectorAll('.tp-chip').forEach(function (b) {
+    const on = b.getAttribute('data-valor') === sel.value;
+    b.classList.toggle('sel', on); b.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  if (res) {
+    const o = sel.options[sel.selectedIndex];
+    res.innerHTML = o ? '<span class="material-symbols-outlined" aria-hidden="true">check_circle</span><span>' + o.textContent + '</span>' : '';
+  }
+}
 function montarHoras5x2(id) {
   const box = document.getElementById(id); if (!box || box.firstChild) return;
   let t = '<select class="pg-input" aria-label="Horas">';
@@ -1008,6 +1053,7 @@ function openMeuPerfil() {
   document.getElementById('nomePerfil').value = getStorageValue('braun_nome_completo') || '';
   document.getElementById('matriculaPerfil').value = getStorageValue('braun_matricula') || '';
   document.getElementById('turmaPerfil').value = getStorageValue('braun_turma_perfil') || 'A';
+  montarPickerTurma(); sincronizarPickerTurma();
   document.getElementById('anoPerfil').value = getStorageValue('braun_ano') || '2026';
   document.getElementById('setorPerfil').value = getStorageValue('braun_setor') || '';
   focusModal('meuPerfilCard');
@@ -1777,6 +1823,7 @@ function bindCartilhas() {
    21) NOVIDADES
    ============================================================ */
 const novidadesData = [
+  { id:'nov33', titulo:'🧩 Nova tela de turma', descricao:'No Meu Perfil, a escolha de turma agora é por cartões organizados por área (ECOFLAC, Manutenção, 1x1 e MEDICAL), com turno e seleção em destaque. O ícone da MEDICAL também mudou.', data:'2026-11-22', cartilhaId:null },
   { id:'nov30', titulo:'⏱️ Horas e extras na MEDICAL', descricao:'Novo no menu: Horas e extras. Informe suas horas por dia e o app calcula as horas da semana contra o limite (44h, 42h a partir de 16/12/2026 e 40h a partir de 16/12/2027, conforme a EC 141/2026). Semanas com hora extra aparecem no calendário.', data:'2026-11-21', cartilhaId:null },
   { id:'nov29', titulo:'🎉 Feriado trabalhado na MEDICAL', descricao:'Na escala MEDICAL, toque no feriado e marque “Feriado trabalhado”. Cada feriado trabalhado substitui um dos 2 sábados do mês, e o app ajusta a contagem de sábados automaticamente.', data:'2026-11-19', cartilhaId:null },
   { id:'nov28', titulo:'🎄 Natal mais enfeitado', descricao:'A tela de boas-vindas ganhou bolas de Natal penduradas, pinheiros com neve e um pisca-pisca animado. No dia 25, o calendário mostra uma guirlanda de Natal.', data:'2026-11-19', cartilhaId:null },

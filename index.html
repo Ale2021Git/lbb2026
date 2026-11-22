@@ -252,6 +252,27 @@
     .ROSA { background: var(--rosa) !important; color: #fff !important; }
     .dia-label-w.ext { background: linear-gradient(135deg, var(--rosa), #B0129A) !important; }
     .horas-nav { display: flex; gap: 8px; margin: 4px 0 8px; }
+    .turma-picker { display: flex; flex-direction: column; gap: 12px; }
+    .tp-resumo { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; padding: 10px 14px; border-radius: 12px; background: rgba(0,169,122,0.10); border: 1.5px solid rgba(0,169,122,0.35); color: var(--text); font-weight: 800; font-size: 0.92rem; }
+    .tp-resumo .material-symbols-outlined { color: var(--primary); font-size: 20px; }
+    .tp-grupo { background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 12px; }
+    .tp-titulo { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--accent-txt); font-weight: 900; font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; }
+    .tp-grade { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    @media (min-width: 480px) { .tp-grade { grid-template-columns: repeat(4, 1fr); } }
+    .tp-chip { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 84px; padding: 10px 6px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--bg); color: var(--text); font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease; }
+    .tp-chip:active { transform: scale(0.97); }
+    .tp-chip:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(0,169,122,0.35); }
+    .tp-rotulo { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.7; }
+    .tp-letra { font-size: 1.7rem; font-weight: 900; line-height: 1.05; color: var(--primary); }
+    .tp-turno { display: inline-flex; align-items: center; gap: 4px; font-size: 0.74rem; font-weight: 700; opacity: 0.85; }
+    .tp-turno .material-symbols-outlined { font-size: 16px; }
+    .tp-chip .tp-check { position: absolute; top: 6px; right: 6px; font-size: 18px; display: none; }
+    .tp-chip.sel { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(0,169,122,0.35); }
+    .tp-chip.sel .tp-letra { color: #fff; }
+    .tp-chip.sel .tp-rotulo, .tp-chip.sel .tp-turno { opacity: 1; }
+    .tp-chip.sel .tp-check { display: block; }
+    .tp-chip.larga { grid-column: 1 / -1; flex-direction: row; gap: 14px; min-height: 64px; }
+    .tp-chip.larga .tp-letra { font-size: 1.3rem; }
     .horas-hm { display: flex; align-items: center; gap: 8px; }
     .horas-hm select { flex: 1; min-width: 0; }
     .horas-hm span { font-weight: 600; opacity: 0.8; }
@@ -973,7 +994,7 @@
 <div class="tab-bar" role="tablist" aria-label="Selecionar escala">
     <button class="tab" data-region="BR" id="tab-BR" role="tab" aria-selected="true"><span class="material-symbols-outlined" aria-hidden="true">factory</span>ECOFLAC</button>
     <button class="tab" data-region="MNT" id="tab-MNT" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">engineering</span>MANUT.</button>
-    <button class="tab" data-region="5x2" id="tab-5x2" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">medical_services</span>MEDICAL</button>
+    <button class="tab" data-region="5x2" id="tab-5x2" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">precision_manufacturing</span>MEDICAL</button>
     <button class="tab" data-region="1x1" id="tab-1x1" role="tab" aria-selected="false"><span class="material-symbols-outlined" aria-hidden="true">swap_horiz</span>1x1</button>
     <button class="tab" data-action="open-pesquisa" id="tab-SEARCH" role="tab" aria-selected="false"><span class="material-symbols-outlined search-icon">search</span><span>BUSCAR</span></button>
 </div>
@@ -1296,8 +1317,10 @@
             <div><label class="pg-label" for="nomePerfil"><span class="material-symbols-outlined" aria-hidden="true">badge</span>Nome completo</label><input type="text" id="nomePerfil" class="pg-input" placeholder="Digite seu nome completo"></div>
             <div><label class="pg-label" for="matriculaPerfil"><span class="material-symbols-outlined" aria-hidden="true">pin</span>Matrícula</label><input type="text" id="matriculaPerfil" class="pg-input" placeholder="Digite sua matrícula"></div>
             <div>
-                <label class="pg-label" for="turmaPerfil"><span class="material-symbols-outlined" aria-hidden="true">groups</span>Turma / Escala</label>
-                <select id="turmaPerfil" class="pg-input">
+                <label class="pg-label" id="lblTurmaPerfil"><span class="material-symbols-outlined" aria-hidden="true">groups</span>Turma / Escala</label>
+                <div id="tpResumo" class="tp-resumo" aria-live="polite"></div>
+                <div id="turmaPicker" class="turma-picker" role="radiogroup" aria-labelledby="lblTurmaPerfil"></div>
+                <select id="turmaPerfil" class="pg-input" hidden tabindex="-1" aria-hidden="true">
                 <optgroup label="ECOFLAC">
                     <option value="A">Turma A (Manhã - ECOFLAC)</option>
                     <option value="B">Turma B (Manhã - ECOFLAC)</option>
